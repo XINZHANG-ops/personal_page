@@ -3,6 +3,7 @@
 ## Introduction
 
 A personal portfolio website for an AI/ML engineer and researcher that showcases professional work, research interests, and writing. The site will be hosted on GitLab Pages and serve as a professional online presence that reflects both technical expertise and thoughtful reflection on AI's impact.
+https://xinzhang-ops.github.io/personal_page/index.html
 
 ## Glossary
 
