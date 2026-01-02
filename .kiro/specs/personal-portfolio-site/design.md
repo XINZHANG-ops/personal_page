@@ -123,11 +123,11 @@ const writings = [
 ### Contact Information Structure
 ```javascript
 const contactInfo = {
-  email: "your.email@domain.com",
-  linkedin: "https://linkedin.com/in/yourprofile",
-  github: "https://github.com/yourusername",
+  email: "xinzhang940208@gmail.com",
+  linkedin: "https://www.linkedin.com/in/xin-zhang-99246817a/",
+  github: "https://github.com/XINZHANG-ops",
   twitter: "https://twitter.com/yourhandle", // optional
-  location: "City, Country" // optional
+  location: "Waterloo, Canada" // optional
 };
 ```
 
