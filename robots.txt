@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Sitemap location (update with your actual GitLab Pages URL)
+Sitemap: https://yourusername.gitlab.io/personal-portfolio-site/sitemap.xml
+
+# Disallow access to development and test files
+Disallow: /tests/
+Disallow: /node_modules/
+Disallow: /*.test.js
+Disallow: /*.config.js
+Disallow: /package.json
+Disallow: /package-lock.json

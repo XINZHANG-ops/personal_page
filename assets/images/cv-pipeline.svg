@@ -1,0 +1,20 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6f42c1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#007bff;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg3)"/>
+  <rect x="50" y="50" width="700" height="500" fill="rgba(255,255,255,0.1)" rx="10"/>
+  <text x="400" y="120" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="36" font-weight="bold">Computer Vision Pipeline</text>
+  <rect x="150" y="200" width="120" height="120" fill="rgba(255,255,255,0.15)" rx="5"/>
+  <rect x="340" y="200" width="120" height="120" fill="rgba(255,255,255,0.15)" rx="5"/>
+  <rect x="530" y="200" width="120" height="120" fill="rgba(255,255,255,0.15)" rx="5"/>
+  <text x="210" y="270" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="14">Input</text>
+  <text x="400" y="270" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="14">CNN</text>
+  <text x="590" y="270" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="14">Analysis</text>
+  <polygon points="280,260 320,250 320,270" fill="rgba(255,255,255,0.6)"/>
+  <polygon points="470,260 510,250 510,270" fill="rgba(255,255,255,0.6)"/>
+  <text x="400" y="520" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Arial, sans-serif" font-size="18">Medical Imaging • CNN • Diagnostic AI</text>
+</svg>

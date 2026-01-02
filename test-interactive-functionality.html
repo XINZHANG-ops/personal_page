@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Functionality Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+        }
+        .pass {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .fail {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <h1>Interactive Functionality Test Results</h1>
+    <p>This page tests the interactive functionality implementation for Task 9.</p>
+    
+    <div class="test-section">
+        <h2>Test 1: Smooth Scroll Navigation</h2>
+        <div id="smooth-scroll-test" class="test-result info">Testing...</div>
+        <p><strong>Expected:</strong> Navigation links should scroll smoothly to sections</p>
+        <p><strong>Manual Test:</strong> Click navigation links in the main site to verify smooth scrolling</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 2: Mobile Menu Toggle</h2>
+        <div id="mobile-menu-test" class="test-result info">Testing...</div>
+        <p><strong>Expected:</strong> Mobile hamburger menu should toggle navigation on small screens</p>
+        <p><strong>Manual Test:</strong> Resize browser to mobile width and test hamburger menu</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 3: Typing Animation</h2>
+        <div id="typing-animation-test" class="test-result info">Testing...</div>
+        <p><strong>Expected:</strong> Hero section should have animated typing effect</p>
+        <p><strong>Manual Test:</strong> Watch the hero section for typing animation of words</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 4: Lazy Loading</h2>
+        <div id="lazy-loading-test" class="test-result info">Testing...</div>
+        <p><strong>Expected:</strong> Images should load only when they come into viewport</p>
+        <p><strong>Manual Test:</strong> Check browser dev tools Network tab while scrolling</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 5: Progressive Enhancement</h2>
+        <div id="progressive-enhancement-test" class="test-result info">Testing...</div>
+        <p><strong>Expected:</strong> Site should work without JavaScript enabled</p>
+        <p><strong>Manual Test:</strong> Disable JavaScript and verify site is still functional</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>Overall Result</h2>
+        <div id="overall-result" class="test-result info">Calculating...</div>
+    </div>
+    
+    <script>
+        // Test the interactive functionality
+        function runTests() {
+            let passedTests = 0;
+            const totalTests = 5;
+            
+            // Test 1: Smooth Scroll Navigation
+            const smoothScrollTest = document.getElementById('smooth-scroll-test');
+            if (typeof initializeSmoothScroll === 'function' || 
+                document.querySelector('a[href^="#"]') !== null) {
+                smoothScrollTest.textContent = '✅ PASS: Smooth scroll navigation elements found';
+                smoothScrollTest.className = 'test-result pass';
+                passedTests++;
+            } else {
+                smoothScrollTest.textContent = '❌ FAIL: Smooth scroll navigation not found';
+                smoothScrollTest.className = 'test-result fail';
+            }
+            
+            // Test 2: Mobile Menu Toggle
+            const mobileMenuTest = document.getElementById('mobile-menu-test');
+            if (document.querySelector('.nav__toggle') !== null &&
+                document.querySelector('.nav__menu') !== null) {
+                mobileMenuTest.textContent = '✅ PASS: Mobile menu toggle elements found';
+                mobileMenuTest.className = 'test-result pass';
+                passedTests++;
+            } else {
+                mobileMenuTest.textContent = '❌ FAIL: Mobile menu toggle elements not found';
+                mobileMenuTest.className = 'test-result fail';
+            }
+            
+            // Test 3: Typing Animation
+            const typingAnimationTest = document.getElementById('typing-animation-test');
+            if (document.querySelector('.hero__typing-words') !== null) {
+                typingAnimationTest.textContent = '✅ PASS: Typing animation elements found';
+                typingAnimationTest.className = 'test-result pass';
+                passedTests++;
+            } else {
+                typingAnimationTest.textContent = '❌ FAIL: Typing animation elements not found';
+                typingAnimationTest.className = 'test-result fail';
+            }
+            
+            // Test 4: Lazy Loading
+            const lazyLoadingTest = document.getElementById('lazy-loading-test');
+            if ('IntersectionObserver' in window &&
+                document.querySelector('img[loading="lazy"]') !== null) {
+                lazyLoadingTest.textContent = '✅ PASS: Lazy loading supported and implemented';
+                lazyLoadingTest.className = 'test-result pass';
+                passedTests++;
+            } else if (!('IntersectionObserver' in window)) {
+                lazyLoadingTest.textContent = '⚠️ PARTIAL: Lazy loading not supported in this browser';
+                lazyLoadingTest.className = 'test-result info';
+                passedTests += 0.5;
+            } else {
+                lazyLoadingTest.textContent = '❌ FAIL: Lazy loading not implemented';
+                lazyLoadingTest.className = 'test-result fail';
+            }
+            
+            // Test 5: Progressive Enhancement
+            const progressiveEnhancementTest = document.getElementById('progressive-enhancement-test');
+            if (document.querySelector('[role="navigation"]') !== null &&
+                document.querySelector('[role="main"]') !== null &&
+                document.querySelector('[aria-label]') !== null) {
+                progressiveEnhancementTest.textContent = '✅ PASS: Progressive enhancement (semantic HTML) implemented';
+                progressiveEnhancementTest.className = 'test-result pass';
+                passedTests++;
+            } else {
+                progressiveEnhancementTest.textContent = '❌ FAIL: Progressive enhancement not properly implemented';
+                progressiveEnhancementTest.className = 'test-result fail';
+            }
+            
+            // Overall Result
+            const overallResult = document.getElementById('overall-result');
+            const percentage = Math.round((passedTests / totalTests) * 100);
+            
+            if (passedTests === totalTests) {
+                overallResult.textContent = `🎉 ALL TESTS PASSED! (${passedTests}/${totalTests} - ${percentage}%)`;
+                overallResult.className = 'test-result pass';
+            } else if (passedTests >= totalTests * 0.8) {
+                overallResult.textContent = `✅ MOSTLY PASSED (${passedTests}/${totalTests} - ${percentage}%)`;
+                overallResult.className = 'test-result pass';
+            } else {
+                overallResult.textContent = `❌ TESTS FAILED (${passedTests}/${totalTests} - ${percentage}%)`;
+                overallResult.className = 'test-result fail';
+            }
+        }
+        
+        // Run tests when page loads
+        document.addEventListener('DOMContentLoaded', runTests);
+    </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#28a745;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#007bff;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg2)"/>
+  <rect x="50" y="50" width="700" height="500" fill="rgba(255,255,255,0.1)" rx="10"/>
+  <text x="400" y="120" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="36" font-weight="bold">Sentiment Analyzer</text>
+  <rect x="100" y="180" width="250" height="150" fill="rgba(255,255,255,0.1)" rx="5"/>
+  <rect x="380" y="180" width="250" height="150" fill="rgba(255,255,255,0.1)" rx="5"/>
+  <text x="225" y="210" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="16">😊 Positive: 65%</text>
+  <text x="225" y="240" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="16">😐 Neutral: 25%</text>
+  <text x="225" y="270" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="16">😞 Negative: 10%</text>
+  <rect x="505" y="200" width="100" height="8" fill="rgba(40,167,69,0.8)" rx="4"/>
+  <rect x="505" y="220" width="60" fill="rgba(255,193,7,0.8)" height="8" rx="4"/>
+  <rect x="505" y="240" width="25" fill="rgba(220,53,69,0.8)" height="8" rx="4"/>
+  <text x="400" y="520" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Arial, sans-serif" font-size="18">NLP • Transformers • Real-time Analysis</text>
+</svg>
