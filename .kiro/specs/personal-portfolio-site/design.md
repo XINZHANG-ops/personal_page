@@ -62,7 +62,7 @@ This design creates a modern, minimalist personal portfolio website for an AI/ML
 - Hover effects and smooth transitions
 - Easy-to-update structure with clear HTML comments
 
-### 5. Writing & Research Section
+### 5. Writing & Reading Section
 **Purpose**: Showcase thought leadership and research
 - Timeline or card-based layout
 - Article/paper entries with:
@@ -110,7 +110,7 @@ const writings = [
   {
     id: "writing-1",
     title: "Article Title",
-    type: "blog-post", // "research-paper", "article", "blog-post"
+    type: "blog-post", // "paper-reading", "article", "blog-post"
     venue: "Publication Name",
     date: "2024-01-15",
     summary: "Brief summary of the content and key insights",

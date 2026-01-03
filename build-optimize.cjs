@@ -30,15 +30,15 @@ function minifyCSS(css) {
 
 // Function to minify JavaScript (basic minification)
 function minifyJS(js) {
+    // More conservative minification to avoid breaking code
     return js
-        // Remove single-line comments (but preserve URLs)
-        .replace(/\/\/(?![^\n]*https?:)[^\n]*/g, '')
         // Remove multi-line comments
         .replace(/\/\*[\s\S]*?\*\//g, '')
-        // Remove extra whitespace (but preserve strings)
-        .replace(/\s+/g, ' ')
-        // Remove whitespace around operators and punctuation
-        .replace(/\s*([{}();,:])\s*/g, '$1')
+        // Remove single-line comments that start at beginning of line (with optional whitespace)
+        .replace(/^\s*\/\/.*$/gm, '')
+        // Remove extra whitespace and newlines (but keep single spaces)
+        .replace(/\n\s*\n/g, '\n')
+        .replace(/\n/g, '')
         .trim();
 }
 
