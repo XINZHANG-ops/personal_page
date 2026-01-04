@@ -443,16 +443,7 @@ a:focus {
   position: relative;
 }
 
-.about__image::before {
-  content: '👤';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: var(--font-size-5xl);
-  color: var(--color-white);
-  opacity: 0.8;
-}
+/* Removed placeholder icon - using actual profile photo now */
 
 .about__image:hover {
   transform: scale(1.05);
@@ -1537,7 +1528,7 @@ img[data-src] {
   }
 
   .about__skills-grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 
   /* Projects section desktop styles */

@@ -12,9 +12,9 @@
             title: "Mississauga K1 Speed Simulator",
             description: "A project innovated by my team building events at Mississauga K1 Speed. Using NEAT (Genetic Algorithms on Network) to produce the best route.",
             technologies: ["Python", "Genetic Algorithms"],
-            liveUrl: "https://medium.com/@1528371521zx/kenneth-stanley-c4691b2ec20d",
+            liveUrl: "https://drive.google.com/file/d/1EkHdORD-FTKhcM3DJhXJ7CHwJ0nIlEl6/view?usp=drive_link",
             githubUrl: "https://github.com/XINZHANG-ops/car-racing-simulator",
-            imageUrl: "assets/images/cv-pipeline.svg",
+            imageUrl: "assets/images/mississauga-k1-speed-simulator.png",
             featured: true,
             size: "medium" // large, medium, small for bento grid
         },
@@ -23,9 +23,9 @@
             title: "Office AI Avatar",
             description: "A project that build my own collegues as AI agents in office.",
             technologies: ["Python", "Langgraph", "Ollama", "TextToSpeech"],
-            liveUrl: "https://medium.com/@1528371521zx/quoc-v-le-a2e13e6d5505",
-            githubUrl: "https://medium.com/@1528371521zx/quoc-v-le-a2e13e6d5505",
-            imageUrl: "assets/images/sentiment-analyzer.svg",
+            liveUrl: "https://www.bilibili.com/video/BV1kG4y1U7bq/?vd_source=03a8c2897d3776de4be1425beda2b267",
+            githubUrl: "https://github.com/XINZHANG-ops/virtual_room",
+            imageUrl: "assets/images/office-ai-avatar.png",
             featured: true,
             size: "medium"
         },
@@ -34,9 +34,9 @@
             title: "CS GO Computer Vision Aim Bot",
             description: "An aim bot for local cs go gaming, not for online cheating.",
             technologies: ["Python", "YOLO"],
-            liveUrl: null, // No live demo for this project
-            githubUrl: "https://github.com/username/cv-medical-pipeline",
-            imageUrl: "assets/images/cv-pipeline.svg",
+            liveUrl: "https://drive.google.com/file/d/1weg24oAqh_Xd066v-6Tz2GzQmDK1IgLQ/view?usp=drive_link", // put null will not show
+            githubUrl: "https://github.com/XINZHANG-ops/cs-aim-bot",
+            imageUrl: "assets/images/cs-go-computer-vision.png",
             featured: false,
             size: "medium"
         }
