@@ -8,71 +8,37 @@
     // Then rebuild with: npm run build-beer
     const beers = [
     {
-        "id": "example-ipa",
-        "name": "Example IPA",
-        "style": "India Pale Ale",
-        "abv": 6.5,
-        "date": "2024-01-15",
-        "imageUrl": "../assets/images/beers/example-ipa.png",
-        "notes": "A fantastic example of a West Coast IPA with bold citrus and pine notes. Clean finish with just the right amount of bitterness.",
+        "id": "wellington-helles-lager",
+        "name": "Wellington Helles Lager",
+        "style": "Lager",
+        "abv": 4.5,
+        "date": "2026-01-07",
+        "imageUrl": "../assets/images/beers/wellington-helles-lager.png",
+        "notes": "I don’t really like this flavor. When I first drink it, there’s an ale-like taste that I don’t enjoy. Although a malty aroma comes through after a while, it isn’t very strong.",
         "scores": {
-            "maltiness": 7.5,
-            "colorDepth": 6,
-            "clarity": 9,
-            "bitterness": 9.5,
-            "otherAromas": 8.5,
-            "overall": 8.6
-        }
-    },
-    {
-        "id": "sample-stout",
-        "name": "Sample Imperial Stout",
-        "style": "Imperial Stout",
-        "abv": 10.5,
-        "date": "2024-01-10",
-        "imageUrl": "../assets/images/beers/sample-stout.png",
-        "notes": "Rich, velvety stout with notes of dark chocolate, coffee, and vanilla. Perfect for a cold evening.",
-        "scores": {
-            "maltiness": 9.5,
-            "colorDepth": 10,
-            "clarity": 7,
+            "maltiness": 3,
+            "colorDepth": 3,
+            "clarity": 9.5,
             "bitterness": 6.5,
-            "otherAromas": 9,
-            "overall": 8.8
-        }
-    },
-    {
-        "id": "xin-test",
-        "name": "xin test",
-        "style": "Belgian",
-        "abv": 4.3,
-        "date": "2026-01-07",
-        "imageUrl": "../assets/images/beers/xin-test.png",
-        "notes": "this is a test beer",
-        "scores": {
-            "maltiness": 8,
-            "colorDepth": 7,
-            "clarity": 6,
-            "bitterness": 5,
-            "otherAromas": 7.5,
-            "overall": 6
-        }
-    },
-    {
-        "id": "xin-test-ipa",
-        "name": "xin test ipa",
-        "style": "IPA (India Pale Ale)",
-        "abv": 4.2,
-        "date": "2026-01-07",
-        "imageUrl": "../assets/images/beers/xin-test-ipa.png",
-        "notes": "xin test ipa",
-        "scores": {
-            "maltiness": 9,
-            "colorDepth": 3.5,
-            "clarity": 8.5,
-            "bitterness": 3.5,
             "otherAromas": 5,
-            "overall": 8
+            "overall": 4
+        }
+    },
+    {
+        "id": "carlsberg-lite",
+        "name": "Carlsberg Lite",
+        "style": "Lager",
+        "abv": 4,
+        "date": "2026-01-07",
+        "imageUrl": "../assets/images/beers/carlsberg-lite.png",
+        "notes": "It’s not a flavor I like either. On the first sip, there’s a burnt or scorched taste. To be precise, it doesn’t really feel like a lager, and there’s almost no malt flavor at all.",
+        "scores": {
+            "maltiness": 2,
+            "colorDepth": 3.5,
+            "clarity": 9.5,
+            "bitterness": 5.5,
+            "otherAromas": 7.5,
+            "overall": 3
         }
     }
 ];
@@ -179,6 +145,13 @@
         const notes = document.createElement('p');
         notes.className = 'beer-card__notes';
         notes.textContent = beer.notes;
+        notes.setAttribute('title', 'Click to expand/collapse');
+
+        // Add click handler for expand/collapse
+        notes.addEventListener('click', function(e) {
+            e.stopPropagation();
+            this.classList.toggle('beer-card__notes--expanded');
+        });
 
         info.appendChild(name);
         info.appendChild(meta);

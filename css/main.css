@@ -1738,6 +1738,29 @@ img[data-src] {
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.beer-card__notes:hover {
+  color: var(--color-accent);
+}
+
+.beer-card__notes--expanded {
+  display: block;
+  -webkit-line-clamp: unset;
+  max-height: none;
+}
+
+.beer-card__notes-toggle {
+  display: inline;
+  color: var(--color-accent);
+  font-weight: 600;
+  margin-left: var(--space-xxs);
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+  user-select: none;
 }
 
 .beer-card__chart-container {

@@ -162,6 +162,13 @@ if (fs.existsSync(TEMPLATE_FILE)) {
         const notes = document.createElement('p');
         notes.className = 'beer-card__notes';
         notes.textContent = beer.notes;
+        notes.setAttribute('title', 'Click to expand/collapse');
+
+        // Add click handler for expand/collapse
+        notes.addEventListener('click', function(e) {
+            e.stopPropagation();
+            this.classList.toggle('beer-card__notes--expanded');
+        });
 
         info.appendChild(name);
         info.appendChild(meta);
