@@ -119,12 +119,12 @@ personal_page/
 
 Each beer is rated 1-10 on:
 
-1. **Appearance** - Color, clarity, head retention
-2. **Aroma** - Smell, hop/malt character
-3. **Flavor** - Taste, balance, complexity
-4. **Mouthfeel** - Body, carbonation, smoothness
-5. **Drinkability** - How enjoyable/sessionable
-6. **Overall** - Total experience
+1. **麦香 Maltiness** - Malt character and sweetness
+2. **颜色深浅 Color Depth** - Darkness or lightness of the beer
+3. **浑浊度 Clarity** - How clear vs hazy the beer is
+4. **苦度 Bitterness** - Hop bitterness level
+5. **其他香味 Other Aromas** - Fruity, spicy, or other aromatic notes
+6. **综合 Overall** - Total experience
 
 Scores are visualized in a radar chart on each beer card.
 
@@ -226,7 +226,7 @@ Using `display: flex` on the container was causing the images to collapse to zer
 
 2. Add a line to `data/beer.jsonl`:
    ```json
-   {"id": "beer-id", "name": "Beer Name", "style": "IPA", "abv": 6.5, "date": "2024-01-07", "imageUrl": "assets/images/beers/beer-name.png", "notes": "Tasting notes...", "scores": {"appearance": 8.5, "aroma": 9.0, "flavor": 8.7, "mouthfeel": 8.0, "drinkability": 8.5, "overall": 8.6}}
+   {"id": "beer-id", "name": "Beer Name", "style": "IPA", "abv": 6.5, "date": "2024-01-07", "imageUrl": "assets/images/beers/beer-name.png", "notes": "Tasting notes...", "scores": {"maltiness": 8.5, "colorDepth": 9.0, "clarity": 8.7, "bitterness": 8.0, "otherAromas": 8.5, "overall": 8.6}}
    ```
 
 3. Run `npm run build-beer`
@@ -258,11 +258,11 @@ Each line in `data/beer.jsonl` is a complete JSON object:
   "imageUrl": "assets/images/beers/guinness-draught.png",
   "notes": "Smooth, creamy with roasted malt flavors. Perfect pour with cascading bubbles.",
   "scores": {
-    "appearance": 9.0,
-    "aroma": 8.0,
-    "flavor": 8.5,
-    "mouthfeel": 9.5,
-    "drinkability": 8.5,
+    "maltiness": 9.0,
+    "colorDepth": 8.0,
+    "clarity": 8.5,
+    "bitterness": 9.5,
+    "otherAromas": 8.5,
     "overall": 8.7
   }
 }

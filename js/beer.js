@@ -16,11 +16,11 @@
         "imageUrl": "assets/images/beers/example-ipa.png",
         "notes": "A fantastic example of a West Coast IPA with bold citrus and pine notes. Clean finish with just the right amount of bitterness.",
         "scores": {
-            "appearance": 8.5,
-            "aroma": 9,
-            "flavor": 8.7,
-            "mouthfeel": 8,
-            "drinkability": 8.5,
+            "maltiness": 7.5,
+            "colorDepth": 6,
+            "clarity": 9,
+            "bitterness": 9.5,
+            "otherAromas": 8.5,
             "overall": 8.6
         }
     },
@@ -33,11 +33,11 @@
         "imageUrl": "assets/images/beers/sample-stout.png",
         "notes": "Rich, velvety stout with notes of dark chocolate, coffee, and vanilla. Perfect for a cold evening.",
         "scores": {
-            "appearance": 9,
-            "aroma": 8.5,
-            "flavor": 9.2,
-            "mouthfeel": 9,
-            "drinkability": 7.5,
+            "maltiness": 9.5,
+            "colorDepth": 10,
+            "clarity": 7,
+            "bitterness": 6.5,
+            "otherAromas": 9,
             "overall": 8.8
         }
     },
@@ -50,11 +50,11 @@
         "imageUrl": "assets/images/beers/xin-test.png",
         "notes": "this is a test beer",
         "scores": {
-            "appearance": 10,
-            "aroma": 10,
-            "flavor": 10,
-            "mouthfeel": 6,
-            "drinkability": 6,
+            "maltiness": 8,
+            "colorDepth": 7,
+            "clarity": 6,
+            "bitterness": 5,
+            "otherAromas": 7.5,
             "overall": 6
         }
     }
@@ -187,15 +187,15 @@
         new Chart(ctx, {
             type: 'radar',
             data: {
-                labels: ['Appearance', 'Aroma', 'Flavor', 'Mouthfeel', 'Drinkability', 'Overall'],
+                labels: ['Maltiness', 'Color Depth', 'Clarity', 'Bitterness', 'Other Aromas', 'Overall'],
                 datasets: [{
                     label: 'Score',
                     data: [
-                        scores.appearance,
-                        scores.aroma,
-                        scores.flavor,
-                        scores.mouthfeel,
-                        scores.drinkability,
+                        scores.maltiness,
+                        scores.colorDepth,
+                        scores.clarity,
+                        scores.bitterness,
+                        scores.otherAromas,
                         scores.overall
                     ],
                     backgroundColor: 'rgba(99, 102, 241, 0.2)',
@@ -269,11 +269,11 @@
         const sorted = [...beerList];
 
         switch (sortBy) {
-            case 'appearance':
-            case 'aroma':
-            case 'flavor':
-            case 'mouthfeel':
-            case 'drinkability':
+            case 'maltiness':
+            case 'colorDepth':
+            case 'clarity':
+            case 'bitterness':
+            case 'otherAromas':
             case 'overall':
                 return sorted.sort((a, b) => b.scores[sortBy] - a.scores[sortBy]);
             case 'date':

@@ -84,7 +84,7 @@ def process_image(image, beer_name):
     return f"assets/images/beers/{filename}.png"
 
 
-def add_beer(name, style, abv, notes, appearance, aroma, flavor, mouthfeel, drinkability, overall, image):
+def add_beer(name, style, abv, notes, maltiness, color_depth, clarity, bitterness, other_aromas, overall, image):
     """Add a new beer to the collection"""
 
     # Validation
@@ -112,11 +112,11 @@ def add_beer(name, style, abv, notes, appearance, aroma, flavor, mouthfeel, drin
         "imageUrl": image_url,
         "notes": notes.strip(),
         "scores": {
-            "appearance": round(appearance, 1),
-            "aroma": round(aroma, 1),
-            "flavor": round(flavor, 1),
-            "mouthfeel": round(mouthfeel, 1),
-            "drinkability": round(drinkability, 1),
+            "maltiness": round(maltiness, 1),
+            "colorDepth": round(color_depth, 1),
+            "clarity": round(clarity, 1),
+            "bitterness": round(bitterness, 1),
+            "otherAromas": round(other_aromas, 1),
             "overall": round(overall, 1)
         }
     }
@@ -184,12 +184,12 @@ with gr.Blocks(title="🍺 Beer Rating System", theme=gr.themes.Soft()) as app:
 
             with gr.Column(scale=1):
                 gr.Markdown("### ⭐ Scores (1-10)")
-                appearance_input = gr.Slider(minimum=1, maximum=10, value=7.5, step=0.5, label="Appearance (color, clarity, head)")
-                aroma_input = gr.Slider(minimum=1, maximum=10, value=7.5, step=0.5, label="Aroma (smell, hop/malt character)")
-                flavor_input = gr.Slider(minimum=1, maximum=10, value=7.5, step=0.5, label="Flavor (taste, balance, complexity)")
-                mouthfeel_input = gr.Slider(minimum=1, maximum=10, value=7.5, step=0.5, label="Mouthfeel (body, carbonation, smoothness)")
-                drinkability_input = gr.Slider(minimum=1, maximum=10, value=7.5, step=0.5, label="Drinkability (how enjoyable)")
-                overall_input = gr.Slider(minimum=1, maximum=10, value=7.5, step=0.5, label="Overall (total experience)")
+                maltiness_input = gr.Slider(minimum=1, maximum=10, value=7.5, step=0.5, label="麦香 Maltiness (malt character)")
+                color_depth_input = gr.Slider(minimum=1, maximum=10, value=7.5, step=0.5, label="颜色深浅 Color Depth (darkness/lightness)")
+                clarity_input = gr.Slider(minimum=1, maximum=10, value=7.5, step=0.5, label="浑浊度 Clarity (clear vs hazy)")
+                bitterness_input = gr.Slider(minimum=1, maximum=10, value=7.5, step=0.5, label="苦度 Bitterness (hop bitterness)")
+                other_aromas_input = gr.Slider(minimum=1, maximum=10, value=7.5, step=0.5, label="其他香味 Other Aromas (fruity, spicy, etc.)")
+                overall_input = gr.Slider(minimum=1, maximum=10, value=7.5, step=0.5, label="综合 Overall (total experience)")
 
         submit_btn = gr.Button("💾 Save Beer", variant="primary", size="lg")
         output = gr.Textbox(label="Status", lines=6)
@@ -197,8 +197,8 @@ with gr.Blocks(title="🍺 Beer Rating System", theme=gr.themes.Soft()) as app:
         submit_btn.click(
             fn=add_beer,
             inputs=[name_input, style_input, abv_input, notes_input,
-                   appearance_input, aroma_input, flavor_input,
-                   mouthfeel_input, drinkability_input, overall_input, image_input],
+                   maltiness_input, color_depth_input, clarity_input,
+                   bitterness_input, other_aromas_input, overall_input, image_input],
             outputs=output
         )
 

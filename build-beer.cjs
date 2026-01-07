@@ -182,15 +182,15 @@ if (fs.existsSync(TEMPLATE_FILE)) {
         new Chart(ctx, {
             type: 'radar',
             data: {
-                labels: ['Appearance', 'Aroma', 'Flavor', 'Mouthfeel', 'Drinkability', 'Overall'],
+                labels: ['Maltiness', 'Color Depth', 'Clarity', 'Bitterness', 'Other Aromas', 'Overall'],
                 datasets: [{
                     label: 'Score',
                     data: [
-                        scores.appearance,
-                        scores.aroma,
-                        scores.flavor,
-                        scores.mouthfeel,
-                        scores.drinkability,
+                        scores.maltiness,
+                        scores.colorDepth,
+                        scores.clarity,
+                        scores.bitterness,
+                        scores.otherAromas,
                         scores.overall
                     ],
                     backgroundColor: 'rgba(99, 102, 241, 0.2)',
@@ -264,11 +264,11 @@ if (fs.existsSync(TEMPLATE_FILE)) {
         const sorted = [...beerList];
 
         switch (sortBy) {
-            case 'appearance':
-            case 'aroma':
-            case 'flavor':
-            case 'mouthfeel':
-            case 'drinkability':
+            case 'maltiness':
+            case 'colorDepth':
+            case 'clarity':
+            case 'bitterness':
+            case 'otherAromas':
             case 'overall':
                 return sorted.sort((a, b) => b.scores[sortBy] - a.scores[sortBy]);
             case 'date':
