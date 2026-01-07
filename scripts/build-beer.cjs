@@ -166,10 +166,9 @@ if (fs.existsSync(TEMPLATE_FILE)) {
         const chartContainer = document.createElement('div');
         chartContainer.className = 'beer-card__chart-container';
 
-        const canvas = document.createElement('canvas');
-        canvas.className = 'beer-card__chart';
-        canvas.id = \`chart-\${beer.id}\`;
-        chartContainer.appendChild(canvas);
+        // Create SVG radar chart
+        const svg = createSVGRadarChart(beer.scores, \`chart-\${beer.id}\`);
+        chartContainer.appendChild(svg);
 
         // Assemble card
         content.appendChild(imageContainer);
@@ -177,84 +176,208 @@ if (fs.existsSync(TEMPLATE_FILE)) {
         content.appendChild(chartContainer);
         card.appendChild(content);
 
-        // Create radar chart after card is added to DOM
-        setTimeout(() => createRadarChart(canvas.id, beer.scores), 0);
-
         return card;
     }
 
     /**
-     * Create radar chart for beer scores
+     * Create SVG radar chart for beer scores
+     * Pure SVG implementation - infinitely scalable!
      */
-    function createRadarChart(canvasId, scores) {
-        const ctx = document.getElementById(canvasId);
-        if (!ctx) return;
+    function createSVGRadarChart(scores, id) {
+        const labels = ['Malt', 'Depth', 'Clarity', 'Bitter', 'Aromas', 'Overall'];
+        const data = [
+            scores.maltiness,
+            scores.colorDepth,
+            scores.clarity,
+            scores.bitterness,
+            scores.otherAromas,
+            scores.overall
+        ];
 
-        new Chart(ctx, {
-            type: 'radar',
-            data: {
-                labels: ['Malt', 'Depth', 'Clarity', 'Bitter', 'Aromas', 'Overall'],
-                datasets: [{
-                    label: 'Score',
-                    data: [
-                        scores.maltiness,
-                        scores.colorDepth,
-                        scores.clarity,
-                        scores.bitterness,
-                        scores.otherAromas,
-                        scores.overall
-                    ],
-                    backgroundColor: 'rgba(0, 123, 255, 0.2)',
-                    borderColor: 'rgba(0, 123, 255, 1)',
-                    borderWidth: 2,
-                    pointBackgroundColor: 'rgba(0, 123, 255, 1)',
-                    pointBorderColor: '#fff',
-                    pointHoverBackgroundColor: '#fff',
-                    pointHoverBorderColor: 'rgba(0, 123, 255, 1)'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function (context) {
-                                const fullLabels = ['Maltiness', 'Color Depth', 'Clarity', 'Bitterness', 'Other Aromas', 'Overall'];
-                                return fullLabels[context.dataIndex] + ': ' + context.parsed.r.toFixed(1) + '/10';
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    r: {
-                        beginAtZero: true,
-                        max: 10,
-                        min: 0,
-                        backgroundColor: 'transparent',
-                        ticks: {
-                            stepSize: 2,
-                            font: {
-                                size: 10
-                            },
-                            backdropColor: 'transparent'
-                        },
-                        pointLabels: {
-                            font: {
-                                size: 12,
-                                weight: 'bold'
-                            }
-                        },
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.1)'
-                        }
-                    }
-                }
+        const size = 200;
+        const center = size / 2;
+        const maxRadius = size / 2 - 30;
+        const levels = 5; // 0, 2, 4, 6, 8, 10
+        const axes = data.length;
+
+        // Create SVG element
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('viewBox', \`0 0 \${size} \${size}\`);
+        svg.setAttribute('class', 'beer-card__chart');
+        svg.setAttribute('id', id);
+
+        // Draw background grid (concentric polygons)
+        for (let level = 1; level <= levels; level++) {
+            const radius = (maxRadius / levels) * level;
+            const points = [];
+
+            for (let i = 0; i < axes; i++) {
+                const angle = (Math.PI * 2 * i) / axes - Math.PI / 2;
+                const x = center + radius * Math.cos(angle);
+                const y = center + radius * Math.sin(angle);
+                points.push(\`\${x},\${y}\`);
             }
-        });
+
+            const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            polygon.setAttribute('points', points.join(' '));
+            polygon.setAttribute('fill', 'none');
+            polygon.setAttribute('stroke', 'rgba(0, 0, 0, 0.1)');
+            polygon.setAttribute('stroke-width', '1');
+            svg.appendChild(polygon);
+        }
+
+        // Draw axis lines
+        for (let i = 0; i < axes; i++) {
+            const angle = (Math.PI * 2 * i) / axes - Math.PI / 2;
+            const x = center + maxRadius * Math.cos(angle);
+            const y = center + maxRadius * Math.sin(angle);
+
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', center);
+            line.setAttribute('y1', center);
+            line.setAttribute('x2', x);
+            line.setAttribute('y2', y);
+            line.setAttribute('stroke', 'rgba(0, 0, 0, 0.1)');
+            line.setAttribute('stroke-width', '1');
+            svg.appendChild(line);
+        }
+
+        // Draw data polygon
+        const dataPoints = [];
+        for (let i = 0; i < axes; i++) {
+            const value = data[i];
+            const radius = (maxRadius / 10) * value; // Scale to max value of 10
+            const angle = (Math.PI * 2 * i) / axes - Math.PI / 2;
+            const x = center + radius * Math.cos(angle);
+            const y = center + radius * Math.sin(angle);
+            dataPoints.push(\`\${x},\${y}\`);
+        }
+
+        const dataPolygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+        dataPolygon.setAttribute('points', dataPoints.join(' '));
+        dataPolygon.setAttribute('fill', 'rgba(0, 123, 255, 0.3)');
+        dataPolygon.setAttribute('stroke', 'rgba(0, 123, 255, 1)');
+        dataPolygon.setAttribute('stroke-width', '2');
+        svg.appendChild(dataPolygon);
+
+        // Draw scale numbers (0, 2, 4, 6, 8, 10)
+        for (let level = 1; level <= levels; level++) {
+            const radius = (maxRadius / levels) * level;
+            const scaleValue = (10 / levels) * level;
+
+            // Position scale number on the first axis (top)
+            const angle = -Math.PI / 2;
+            const x = center + radius * Math.cos(angle);
+            const y = center + radius * Math.sin(angle);
+
+            const scaleText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            scaleText.setAttribute('x', x);
+            scaleText.setAttribute('y', y - 5); // Offset slightly above the line
+            scaleText.setAttribute('text-anchor', 'middle');
+            scaleText.setAttribute('font-size', '9');
+            scaleText.setAttribute('fill', '#666');
+            scaleText.textContent = scaleValue;
+            svg.appendChild(scaleText);
+        }
+
+        // Create tooltip elements (will be added to SVG at the end to be on top)
+        const tooltipGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        tooltipGroup.setAttribute('class', 'chart-tooltip');
+        tooltipGroup.style.display = 'none';
+        tooltipGroup.style.pointerEvents = 'none';
+
+        const tooltipRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        tooltipRect.setAttribute('fill', 'rgba(0, 0, 0, 0.8)');
+        tooltipRect.setAttribute('rx', '4');
+        tooltipRect.setAttribute('ry', '4');
+
+        const tooltipText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        tooltipText.setAttribute('fill', '#fff');
+        tooltipText.setAttribute('font-size', '11');
+        tooltipText.setAttribute('font-weight', 'bold');
+
+        tooltipGroup.appendChild(tooltipRect);
+        tooltipGroup.appendChild(tooltipText);
+
+        // Draw data points (circles) with hover effects
+        const fullLabels = ['Maltiness', 'Color Depth', 'Clarity', 'Bitterness', 'Other Aromas', 'Overall'];
+
+        for (let i = 0; i < axes; i++) {
+            const value = data[i];
+            const radius = (maxRadius / 10) * value;
+            const angle = (Math.PI * 2 * i) / axes - Math.PI / 2;
+            const x = center + radius * Math.cos(angle);
+            const y = center + radius * Math.sin(angle);
+
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', x);
+            circle.setAttribute('cy', y);
+            circle.setAttribute('r', '4');
+            circle.setAttribute('fill', 'rgba(0, 123, 255, 1)');
+            circle.setAttribute('stroke', '#fff');
+            circle.setAttribute('stroke-width', '2');
+            circle.style.cursor = 'pointer';
+
+            // Add hover effects with tooltip
+            circle.addEventListener('mouseenter', function() {
+                this.setAttribute('r', '6');
+                this.setAttribute('fill', 'rgba(255, 193, 7, 1)');
+
+                // Set tooltip content and position
+                const label = fullLabels[i];
+                const text = \`\${label}: \${value}/10\`;
+                tooltipText.textContent = text;
+                tooltipText.setAttribute('x', x);
+                tooltipText.setAttribute('y', y - 15);
+                tooltipText.setAttribute('text-anchor', 'middle');
+
+                // Show tooltip group to enable measuring
+                tooltipGroup.style.display = 'block';
+
+                // Force a reflow to ensure text is measured correctly
+                tooltipText.getBBox();
+
+                // Now measure text to size background
+                const bbox = tooltipText.getBBox();
+                const padding = 6;
+                tooltipRect.setAttribute('x', bbox.x - padding);
+                tooltipRect.setAttribute('y', bbox.y - padding);
+                tooltipRect.setAttribute('width', bbox.width + padding * 2);
+                tooltipRect.setAttribute('height', bbox.height + padding * 2);
+            });
+
+            circle.addEventListener('mouseleave', function() {
+                this.setAttribute('r', '4');
+                this.setAttribute('fill', 'rgba(0, 123, 255, 1)');
+                tooltipGroup.style.display = 'none';
+            });
+
+            svg.appendChild(circle);
+        }
+
+        // Draw labels
+        for (let i = 0; i < axes; i++) {
+            const angle = (Math.PI * 2 * i) / axes - Math.PI / 2;
+            const labelRadius = maxRadius + 15;
+            const x = center + labelRadius * Math.cos(angle);
+            const y = center + labelRadius * Math.sin(angle);
+
+            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            text.setAttribute('x', x);
+            text.setAttribute('y', y);
+            text.setAttribute('text-anchor', 'middle');
+            text.setAttribute('dominant-baseline', 'middle');
+            text.setAttribute('font-size', '12');
+            text.setAttribute('font-weight', 'bold');
+            text.setAttribute('fill', '#333');
+            text.textContent = labels[i];
+            svg.appendChild(text);
+        }
+
+        // Add tooltip last so it appears on top of all other elements
+        svg.appendChild(tooltipGroup);
+
+        return svg;
     }
 
     /**

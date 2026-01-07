@@ -7,9 +7,10 @@ An automated beer rating system with a Gradio UI for easy data entry, automatic 
 ✅ **Gradio Web UI** - Easy-to-use interface for adding beers
 ✅ **Automatic Image Processing** - Auto-resize and convert to 400x400 PNG
 ✅ **JSONL Data Format** - Simple, human-readable, one beer per line
-✅ **Radar Charts** - Visual representation of 6 scoring aspects
+✅ **SVG Radar Charts** - Pure vector graphics, infinitely scalable
 ✅ **Smart Sorting** - Sort by any score aspect or date
 ✅ **Responsive Design** - Works on mobile, tablet, desktop
+✅ **No External Dependencies** - All charts rendered natively, no CDN required
 
 ---
 
@@ -149,11 +150,19 @@ assets/images/beers/       # Beer photos (400x400 PNG)
 data/beer.jsonl → build-beer.cjs → js/beer.js → pages/beer.html
 ```
 
+### SVG Radar Charts
+- **Pure vector graphics**: Infinitely scalable, no quality loss when zooming
+- **No external dependencies**: No Chart.js or CDN, just native SVG
+- **Lightweight**: Smaller file size, faster loading
+- **Accessible**: Built-in tooltips show score details on hover
+- **Custom implementation**: Full control over appearance and behavior
+
 ### Performance
-- Lazy loading for images
+- No lazy loading for beer images (prevents grey box issues)
 - Minified assets in production
 - Responsive grid layout
 - Hardware-accelerated animations
+- SVG charts render instantly with no external libraries
 
 ---
 

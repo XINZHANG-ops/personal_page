@@ -22,7 +22,7 @@ This document describes the asset optimization features implemented for the pers
 - **Minified JS**: Production-ready minified versions (`js/main.min.js`, `js/beer.js`)
 - **Progressive Enhancement**: Site works without JavaScript
 - **Event Delegation**: Efficient event handling patterns
-- **Chart.js CDN**: Radar charts loaded from CDN for beer ratings
+- **Pure SVG Charts**: Radar charts using native SVG - infinitely scalable, no external dependencies
 - **Modular Code**: IIFE patterns for code organization
 
 ### 4. HTML Optimization
@@ -34,7 +34,7 @@ This document describes the asset optimization features implemented for the pers
 
 ### 5. Performance Features
 - **Resource Preloading**: Critical CSS and JS files are preloaded
-- **DNS Prefetching**: Reduces DNS lookup time for CDN resources (Chart.js, Google Fonts)
+- **No External Dependencies**: All charts rendered with native SVG, no CDN required
 - **Gzip Ready**: Assets structured for optimal compression
 - **Cache Friendly**: Static assets with proper naming for caching
 - **No Lazy Loading**: Beer images load immediately to avoid grey box issues
@@ -145,9 +145,10 @@ See [BEER.md](BEER.md) for more details on the beer gallery system.
 
 The optimization features support:
 - **Modern browsers**: Chrome, Firefox, Safari, Edge (latest 2 versions)
-- **Chart.js**: For beer rating radar charts
+- **SVG support**: All modern browsers with full SVG 1.1 support
 - **Progressive enhancement**: Core content works without JavaScript
 - **Accessibility**: WCAG AA compliance with ARIA labels
+- **Scalable graphics**: SVG charts scale infinitely without quality loss
 
 ## Maintenance Checklist
 
