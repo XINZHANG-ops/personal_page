@@ -33,9 +33,9 @@ personal_page/
 ├── data/
 │   └── beer.jsonl         # Beer data (one beer per line)
 ├── docs/                   # Documentation
-│   ├── README_BEER.md     # Beer system documentation
-│   ├── BEER_GUIDE.md      # Beer rating guide
-│   └── *.md               # Other documentation
+│   ├── BEER.md            # Beer system documentation
+│   ├── DEPLOYMENT.md      # Deployment guide
+│   └── OPTIMIZATION.md    # Performance optimization
 ├── tests/                  # Test files
 │   ├── performance-test.js
 │   ├── validate-*.js
@@ -138,10 +138,10 @@ npm run build-all
 3. The site loads the minified versions for better performance
 
 ### Beer Rating System
-1. Add beers via `python add_beer.py` (Gradio UI)
+1. Add beers via `python scripts/add_beer.py` (Gradio UI)
 2. Data saved to `data/beer.jsonl` (one JSON object per line)
 3. Run `npm run build-beer` to generate `js/beer.js`
-4. `beer.html` loads `js/beer.js` to display beers
+4. `pages/beer.html` loads `js/beer.js` to display beers
 
 **Why the build step?** The website loads from the generated files (`beer.js`, `main.min.css`) not the source files. This allows for:
 - Automatic code generation from data
@@ -152,7 +152,7 @@ npm run build-all
 
 ## 🍺 Beer Scoring System
 
-See **[README_BEER.md](README_BEER.md)** for full documentation on:
+See **[docs/BEER.md](docs/BEER.md)** for full documentation on:
 - Using the Gradio UI to add beers
 - Rating system (6 aspects)
 - Manual editing of beer data
@@ -161,13 +161,13 @@ See **[README_BEER.md](README_BEER.md)** for full documentation on:
 Quick workflow:
 ```bash
 # Add a beer
-python add_beer.py
+python scripts/add_beer.py
 
 # Rebuild
 npm run build-beer
 
 # View
-open beer.html
+open pages/beer.html
 ```
 
 ---
@@ -251,10 +251,9 @@ GitHub Pages will automatically update (may take a few minutes).
 
 ## 📚 Documentation
 
-- **[README_BEER.md](README_BEER.md)** - Beer rating system documentation
-- **[BEER_GUIDE.md](BEER_GUIDE.md)** - Quick guide for beer scoring
-- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Deployment instructions
-- **[OPTIMIZATION.md](OPTIMIZATION.md)** - Performance optimization guide
+- **[Beer System](docs/BEER.md)** - Complete beer rating system documentation and guide
+- **[Deployment](docs/DEPLOYMENT.md)** - GitHub/GitLab Pages deployment instructions
+- **[Optimization](docs/OPTIMIZATION.md)** - Performance optimization and best practices
 
 ---
 
@@ -262,8 +261,8 @@ GitHub Pages will automatically update (may take a few minutes).
 
 ### Why Minify?
 - **Performance:** Smaller files = faster loading
-- **main.css:** 33.9KB → 26.7KB (21% savings)
-- **main.js:** 26.2KB → 21.7KB (17% savings)
+- **main.css:** 35.7KB → 28.2KB (21.1% savings)
+- **main.js:** 26.2KB → 21.7KB (17.0% savings)
 
 ### Why Not Lazy Loading for Beer Images?
 Lazy loading was causing images to appear as grey boxes because:
@@ -271,7 +270,7 @@ Lazy loading was causing images to appear as grey boxes because:
 - Lazy loading interferes with dynamically created images
 - For small collections (<50 beers), performance impact is minimal
 
-See [README_BEER.md](README_BEER.md) Technical Details section for more info.
+See [docs/BEER.md](docs/BEER.md) for more technical details.
 
 ---
 
