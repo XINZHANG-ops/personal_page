@@ -119,7 +119,7 @@ personal_page/
 
 Each beer is rated 1-10 on:
 
-1. **麦香 Maltiness** - Malt character and sweetness
+1. **麦芽香 Maltiness** - Malt character and sweetness
 2. **颜色深浅 Color Depth** - Darkness or lightness of the beer
 3. **浑浊度 Clarity** - How clear vs hazy the beer is
 4. **苦度 Bitterness** - Hop bitterness level

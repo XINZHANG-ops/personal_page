@@ -40,12 +40,12 @@ Your personal beer rating system with 6 scoring aspects, radar chart visualizati
 
 ## The 6 Scoring Aspects (1-10 scale)
 
-1. **Appearance** - Visual appeal (clarity, color, head retention)
-2. **Aroma** - Smell (hop aroma, malt character, fruity/floral notes)
-3. **Flavor** - Taste (balance, complexity, malt/hop flavors)
-4. **Mouthfeel** - Texture (body, carbonation, smoothness)
-5. **Drinkability** - How enjoyable (refreshing, sessionability)
-6. **Overall** - Total experience (would you recommend it?)
+1. **麦芽香 Maltiness** - Malt character and sweetness
+2. **颜色深浅 Color Depth** - Darkness or lightness of the beer
+3. **浑浊度 Clarity** - How clear vs hazy the beer is
+4. **苦度 Bitterness** - Hop bitterness level
+5. **其他香味 Other Aromas** - Fruity, spicy, or other aromatic notes
+6. **综合 Overall** - Total experience
 
 ---
 

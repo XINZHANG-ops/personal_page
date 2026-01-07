@@ -65,6 +65,7 @@
         initializeNavigation();
         renderBeerGallery(beers);
         initializeSorting();
+        initializeImageModal();
     });
 
     /**
@@ -120,6 +121,10 @@
         card.className = 'beer-card';
         card.setAttribute('data-beer-id', beer.id);
 
+        // Content wrapper
+        const content = document.createElement('div');
+        content.className = 'beer-card__content';
+
         // Image container
         const imageContainer = document.createElement('div');
         imageContainer.className = 'beer-card__image-container';
@@ -167,9 +172,10 @@
         chartContainer.appendChild(canvas);
 
         // Assemble card
-        card.appendChild(imageContainer);
-        card.appendChild(info);
-        card.appendChild(chartContainer);
+        content.appendChild(imageContainer);
+        content.appendChild(info);
+        content.appendChild(chartContainer);
+        card.appendChild(content);
 
         // Create radar chart after card is added to DOM
         setTimeout(() => createRadarChart(canvas.id, beer.scores), 0);
@@ -187,7 +193,7 @@
         new Chart(ctx, {
             type: 'radar',
             data: {
-                labels: ['Maltiness', 'Color Depth', 'Clarity', 'Bitterness', 'Other Aromas', 'Overall'],
+                labels: ['Malt', 'Depth', 'Clarity', 'Bitter', 'Aromas', 'Overall'],
                 datasets: [{
                     label: 'Score',
                     data: [
@@ -198,40 +204,18 @@
                         scores.otherAromas,
                         scores.overall
                     ],
-                    backgroundColor: 'rgba(99, 102, 241, 0.2)',
-                    borderColor: 'rgba(99, 102, 241, 1)',
+                    backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                    borderColor: 'rgba(0, 123, 255, 1)',
                     borderWidth: 2,
-                    pointBackgroundColor: 'rgba(99, 102, 241, 1)',
+                    pointBackgroundColor: 'rgba(0, 123, 255, 1)',
                     pointBorderColor: '#fff',
                     pointHoverBackgroundColor: '#fff',
-                    pointHoverBorderColor: 'rgba(99, 102, 241, 1)'
+                    pointHoverBorderColor: 'rgba(0, 123, 255, 1)'
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: true,
-                scales: {
-                    r: {
-                        beginAtZero: true,
-                        max: 10,
-                        min: 0,
-                        ticks: {
-                            stepSize: 2,
-                            font: {
-                                size: 10
-                            }
-                        },
-                        pointLabels: {
-                            font: {
-                                size: 11,
-                                weight: 'bold'
-                            }
-                        },
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.1)'
-                        }
-                    }
-                },
                 plugins: {
                     legend: {
                         display: false
@@ -239,8 +223,33 @@
                     tooltip: {
                         callbacks: {
                             label: function (context) {
-                                return context.label + ': ' + context.parsed.r.toFixed(1) + '/10';
+                                const fullLabels = ['Maltiness', 'Color Depth', 'Clarity', 'Bitterness', 'Other Aromas', 'Overall'];
+                                return fullLabels[context.dataIndex] + ': ' + context.parsed.r.toFixed(1) + '/10';
                             }
+                        }
+                    }
+                },
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 10,
+                        min: 0,
+                        backgroundColor: 'transparent',
+                        ticks: {
+                            stepSize: 2,
+                            font: {
+                                size: 10
+                            },
+                            backdropColor: 'transparent'
+                        },
+                        pointLabels: {
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
                         }
                     }
                 }
@@ -281,6 +290,53 @@
             default:
                 return sorted;
         }
+    }
+
+    /**
+     * Initialize image modal functionality
+     */
+    function initializeImageModal() {
+        // Create modal element
+        const modal = document.createElement('div');
+        modal.className = 'beer-modal';
+        modal.innerHTML = `
+            <div class="beer-modal__overlay"></div>
+            <div class="beer-modal__content">
+                <button class="beer-modal__close" aria-label="Close">&times;</button>
+                <img class="beer-modal__image" src="" alt="">
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        const overlay = modal.querySelector('.beer-modal__overlay');
+        const closeBtn = modal.querySelector('.beer-modal__close');
+        const modalImage = modal.querySelector('.beer-modal__image');
+
+        // Close modal function
+        function closeModal() {
+            modal.classList.remove('beer-modal--active');
+        }
+
+        // Add event listeners for beer images
+        document.addEventListener('click', function(e) {
+            const clickedImage = e.target.closest('.beer-card__image');
+            if (clickedImage) {
+                modalImage.src = clickedImage.src;
+                modalImage.alt = clickedImage.alt;
+                modal.classList.add('beer-modal--active');
+            }
+        });
+
+        // Close modal on overlay click or close button
+        overlay.addEventListener('click', closeModal);
+        closeBtn.addEventListener('click', closeModal);
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.classList.contains('beer-modal--active')) {
+                closeModal();
+            }
+        });
     }
 
 })();

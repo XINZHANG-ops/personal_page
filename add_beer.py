@@ -184,7 +184,7 @@ with gr.Blocks(title="🍺 Beer Rating System", theme=gr.themes.Soft()) as app:
 
             with gr.Column(scale=1):
                 gr.Markdown("### ⭐ Scores (1-10)")
-                maltiness_input = gr.Slider(minimum=1, maximum=10, value=7.5, step=0.5, label="麦香 Maltiness (malt character)")
+                maltiness_input = gr.Slider(minimum=1, maximum=10, value=7.5, step=0.5, label="麦芽香 Maltiness (malt character)")
                 color_depth_input = gr.Slider(minimum=1, maximum=10, value=7.5, step=0.5, label="颜色深浅 Color Depth (darkness/lightness)")
                 clarity_input = gr.Slider(minimum=1, maximum=10, value=7.5, step=0.5, label="浑浊度 Clarity (clear vs hazy)")
                 bitterness_input = gr.Slider(minimum=1, maximum=10, value=7.5, step=0.5, label="苦度 Bitterness (hop bitterness)")

@@ -1648,27 +1648,37 @@ img[data-src] {
 
 /* Beer card - Vertical layout like project cards */
 .beer-card {
-  background: var(--color-white);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-md);
+  background-color: var(--color-secondary);
+  border-radius: var(--border-radius);
   overflow: hidden;
-  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all var(--transition);
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
 .beer-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px rgba(0, 123, 255, 0.15);
+}
+
+.beer-card__content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--space-lg);
 }
 
 .beer-card__image-container {
+  position: relative;
   width: 100%;
   height: 200px;
+  margin-bottom: var(--space-md);
+  border-radius: var(--border-radius);
   overflow: hidden;
   background: var(--color-gray-light);
-  position: relative;
 }
 
 .beer-card__image {
@@ -1676,6 +1686,12 @@ img[data-src] {
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform var(--transition);
+  cursor: pointer;
+}
+
+.beer-card:hover .beer-card__image {
+  transform: scale(1.05);
 }
 
 .beer-card__image-placeholder {
@@ -1692,8 +1708,6 @@ img[data-src] {
   display: flex;
   flex-direction: column;
   gap: var(--space-xs);
-  padding: var(--space-lg);
-  padding-bottom: var(--space-md);
 }
 
 .beer-card__name {
@@ -1721,12 +1735,89 @@ img[data-src] {
 .beer-card__chart-container {
   width: 100%;
   padding: var(--space-md) var(--space-lg) var(--space-lg);
-  background: var(--color-white);
+  background: transparent;
 }
 
 .beer-card__chart {
   width: 100% !important;
   max-height: 200px !important;
+}
+
+/* Beer image modal */
+.beer-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.beer-modal--active {
+  display: flex;
+}
+
+.beer-modal__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  cursor: pointer;
+}
+
+.beer-modal__content {
+  position: relative;
+  z-index: 10000;
+  max-width: 90vw;
+  max-height: 90vh;
+  animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.beer-modal__image {
+  max-width: 100%;
+  max-height: 90vh;
+  width: auto;
+  height: auto;
+  display: block;
+  border-radius: var(--border-radius);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.beer-modal__close {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  background: transparent;
+  border: none;
+  color: var(--color-white);
+  font-size: 40px;
+  font-weight: 300;
+  cursor: pointer;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  line-height: 1;
+  transition: transform var(--transition);
+}
+
+.beer-modal__close:hover {
+  transform: scale(1.2);
 }
 
 /* Tablet and up */
