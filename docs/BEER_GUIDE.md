@@ -16,7 +16,7 @@ Your personal beer rating system with 6 scoring aspects, radar chart visualizati
 
 2. **Start the UI:**
    ```bash
-   python add_beer.py
+   python scripts/add_beer.py
    ```
 
 3. **Open in browser:** Go to `http://127.0.0.1:7860`
@@ -34,7 +34,7 @@ Your personal beer rating system with 6 scoring aspects, radar chart visualizati
    npm run build-beer
    ```
 
-7. **View:** Open `beer.html` in your browser to see your new beer!
+7. **View:** Open `pages/beer.html` in your browser to see your new beer!
 
 ---
 
@@ -88,16 +88,16 @@ Your personal beer rating system with 6 scoring aspects, radar chart visualizati
    ↓
 5. beer.js generated from beer.jsonl
    ↓
-6. Open beer.html to view!
+6. Open pages/beer.html to view!
 ```
 
 ### File Structure
 ```
-├── add_beer.py              # Gradio UI
+├── scripts/add_beer.py      # Gradio UI
 ├── data/beer.jsonl          # Beer data
 ├── assets/images/beers/     # Photos (400x400 PNG)
 ├── js/beer.js               # AUTO-GENERATED
-└── beer.html                # Gallery page
+└── pages/beer.html          # Gallery page
 ```
 
 ---
@@ -106,7 +106,7 @@ Your personal beer rating system with 6 scoring aspects, radar chart visualizati
 
 ```bash
 # Start Gradio UI to add beers
-python add_beer.py
+python scripts/add_beer.py
 
 # Build beer.js from data
 npm run build-beer

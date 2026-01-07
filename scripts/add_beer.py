@@ -11,12 +11,17 @@ from datetime import datetime
 from PIL import Image
 import re
 
-# Paths
-JSONL_FILE = "data/beer.jsonl"
-IMAGES_DIR = "assets/images/beers"
+# Get the directory where this script is located
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT_DIR = os.path.dirname(SCRIPT_DIR)  # Go up one level to project root
+
+# Paths relative to project root
+JSONL_FILE = os.path.join(ROOT_DIR, "data", "beer.jsonl")
+IMAGES_DIR = os.path.join(ROOT_DIR, "assets", "images", "beers")
+DATA_DIR = os.path.join(ROOT_DIR, "data")
 
 # Ensure directories exist
-os.makedirs("data", exist_ok=True)
+os.makedirs(DATA_DIR, exist_ok=True)
 os.makedirs(IMAGES_DIR, exist_ok=True)
 
 # Beer style options
@@ -135,7 +140,7 @@ def add_beer(name, style, abv, notes, maltiness, color_depth, clarity, bitternes
     with open(JSONL_FILE, 'a') as f:
         f.write(json.dumps(beer_data) + '\n')
 
-    return f"✅ Success! '{name}' has been added to your beer collection!\n\n📊 Overall Score: {overall}/10\n🍺 Style: {style}\n💪 ABV: {abv}%\n\n💡 Next steps:\n1. Run 'npm run build-beer' to update the website\n2. Open beer.html to see your new beer!"
+    return f"✅ Success! '{name}' has been added to your beer collection!\n\n📊 Overall Score: {overall}/10\n🍺 Style: {style}\n💪 ABV: {abv}%\n\n💡 Next steps:\n1. Run 'npm run build-beer' to update the website\n2. Open pages/beer.html to see your new beer!"
 
 
 def view_collection():

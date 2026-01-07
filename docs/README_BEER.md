@@ -28,7 +28,7 @@ pip install -r requirements.txt
 
 ```bash
 # Start the Gradio UI
-python add_beer.py
+python scripts/add_beer.py
 ```
 
 Open `http://127.0.0.1:7860` in your browser:
@@ -51,7 +51,7 @@ npm run build-all
 
 ### 4. View Your Collection
 
-Open `beer.html` in your browser!
+Open `pages/beer.html` in your browser!
 
 ---
 
@@ -101,16 +101,19 @@ Website displays beers
 
 ```
 personal_page/
-├── add_beer.py              # Gradio UI application
-├── build-beer.cjs           # Build script (JSONL → JS)
+├── scripts/
+│   ├── add_beer.py          # Gradio UI application
+│   └── build-beer.cjs       # Build script (JSONL → JS)
 ├── requirements.txt         # Python dependencies
 ├── data/
 │   └── beer.jsonl           # Beer data (one per line)
 ├── assets/images/beers/     # Beer photos (400x400 PNG)
 ├── js/
 │   └── beer.js              # AUTO-GENERATED (don't edit!)
-├── beer.html                # Beer gallery page
-└── BEER_GUIDE.md            # Complete usage guide
+├── pages/
+│   └── beer.html            # Beer gallery page
+└── docs/
+    └── BEER_GUIDE.md        # Complete usage guide
 ```
 
 ---
@@ -136,7 +139,7 @@ Scores are visualized in a radar chart on each beer card.
 
 | Command | What It Does | When to Use |
 |---------|-------------|-------------|
-| `python add_beer.py` | Start Gradio UI to add beers | Every time you want to add a new beer |
+| `python scripts/add_beer.py` | Start Gradio UI to add beers | Every time you want to add a new beer |
 | `npm run build-beer` | Generate `js/beer.js` from `data/beer.jsonl` | **Required** after adding/editing/deleting beers |
 
 ### Main Site Build Commands
@@ -325,14 +328,14 @@ A: Copy `data/beer.jsonl` and `assets/images/beers/` folder
 # Take a photo
 
 # Afternoon: Add to collection
-python add_beer.py
+python scripts/add_beer.py
 # Fill in form, upload photo, save
 
 # Build website
 npm run build-beer
 
 # View your collection
-open beer.html
+open pages/beer.html
 
 # Commit to git
 git add data/beer.jsonl assets/images/beers/ js/beer.js

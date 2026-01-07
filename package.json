@@ -7,12 +7,12 @@
     "test": "vitest --run",
     "test:watch": "vitest",
     "test:pbt": "vitest --run tests/property-tests",
-    "build": "node build-optimize.cjs",
-    "build-beer": "node build-beer.cjs",
+    "build": "node scripts/build-optimize.cjs",
+    "build-beer": "node scripts/build-beer.cjs",
     "build-all": "npm run build-beer && npm run build",
-    "perf": "node performance-test.js",
+    "perf": "node tests/performance-test.js",
     "optimize": "npm run build && npm run perf",
-    "verify-deployment": "node verify-deployment.js",
+    "verify-deployment": "node tests/verify-deployment.js",
     "deploy-check": "npm run test && npm run verify-deployment"
   },
   "devDependencies": {

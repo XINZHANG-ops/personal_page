@@ -28,7 +28,12 @@ const lines = fileContent.trim().split('\n');
 for (const line of lines) {
     if (line.trim()) {
         try {
-            beers.push(JSON.parse(line));
+            const beer = JSON.parse(line);
+            // Update image URL to work from pages/ directory
+            if (beer.imageUrl && !beer.imageUrl.startsWith('../')) {
+                beer.imageUrl = '../' + beer.imageUrl;
+            }
+            beers.push(beer);
         } catch (e) {
             console.error('❌ Error parsing line:', line);
             console.error(e.message);

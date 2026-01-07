@@ -97,24 +97,9 @@ if (fs.existsSync(imagesDir)) {
     });
 }
 
-// Create production HTML with minified assets
-console.log('📄 Creating production HTML...');
-const indexPath = 'index.html';
-if (fs.existsSync(indexPath)) {
-    let html = fs.readFileSync(indexPath, 'utf8');
-    
-    // Replace with minified versions
-    html = html.replace('css/main.css', 'css/main.min.css');
-    html = html.replace('js/main.js', 'js/main.min.js');
-    
-    fs.writeFileSync('index.prod.html', html);
-    console.log('   Created index.prod.html with minified assets');
-}
-
 console.log('✨ Asset optimization complete!');
 console.log('');
 console.log('📋 Performance Tips:');
-console.log('   • Use index.prod.html for production deployment');
 console.log('   • Enable gzip compression on your server');
 console.log('   • Consider using a CDN for static assets');
 console.log('   • Monitor Core Web Vitals with Lighthouse');

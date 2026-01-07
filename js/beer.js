@@ -13,7 +13,7 @@
         "style": "India Pale Ale",
         "abv": 6.5,
         "date": "2024-01-15",
-        "imageUrl": "assets/images/beers/example-ipa.png",
+        "imageUrl": "../assets/images/beers/example-ipa.png",
         "notes": "A fantastic example of a West Coast IPA with bold citrus and pine notes. Clean finish with just the right amount of bitterness.",
         "scores": {
             "maltiness": 7.5,
@@ -30,7 +30,7 @@
         "style": "Imperial Stout",
         "abv": 10.5,
         "date": "2024-01-10",
-        "imageUrl": "assets/images/beers/sample-stout.png",
+        "imageUrl": "../assets/images/beers/sample-stout.png",
         "notes": "Rich, velvety stout with notes of dark chocolate, coffee, and vanilla. Perfect for a cold evening.",
         "scores": {
             "maltiness": 9.5,
@@ -47,7 +47,7 @@
         "style": "Belgian",
         "abv": 4.3,
         "date": "2026-01-07",
-        "imageUrl": "assets/images/beers/xin-test.png",
+        "imageUrl": "../assets/images/beers/xin-test.png",
         "notes": "this is a test beer",
         "scores": {
             "maltiness": 8,
@@ -56,6 +56,23 @@
             "bitterness": 5,
             "otherAromas": 7.5,
             "overall": 6
+        }
+    },
+    {
+        "id": "xin-test-ipa",
+        "name": "xin test ipa",
+        "style": "IPA (India Pale Ale)",
+        "abv": 4.2,
+        "date": "2026-01-07",
+        "imageUrl": "../assets/images/beers/xin-test-ipa.png",
+        "notes": "xin test ipa",
+        "scores": {
+            "maltiness": 9,
+            "colorDepth": 3.5,
+            "clarity": 8.5,
+            "bitterness": 3.5,
+            "otherAromas": 5,
+            "overall": 8
         }
     }
 ];

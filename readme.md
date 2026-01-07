@@ -2,7 +2,7 @@
 
 Portfolio website for Xin Zhang - AI/ML Engineer and Researcher
 
-**Live Site:** https://xinzhang-ops.github.io/personal_page/index.html
+**Live Site:** https://xinzhang-ops.github.io/personal_page/
 
 ---
 
@@ -11,7 +11,13 @@ Portfolio website for Xin Zhang - AI/ML Engineer and Researcher
 ```
 personal_page/
 ├── index.html              # Main portfolio page
-├── beer.html               # Beer rating gallery
+├── pages/                  # HTML pages
+│   ├── beer.html          # Beer rating gallery
+│   └── test-*.html        # Test pages
+├── scripts/                # Build and utility scripts
+│   ├── add_beer.py        # Gradio UI for adding beers
+│   ├── build-beer.cjs     # Build script for beer.js
+│   └── build-optimize.cjs # Build script for minification
 ├── css/
 │   ├── main.css           # Main stylesheet (edit this)
 │   └── main.min.css       # Minified CSS (auto-generated)
@@ -26,9 +32,15 @@ personal_page/
 │       └── beers/         # Beer photos
 ├── data/
 │   └── beer.jsonl         # Beer data (one beer per line)
-├── add_beer.py            # Gradio UI for adding beers
-├── build-beer.cjs         # Build script for beer.js
-└── build-optimize.cjs     # Build script for minification
+├── docs/                   # Documentation
+│   ├── README_BEER.md     # Beer system documentation
+│   ├── BEER_GUIDE.md      # Beer rating guide
+│   └── *.md               # Other documentation
+├── tests/                  # Test files
+│   ├── performance-test.js
+│   ├── validate-*.js
+│   └── verify-deployment.js
+└── readme.md              # This file
 ```
 
 ---
@@ -61,7 +73,7 @@ npm run build-all
 
 ```bash
 # Start the Gradio UI
-python add_beer.py
+python scripts/add_beer.py
 
 # After adding beers, rebuild
 npm run build-beer
@@ -109,7 +121,6 @@ npm run build-all
 ### `npm run build` creates:
 - `css/main.min.css` - Minified CSS (~21% smaller)
 - `js/main.min.js` - Minified JavaScript (~17% smaller)
-- `index.prod.html` - Production HTML with minified assets
 
 ### `npm run build-beer` creates:
 - `js/beer.js` - Auto-generated from `data/beer.jsonl`
