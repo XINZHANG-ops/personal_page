@@ -10,70 +10,22 @@ const path = require('path');
 
 console.log('🚀 Starting asset optimization...');
 
-// Function to minify CSS (basic minification)
-function minifyCSS(css) {
-    return css
-        // Remove comments
-        .replace(/\/\*[\s\S]*?\*\//g, '')
-        // Remove extra whitespace
-        .replace(/\s+/g, ' ')
-        // Remove whitespace around specific characters
-        .replace(/\s*{\s*/g, '{')
-        .replace(/;\s*/g, ';')
-        .replace(/:\s*/g, ':')
-        .replace(/,\s*/g, ',')
-        .replace(/}\s*/g, '}')
-        // Remove trailing semicolons before }
-        .replace(/;}/g, '}')
-        .trim();
-}
-
-// Function to minify JavaScript (basic minification)
-function minifyJS(js) {
-    // More conservative minification to avoid breaking code
-    return js
-        // Remove multi-line comments
-        .replace(/\/\*[\s\S]*?\*\//g, '')
-        // Remove single-line comments that start at beginning of line (with optional whitespace)
-        .replace(/^\s*\/\/.*$/gm, '')
-        // Remove extra whitespace and newlines (but keep single spaces)
-        .replace(/\n\s*\n/g, '\n')
-        .replace(/\n/g, '')
-        .trim();
-}
-
-// Check if source files exist
+// Check if source files exist (no minification, just validation)
 const cssSource = 'css/main.css';
 const jsSource = 'js/main.js';
 
 if (fs.existsSync(cssSource)) {
-    console.log('📦 Minifying CSS...');
+    console.log('✅ CSS file exists');
     const css = fs.readFileSync(cssSource, 'utf8');
-    const minifiedCSS = minifyCSS(css);
-    fs.writeFileSync('css/main.min.css', minifiedCSS);
-    
-    const originalSize = Buffer.byteLength(css, 'utf8');
-    const minifiedSize = Buffer.byteLength(minifiedCSS, 'utf8');
-    const savings = ((originalSize - minifiedSize) / originalSize * 100).toFixed(1);
-    
-    console.log(`   Original: ${(originalSize / 1024).toFixed(1)}KB`);
-    console.log(`   Minified: ${(minifiedSize / 1024).toFixed(1)}KB`);
-    console.log(`   Savings: ${savings}%`);
+    const size = Buffer.byteLength(css, 'utf8');
+    console.log(`   Size: ${(size / 1024).toFixed(1)}KB`);
 }
 
 if (fs.existsSync(jsSource)) {
-    console.log('📦 Minifying JavaScript...');
+    console.log('✅ JavaScript file exists');
     const js = fs.readFileSync(jsSource, 'utf8');
-    const minifiedJS = minifyJS(js);
-    fs.writeFileSync('js/main.min.js', minifiedJS);
-    
-    const originalSize = Buffer.byteLength(js, 'utf8');
-    const minifiedSize = Buffer.byteLength(minifiedJS, 'utf8');
-    const savings = ((originalSize - minifiedSize) / originalSize * 100).toFixed(1);
-    
-    console.log(`   Original: ${(originalSize / 1024).toFixed(1)}KB`);
-    console.log(`   Minified: ${(minifiedSize / 1024).toFixed(1)}KB`);
-    console.log(`   Savings: ${savings}%`);
+    const size = Buffer.byteLength(js, 'utf8');
+    console.log(`   Size: ${(size / 1024).toFixed(1)}KB`);
 }
 
 // Check image sizes
