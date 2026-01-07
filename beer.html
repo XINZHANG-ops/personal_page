@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Xin Zhang's Beer Scoring - Personal ratings and reviews of craft beers">
+    <title>Beer Scoring - Xin Zhang</title>
+    <link rel="stylesheet" href="css/main.min.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+    <!-- Chart.js for radar charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <header class="header" role="banner">
+        <nav class="nav" role="navigation" aria-label="Main navigation">
+            <div class="nav__brand">
+                <h2 class="nav__title">
+                    <a href="index.html" style="text-decoration: none; color: inherit;">XIN ZHANG</a>
+                </h2>
+            </div>
+            <ul class="nav__menu" role="menubar" aria-label="Main menu">
+                <li class="nav__item" role="none"><a href="index.html#about" class="nav__link" role="menuitem">About</a></li>
+                <li class="nav__item" role="none"><a href="index.html#projects" class="nav__link" role="menuitem">Projects</a></li>
+                <li class="nav__item" role="none"><a href="index.html#writing" class="nav__link" role="menuitem">Writing</a></li>
+                <li class="nav__item" role="none"><a href="beer.html" class="nav__link nav__link--active" role="menuitem">Beer</a></li>
+                <li class="nav__item" role="none"><a href="index.html#contact" class="nav__link" role="menuitem">Contact</a></li>
+            </ul>
+            <button class="nav__toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="nav-menu">
+                <span class="nav__toggle-line" aria-hidden="true"></span>
+                <span class="nav__toggle-line" aria-hidden="true"></span>
+                <span class="nav__toggle-line" aria-hidden="true"></span>
+            </button>
+        </nav>
+    </header>
+
+    <main class="main" id="main-content" role="main">
+        <section class="beer-hero">
+            <div class="container">
+                <h1 class="beer-hero__title">🍺 Beer Scoring Collection</h1>
+                <p class="beer-hero__description">
+                    My personal ratings of craft beers across 6 key aspects: Appearance, Aroma, Flavor, Mouthfeel, Drinkability, and Overall Experience.
+                    Each beer is scored on a scale of 1-10 and visualized with a radar chart.
+                </p>
+            </div>
+        </section>
+
+        <section class="beer-controls">
+            <div class="container">
+                <div class="beer-controls__wrapper">
+                    <label for="sort-select" class="beer-controls__label">Sort by:</label>
+                    <select id="sort-select" class="beer-controls__select">
+                        <option value="overall">Overall Score</option>
+                        <option value="appearance">Appearance</option>
+                        <option value="aroma">Aroma</option>
+                        <option value="flavor">Flavor</option>
+                        <option value="mouthfeel">Mouthfeel</option>
+                        <option value="drinkability">Drinkability</option>
+                        <option value="date">Date Added (Newest)</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <section class="beer-gallery">
+            <div class="container">
+                <div class="beer-gallery__grid" id="beer-grid">
+                    <!-- Beer cards will be dynamically generated here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <p class="footer__text">&copy; 2024 Xin Zhang. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/beer.js"></script>
+</body>
+
+</html>

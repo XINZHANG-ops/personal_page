@@ -1542,3 +1542,219 @@ img[data-src] {
     grid-row: span 2;
   }
 }
+/* ================================
+   Beer Scoring Section Styles
+   ================================ */
+
+/* Beer section on main page */
+.beer-section {
+  padding: var(--space-3xl) 0;
+  background: var(--color-secondary);
+}
+
+.beer-section__content {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.beer-section__description {
+  font-size: var(--font-size-md);
+  line-height: 1.8;
+  color: var(--color-text);
+  margin-bottom: var(--space-lg);
+}
+
+.beer-section__link {
+  display: inline-block;
+  margin-top: var(--space-md);
+}
+
+/* Beer page hero */
+.beer-hero {
+  padding: var(--space-3xl) 0 var(--space-xl) 0;
+  background: linear-gradient(135deg, var(--color-primary) 0%, #2d2d44 100%);
+  color: var(--color-white);
+  text-align: center;
+}
+
+.beer-hero__title {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  margin-bottom: var(--space-md);
+  color: var(--color-white);
+}
+
+.beer-hero__description {
+  font-size: var(--font-size-md);
+  line-height: 1.8;
+  max-width: 800px;
+  margin: 0 auto;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Beer controls (sorting) */
+.beer-controls {
+  padding: var(--space-xl) 0;
+  background: var(--color-white);
+  border-bottom: 1px solid var(--color-gray-medium);
+}
+
+.beer-controls__wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+}
+
+.beer-controls__label {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.beer-controls__select {
+  padding: var(--space-xs) var(--space-md);
+  font-size: var(--font-size-sm);
+  border: 2px solid var(--color-gray-medium);
+  border-radius: var(--border-radius);
+  background: var(--color-white);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.beer-controls__select:hover {
+  border-color: var(--color-accent);
+}
+
+.beer-controls__select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+/* Beer gallery */
+.beer-gallery {
+  padding: var(--space-3xl) 0;
+  background: var(--color-secondary);
+}
+
+.beer-gallery__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-xl);
+}
+
+/* Beer card - Vertical layout like project cards */
+.beer-card {
+  background: var(--color-white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.beer-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.beer-card__image-container {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  background: var(--color-gray-light);
+  position: relative;
+}
+
+.beer-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.beer-card__image-placeholder {
+  font-size: 4rem;
+  color: var(--color-gray-dark);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.beer-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-lg);
+  padding-bottom: var(--space-md);
+}
+
+.beer-card__name {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0;
+}
+
+.beer-card__meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  display: flex;
+  gap: var(--space-xs);
+  font-weight: 500;
+}
+
+.beer-card__notes {
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+  color: var(--color-text);
+  margin-top: var(--space-xs);
+}
+
+.beer-card__chart-container {
+  width: 100%;
+  padding: var(--space-md) var(--space-lg) var(--space-lg);
+  background: var(--color-white);
+}
+
+.beer-card__chart {
+  width: 100% !important;
+  max-height: 200px !important;
+}
+
+/* Tablet and up */
+@media (min-width: 768px) {
+  .beer-gallery__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .beer-card__image-container {
+    height: 220px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .beer-gallery__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-2xl);
+  }
+
+  .beer-hero__title {
+    font-size: var(--font-size-4xl);
+  }
+}
+
+/* Large desktop */
+@media (min-width: 1440px) {
+  .beer-gallery__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

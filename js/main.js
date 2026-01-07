@@ -14,7 +14,7 @@
             technologies: ["Python", "Genetic Algorithms"],
             liveUrl: "https://drive.google.com/file/d/1EkHdORD-FTKhcM3DJhXJ7CHwJ0nIlEl6/view?usp=drive_link",
             githubUrl: "https://github.com/XINZHANG-ops/car-racing-simulator",
-            imageUrl: "assets/images/mississauga-k1-speed-simulator.png",
+            imageUrl: "assets/images/projects/mississauga-k1-speed-simulator.png",
             featured: true,
             size: "medium" // large, medium, small for bento grid
         },
@@ -25,7 +25,7 @@
             technologies: ["Python", "Langgraph", "Ollama", "TextToSpeech"],
             liveUrl: "https://www.bilibili.com/video/BV1kG4y1U7bq/?vd_source=03a8c2897d3776de4be1425beda2b267",
             githubUrl: "https://github.com/XINZHANG-ops/virtual_room",
-            imageUrl: "assets/images/office-ai-avatar.png",
+            imageUrl: "assets/images/projects/office-ai-avatar.png",
             featured: true,
             size: "medium"
         },
@@ -36,7 +36,7 @@
             technologies: ["Python", "YOLO"],
             liveUrl: "https://drive.google.com/file/d/1weg24oAqh_Xd066v-6Tz2GzQmDK1IgLQ/view?usp=drive_link", // put null will not show
             githubUrl: "https://github.com/XINZHANG-ops/cs-aim-bot",
-            imageUrl: "assets/images/cs-go-computer-vision.png",
+            imageUrl: "assets/images/projects/cs-go-computer-vision.png",
             featured: false,
             size: "medium"
         }
