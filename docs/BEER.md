@@ -62,7 +62,7 @@ Each beer is rated on 6 aspects (1-10 scale):
 
 1. **麦芽香 (Maltiness)** - Malt aroma and sweetness
 2. **颜色深浅 (Color Depth)** - From pale yellow to deep black
-3. **浑浊度 (Clarity)** - From crystal clear to opaque
+3. **清澈度 (Clarity)** - From crystal clear to opaque
 4. **苦度 (Bitterness)** - Hop bitterness level
 5. **其他香味 (Other Aromas)** - Fruit, spice, coffee notes
 6. **综合 (Overall)** - Your overall impression

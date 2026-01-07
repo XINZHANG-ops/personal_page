@@ -82,7 +82,7 @@ const translations_en = {
         description: "Beyond AI and Coding, I enjoy exploring the world of craft beer. I've developed a scoring system (with myself as the highly subjective judge🤪) to casually rate beers across multiple dimensions, from flavor profiles to overall experience🍺. Each beer gets a very informal evaluation and is visualized through radar charts showing its unique characteristics⭐.",
         viewBtn: "View My Beer Ratings →",
         heroTitle: "🍺 Beer Scoring Collection",
-        heroDescription: "My personal ratings of craft beers across 6 key aspects: 麦芽香 (Maltiness), 颜色深浅 (Color Depth), 浑浊度 (Clarity), 苦度 (Bitterness), 其他香味 (Other Aromas), and 综合 (Overall). Each beer is scored on a scale of 1-10 and visualized with a radar chart.",
+        heroDescription: "My personal ratings of craft beers across 6 key aspects: 麦芽香 (Maltiness), 颜色深浅 (Color Depth), 清澈度 (Clarity), 苦度 (Bitterness), 其他香味 (Other Aromas), and 综合 (Overall). Each beer is scored on a scale of 1-10 and visualized with a radar chart.",
         sortLabel: "Sort by:",
         sortOverall: "Overall Score",
         sortMaltiness: "Maltiness",
