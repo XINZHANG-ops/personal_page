@@ -1857,3 +1857,50 @@ img[data-src] {
     grid-template-columns: repeat(4, 1fr);
   }
 }
+
+
+/* ==========================================================================
+   Language Toggle
+   ========================================================================== */
+
+.language-toggle {
+  display: flex;
+  gap: var(--space-xs);
+  margin-left: var(--space-md);
+}
+
+.lang-btn {
+  padding: var(--space-xs) var(--space-sm);
+  border: 2px solid var(--color-gray-medium);
+  background: transparent;
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  min-width: 40px;
+}
+
+.lang-btn:hover {
+  background: var(--color-gray-light);
+  border-color: var(--color-primary);
+}
+
+.lang-btn--active {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+
+.lang-btn:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  .language-toggle {
+    margin-left: auto;
+    margin-right: var(--space-sm);
+  }
+}

@@ -66,6 +66,11 @@ if (fs.existsSync(TEMPLATE_FILE)) {
         renderBeerGallery(beers);
         initializeSorting();
         initializeImageModal();
+
+        // Listen for language changes and re-render charts
+        window.addEventListener('languageChange', function() {
+            renderBeerGallery(beers);
+        });
     });
 
     /**
@@ -182,9 +187,25 @@ if (fs.existsSync(TEMPLATE_FILE)) {
     /**
      * Create SVG radar chart for beer scores
      * Pure SVG implementation - infinitely scalable!
+     * Uses i18n system for bilingual label support
      */
     function createSVGRadarChart(scores, id) {
-        const labels = ['Malt', 'Depth', 'Clarity', 'Bitter', 'Aromas', 'Overall'];
+        // Use translation keys that will be replaced by i18n system
+        const getLabels = () => {
+            if (typeof window !== 'undefined' && window.i18n) {
+                return [
+                    window.i18n.t('beer.labelMalt'),
+                    window.i18n.t('beer.labelDepth'),
+                    window.i18n.t('beer.labelClarity'),
+                    window.i18n.t('beer.labelBitter'),
+                    window.i18n.t('beer.labelAromas'),
+                    window.i18n.t('beer.labelOverall')
+                ];
+            }
+            return ['Malt', 'Depth', 'Clarity', 'Bitter', 'Aromas', 'Overall'];
+        };
+
+        const labels = getLabels();
         const data = [
             scores.maltiness,
             scores.colorDepth,
@@ -300,7 +321,21 @@ if (fs.existsSync(TEMPLATE_FILE)) {
         tooltipGroup.appendChild(tooltipText);
 
         // Draw data points (circles) with hover effects
-        const fullLabels = ['Maltiness', 'Color Depth', 'Clarity', 'Bitterness', 'Other Aromas', 'Overall'];
+        const getFullLabels = () => {
+            if (typeof window !== 'undefined' && window.i18n) {
+                return [
+                    window.i18n.t('beer.labelMaltinessFull'),
+                    window.i18n.t('beer.labelColorDepthFull'),
+                    window.i18n.t('beer.labelClarityFull'),
+                    window.i18n.t('beer.labelBitternessFull'),
+                    window.i18n.t('beer.labelOtherAromasFull'),
+                    window.i18n.t('beer.labelOverallFull')
+                ];
+            }
+            return ['Maltiness', 'Color Depth', 'Clarity', 'Bitterness', 'Other Aromas', 'Overall'];
+        };
+
+        const fullLabels = getFullLabels();
 
         for (let i = 0; i < axes; i++) {
             const value = data[i];

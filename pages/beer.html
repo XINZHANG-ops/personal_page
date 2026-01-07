@@ -15,21 +15,25 @@
         <nav class="nav" role="navigation" aria-label="Main navigation">
             <div class="nav__brand">
                 <h2 class="nav__title">
-                    <a href="../index.html" style="text-decoration: none; color: inherit;">XIN ZHANG</a>
+                    <a href="../index.html" style="text-decoration: none; color: inherit;" data-i18n="brand.name">XIN ZHANG</a>
                 </h2>
             </div>
             <ul class="nav__menu" role="menubar" aria-label="Main menu">
-                <li class="nav__item" role="none"><a href="../index.html#about" class="nav__link" role="menuitem">About</a>
+                <li class="nav__item" role="none"><a href="../index.html#about" class="nav__link" role="menuitem" data-i18n="nav.about">About</a>
                 </li>
                 <li class="nav__item" role="none"><a href="../index.html#projects" class="nav__link"
-                        role="menuitem">Projects</a></li>
+                        role="menuitem" data-i18n="nav.projects">Projects</a></li>
                 <li class="nav__item" role="none"><a href="../index.html#writing" class="nav__link"
-                        role="menuitem">Writing</a></li>
+                        role="menuitem" data-i18n="nav.writing">Writing</a></li>
                 <li class="nav__item" role="none"><a href="beer.html" class="nav__link nav__link--active"
-                        role="menuitem">Beer</a></li>
+                        role="menuitem" data-i18n="nav.beer">Beer</a></li>
                 <li class="nav__item" role="none"><a href="../index.html#contact" class="nav__link"
-                        role="menuitem">Contact</a></li>
+                        role="menuitem" data-i18n="nav.contact">Contact</a></li>
             </ul>
+            <div class="language-toggle">
+                <button class="lang-btn" data-lang="en" aria-label="Switch to English">EN</button>
+                <button class="lang-btn" data-lang="zh" aria-label="切换到中文">中文</button>
+            </div>
             <button class="nav__toggle" aria-label="Toggle navigation menu" aria-expanded="false"
                 aria-controls="nav-menu">
                 <span class="nav__toggle-line" aria-hidden="true"></span>
@@ -42,8 +46,8 @@
     <main class="main" id="main-content" role="main">
         <section class="beer-hero">
             <div class="container">
-                <h1 class="beer-hero__title">🍺 Beer Scoring Collection</h1>
-                <p class="beer-hero__description">
+                <h1 class="beer-hero__title" data-i18n="beer.heroTitle">🍺 Beer Scoring Collection</h1>
+                <p class="beer-hero__description" data-i18n="beer.heroDescription">
                     My personal ratings of craft beers across 6 key aspects: 麦芽香 (Maltiness), 颜色深浅 (Color Depth), 浑浊度
                     (Clarity), 苦度 (Bitterness), 其他香味 (Other Aromas), and 综合 (Overall).
                     Each beer is scored on a scale of 1-10 and visualized with a radar chart.
@@ -54,15 +58,15 @@
         <section class="beer-controls">
             <div class="container">
                 <div class="beer-controls__wrapper">
-                    <label for="sort-select" class="beer-controls__label">Sort by:</label>
+                    <label for="sort-select" class="beer-controls__label" data-i18n="beer.sortLabel">Sort by:</label>
                     <select id="sort-select" class="beer-controls__select">
-                        <option value="overall">Overall Score</option>
-                        <option value="maltiness">Maltiness</option>
-                        <option value="colorDepth">Color Depth</option>
-                        <option value="clarity">Clarity</option>
-                        <option value="bitterness">Bitterness</option>
-                        <option value="otherAromas">Other Aromas</option>
-                        <option value="date">Date Added (Newest)</option>
+                        <option value="overall" data-i18n="beer.sortOverall">Overall Score</option>
+                        <option value="maltiness" data-i18n="beer.sortMaltiness">Maltiness</option>
+                        <option value="colorDepth" data-i18n="beer.sortColorDepth">Color Depth</option>
+                        <option value="clarity" data-i18n="beer.sortClarity">Clarity</option>
+                        <option value="bitterness" data-i18n="beer.sortBitterness">Bitterness</option>
+                        <option value="otherAromas" data-i18n="beer.sortOtherAromas">Other Aromas</option>
+                        <option value="date" data-i18n="beer.sortDate">Date Added (Newest)</option>
                     </select>
                 </div>
             </div>
@@ -82,6 +86,11 @@
             <p class="footer__text">&copy; 2024 Xin Zhang. All rights reserved.</p>
         </div>
     </footer>
+
+    <!-- i18n scripts -->
+    <script src="../js/i18n/en.js"></script>
+    <script src="../js/i18n/zh.js"></script>
+    <script src="../js/i18n.js"></script>
 
     <script src="../js/beer.js"></script>
 </body>

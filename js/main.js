@@ -96,6 +96,12 @@
         initializeProjectsGallery();
         initializeWritingSection();
         initializeLazyLoading();
+
+        // Listen for language changes and re-render dynamic content
+        window.addEventListener('languageChange', function() {
+            initializeProjectsGallery();
+            initializeWritingSection();
+        });
     });
 
     /**
@@ -304,6 +310,19 @@
             const projectCard = createProjectCard(project);
             projectsGrid.appendChild(projectCard);
         });
+
+        // Apply translations to dynamically created elements
+        if (window.i18n) {
+            const currentLang = window.i18n.getCurrentLanguage();
+            const projectLinks = projectsGrid.querySelectorAll('[data-i18n^="projects."]');
+            projectLinks.forEach(link => {
+                const key = link.getAttribute('data-i18n');
+                const translation = window.i18n.t(key, currentLang);
+                // Preserve emoji and just update text
+                const emoji = link.innerHTML.split(' ')[0];
+                link.innerHTML = `${emoji} ${translation}`;
+            });
+        }
     }
 
     /**
@@ -390,6 +409,7 @@
         githubLink.target = '_blank';
         githubLink.rel = 'noopener noreferrer';
         githubLink.className = 'project-card__link project-card__link--github';
+        githubLink.setAttribute('data-i18n', 'projects.codeBtn');
         githubLink.innerHTML = '📁 Code';
         githubLink.setAttribute('aria-label', `View ${project.title} source code on GitHub (opens in new tab)`);
 
@@ -402,6 +422,7 @@
             liveLink.target = '_blank';
             liveLink.rel = 'noopener noreferrer';
             liveLink.className = 'project-card__link project-card__link--live';
+            liveLink.setAttribute('data-i18n', 'projects.demoBtn');
             liveLink.innerHTML = '🚀 Demo';
             liveLink.setAttribute('aria-label', `View ${project.title} live demo (opens in new tab)`);
 
@@ -439,22 +460,24 @@
 
         const filterTitle = document.createElement('h3');
         filterTitle.className = 'writing__filters-title';
+        filterTitle.setAttribute('data-i18n', 'writing.filterTitle');
         filterTitle.textContent = 'Filter by:';
 
         const filterButtons = document.createElement('div');
         filterButtons.className = 'writing__filter-buttons';
 
-        // Create filter buttons
+        // Create filter buttons with i18n support
         const filters = [
-            { key: 'all', label: 'All' },
-            { key: 'blog-post', label: 'Blog Posts' },
-            { key: 'paper-reading', label: 'Papers Readings' }
+            { key: 'all', labelKey: 'writing.filterAll', label: 'All' },
+            { key: 'blog-post', labelKey: 'writing.filterBlogPosts', label: 'Blog Posts' },
+            { key: 'paper-reading', labelKey: 'writing.filterPapers', label: 'Papers Readings' }
         ];
 
         filters.forEach(filter => {
             const button = document.createElement('button');
             button.className = `writing__filter-btn ${filter.key === 'all' ? 'writing__filter-btn--active' : ''}`;
             button.setAttribute('data-filter', filter.key);
+            button.setAttribute('data-i18n', filter.labelKey);
             button.setAttribute('aria-pressed', filter.key === 'all' ? 'true' : 'false');
             button.setAttribute('aria-label', `Filter writings by ${filter.label}`);
             button.textContent = filter.label;
@@ -472,6 +495,18 @@
         // Add components to writing content
         writingContent.appendChild(filterContainer);
         writingContent.appendChild(timeline);
+
+        // Apply translations to dynamically created elements
+        if (window.i18n) {
+            const currentLang = window.i18n.getCurrentLanguage();
+            filterTitle.textContent = window.i18n.t('writing.filterTitle', currentLang);
+
+            const filterBtns = filterButtons.querySelectorAll('[data-i18n]');
+            filterBtns.forEach(btn => {
+                const key = btn.getAttribute('data-i18n');
+                btn.textContent = window.i18n.t(key, currentLang);
+            });
+        }
 
         // Initial render - show all writings
         renderWritings('all');
@@ -530,6 +565,22 @@
             `;
             timeline.appendChild(emptyState);
         }
+
+        // Apply translations to dynamically created elements
+        if (window.i18n) {
+            const currentLang = window.i18n.getCurrentLanguage();
+            const writingElements = timeline.querySelectorAll('[data-i18n^="writing."]');
+            writingElements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                const translation = window.i18n.t(key, currentLang);
+                // Preserve emoji if present
+                if (el.innerHTML.includes('📖')) {
+                    el.innerHTML = `📖 ${translation}`;
+                } else {
+                    el.textContent = translation;
+                }
+            });
+        }
     }
 
     /**
@@ -553,7 +604,17 @@
         // Type badge
         const typeBadge = document.createElement('span');
         typeBadge.className = 'writing-card__type-badge';
-        typeBadge.textContent = writing.type.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+        // Set translation key based on type
+        if (writing.type === 'paper-reading') {
+            typeBadge.setAttribute('data-i18n', 'writing.typePaperReading');
+            typeBadge.textContent = 'Paper Reading';
+        } else if (writing.type === 'blog-post') {
+            typeBadge.setAttribute('data-i18n', 'writing.typeBlogPost');
+            typeBadge.textContent = 'Blog Post';
+        } else {
+            typeBadge.textContent = writing.type.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
         typeBadge.setAttribute('aria-label', `Content type: ${typeBadge.textContent}`);
 
         // Title
@@ -614,6 +675,7 @@
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
         link.className = 'writing-card__link';
+        link.setAttribute('data-i18n', 'writing.readMoreBtn');
         link.innerHTML = '📖 Read More';
         link.setAttribute('aria-label', `Read ${writing.title} (opens in new tab)`);
 
