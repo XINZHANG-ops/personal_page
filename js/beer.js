@@ -48,7 +48,7 @@
         "abv": 5,
         "date": "2026-01-07",
         "imageUrl": "../assets/images/beers/grolsch-premium-pilsner.png",
-        "notes": "It’s hard to describe. There is a malty aroma, but the first sip is very bitter, followed by a strong alcoholic note. Only after that do I start to perceive the malt aroma through the nose.",
+        "notes": "It’s hard to describe. There is a malty aroma, but the first sip is very bitter, followed by a strong alcoholic note. Only after that do I start to perceive the malt aroma through the nose, it cost $2.75 at LCBO.",
         "scores": {
             "maltiness": 6,
             "colorDepth": 5.5,
