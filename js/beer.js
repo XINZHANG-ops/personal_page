@@ -40,6 +40,23 @@
             "otherAromas": 7.5,
             "overall": 3
         }
+    },
+    {
+        "id": "grolsch-premium-pilsner",
+        "name": "Grolsch Premium Pilsner",
+        "style": "Pilsner",
+        "abv": 5,
+        "date": "2026-01-07",
+        "imageUrl": "../assets/images/beers/grolsch-premium-pilsner.png",
+        "notes": "It’s hard to describe. There is a malty aroma, but the first sip is very bitter, followed by a strong alcoholic note. Only after that do I start to perceive the malt aroma through the nose.",
+        "scores": {
+            "maltiness": 6,
+            "colorDepth": 5.5,
+            "clarity": 9.5,
+            "bitterness": 9.5,
+            "otherAromas": 3,
+            "overall": 6
+        }
     }
 ];
 
