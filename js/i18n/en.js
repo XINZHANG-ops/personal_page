@@ -22,18 +22,18 @@ const translations_en = {
     hero: {
         title: "Data Scientist & Researcher",
         prefix: "I'm a ",
-        subtitle: "builder",
-        description: "I'm an enthusiastic data scientist who loves turning ideas into living, creative projects. I stay closely aligned with the latest advancements in AI, and I'm a continuous learner exploring cutting-edge technologies, including Unreal Engine 5.",
-        contactBtn: "Contact",
+        subtitle: "creator",
+        description: "I work as a data scientist, passionate about turning ideas into real projects. I try my best to keep up with the latest advancements in AI, learning the newest techniques and methods. Recently, I'm also starting new learning including technologies I'm interested in such as Unreal Engine 5.",
+        contactBtn: "Contact Me",
         projectsBtn: "Projects",
         writingBtn: "Writing"
     },
 
     // About section
     about: {
-        title: "About",
-        subtitle: "Bridging Research and Industry",
-        text: "I am a senior AI/ML engineer and data scientist based in Waterloo, Canada, currently working at Geotab. My work focuses on building production-grade generative AI systems, including conversational analytics assistants and large-scale retrieval pipelines that combine vector databases, knowledge graphs, semantic ranking, and SQL generation. I'm deeply involved in both system design and low-level implementation, with a strong preference for solutions that are technically sound, efficient, and measurable.\n\nBeyond my day job, I'm an active independent researcher and builder. I explore reinforcement learning, evolutionary algorithms, and modern generative models through hands-on projects such as RL-based racing simulators, local-LLM-driven agent systems, and 3D reconstruction pipelines (NeRF, Gaussian Splatting). I also write weekly essays on influential AI researchers and algorithms, blending historical context with mathematical intuition and personal reflection.\n\nI value depth over hype, clarity over abstraction, and action over speculation. Whether writing code, studying papers, or building side projects, I approach AI as both an engineering discipline and a creative tool—one that expands human capacity rather than replaces it.",
+        title: "About Me",
+        subtitle: "Connecting Research and Industry",
+        text: "I work as a data scientist, currently living in Waterloo, Canada, and employed at Geotab. My current work focuses on building production-level generative AI systems, including AI conversational agents and large-scale retrieval systems, combining technologies such as vector databases, knowledge graphs, semantic ranking, agents, SQL generation, and more.\n\nBeyond my day job, I'm also passionate about working on my own projects. Recently, I've been enthusiastic about reinforcement learning, evolutionary algorithms, and 3D reconstruction techniques. More specifically, projects like reinforcement learning-based racing simulators, local open-source LLM agent virtual games, and 3D reconstruction models (NeRF, Gaussian Splatting). I also write weekly articles about AI researchers and algorithms, incorporating a lot of personal thinking.\n\nI value clear explanations of algorithms, preferring clarity over abstract concept listings, and I believe in the power of persistence. Whether writing code, reading papers, or working on hobby projects, I try my best to integrate AI into my workflow.",
         skillsTitle: "Skills & Technologies",
         skillMachineLearning: "Machine Learning",
         skillProgramming: "Programming",
@@ -77,12 +77,12 @@ const translations_en = {
 
     // Beer section
     beer: {
-        title: "Beer Scoring",
-        subtitle: "My personal journey exploring and rating craft beers from around the world",
-        description: "Beyond AI and Coding, I enjoy exploring the world of craft beer. I've developed a scoring system (with myself as the highly subjective judge🤪) to casually rate beers across multiple dimensions, from flavor profiles to overall experience🍺. Each beer gets a very informal evaluation and is visualized through radar charts showing its unique characteristics⭐.",
+        title: "Beer Self-Ratings",
+        subtitle: "Tasting Various Beers",
+        description: "Besides AI and programming, I also enjoy exploring and drinking some beer. I've developed my own rating system (all subjective, no objectivity🤪), casually evaluating from multiple dimensions, flavor characteristics to overall experience🍺. Each beer gets an informal rating⭐.",
         viewBtn: "View My Beer Ratings →",
-        heroTitle: "🍺 Beer Scoring Collection",
-        heroDescription: "My personal ratings of craft beers across 6 key aspects: 麦芽香 (Maltiness), 颜色深浅 (Color Depth), 清澈度 (Clarity), 苦度 (Bitterness), 其他香味 (Other Aromas), and 综合 (Overall). Each beer is scored on a scale of 1-10 and visualized with a radar chart.",
+        heroTitle: "🍺 Beer Scoring Reviews",
+        heroDescription: "My personal beer ratings covering 6 key aspects: Maltiness, Color Depth, Clarity, Bitterness, Other Aromas, and Overall. Each aspect is rated on a scale of 1-10.",
         sortLabel: "Sort by:",
         sortOverall: "Overall Score",
         sortMaltiness: "Maltiness",
@@ -110,17 +110,17 @@ const translations_en = {
     // Contact section
     contact: {
         title: "Contact",
-        subtitle: "Let's connect and explore opportunities to collaborate on AI/ML projects",
+        subtitle: "Explore collaboration opportunities for AI/ML projects together",
         email: "Email",
         location: "Location",
-        locationValue: "Waterloo, ON",
+        locationValue: "Waterloo, Ontario",
         socialTitle: "Connect with me",
         linkedin: "LinkedIn",
         github: "GitHub",
         twitter: "Twitter",
         resume: "Resume",
-        ctaText: "let's do fun stuff together",
-        ctaButton: "Get in Touch"
+        ctaText: "Let's do fun stuff together",
+        ctaButton: "Contact Me"
     },
 
     // Footer
