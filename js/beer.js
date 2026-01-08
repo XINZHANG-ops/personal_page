@@ -13,8 +13,9 @@
         "style": "Lager",
         "abv": 4.5,
         "date": "2026-01-07",
+        "price": 3.65,
         "imageUrl": "../assets/images/beers/wellington-helles-lager.png",
-        "notes": "I don’t really like this flavor. When I first drink it, there’s an ale-like taste that I don’t enjoy. Although a malty aroma comes through after a while, it isn’t very strong.",
+        "notes": "I don't really like this flavor. When I first drink it, there's an ale-like taste that I don't enjoy. Although a malty aroma comes through after a while, it isn't very strong.",
         "scores": {
             "maltiness": 3,
             "colorDepth": 3,
@@ -30,8 +31,9 @@
         "style": "Lager",
         "abv": 4,
         "date": "2026-01-07",
+        "price": 3.05,
         "imageUrl": "../assets/images/beers/carlsberg-lite.png",
-        "notes": "It’s not a flavor I like either. On the first sip, there’s a burnt or scorched taste. To be precise, it doesn’t really feel like a lager, and there’s almost no malt flavor at all.",
+        "notes": "It's not a flavor I like either. On the first sip, there's a burnt or scorched taste. To be precise, it doesn't really feel like a lager, and there's almost no malt flavor at all.",
         "scores": {
             "maltiness": 2,
             "colorDepth": 3.5,
@@ -47,8 +49,9 @@
         "style": "Pilsner",
         "abv": 5,
         "date": "2026-01-07",
+        "price": 2.75,
         "imageUrl": "../assets/images/beers/grolsch-premium-pilsner.png",
-        "notes": "It’s hard to describe. There is a malty aroma, but the first sip is very bitter, followed by a strong alcoholic note. Only after that do I start to perceive the malt aroma through the nose, it cost $2.75 at LCBO.",
+        "notes": "It's hard to describe. There is a malty aroma, but the first sip is very bitter, followed by a strong alcoholic note. Only after that do I start to perceive the malt aroma through the nose.",
         "scores": {
             "maltiness": 6,
             "colorDepth": 5.5,
@@ -167,6 +170,25 @@
         meta.className = 'beer-card__meta';
         meta.innerHTML = `<span>${beer.style}</span> <span>•</span> <span>${beer.abv}% ABV</span>`;
 
+        // Price display (separate line)
+        const priceDiv = document.createElement('div');
+        priceDiv.className = 'beer-card__meta';
+        const getPriceLabel = () => {
+            if (typeof window !== 'undefined' && window.i18n) {
+                return window.i18n.t('beer.priceLabel');
+            }
+            return 'Price';
+        };
+        const getPriceNotProvided = () => {
+            if (typeof window !== 'undefined' && window.i18n) {
+                return window.i18n.t('beer.priceNotProvided');
+            }
+            return 'Not provided';
+        };
+        const priceLabel = getPriceLabel();
+        const priceValue = beer.price > 0 ? `$${beer.price.toFixed(2)}` : getPriceNotProvided();
+        priceDiv.innerHTML = `<span>${priceLabel}</span> <span>•</span> <span>${priceValue}</span>`;
+
         const notes = document.createElement('p');
         notes.className = 'beer-card__notes';
         notes.textContent = beer.notes;
@@ -180,6 +202,7 @@
 
         info.appendChild(name);
         info.appendChild(meta);
+        info.appendChild(priceDiv);
         info.appendChild(notes);
 
         // Radar chart container
@@ -458,6 +481,20 @@
             case 'otherAromas':
             case 'overall':
                 return sorted.sort((a, b) => b.scores[sortBy] - a.scores[sortBy]);
+            case 'price':
+                // Sort beers with price > 0 first (by price ascending - low to high), then beers with price = 0
+                return sorted.sort((a, b) => {
+                    const aHasPrice = a.price > 0;
+                    const bHasPrice = b.price > 0;
+
+                    // If both have prices or both don't have prices, sort by price (ascending - low to high)
+                    if (aHasPrice === bHasPrice) {
+                        return a.price - b.price;
+                    }
+
+                    // Beers with price come before beers without price
+                    return bHasPrice ? 1 : -1;
+                });
             case 'date':
                 return sorted.sort((a, b) => new Date(b.date) - new Date(a.date));
             default:

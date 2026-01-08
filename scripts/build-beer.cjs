@@ -167,6 +167,25 @@ if (fs.existsSync(TEMPLATE_FILE)) {
         meta.className = 'beer-card__meta';
         meta.innerHTML = \`<span>\${beer.style}</span> <span>•</span> <span>\${beer.abv}% ABV</span>\`;
 
+        // Price display (separate line)
+        const priceDiv = document.createElement('div');
+        priceDiv.className = 'beer-card__meta';
+        const getPriceLabel = () => {
+            if (typeof window !== 'undefined' && window.i18n) {
+                return window.i18n.t('beer.priceLabel');
+            }
+            return 'Price';
+        };
+        const getPriceNotProvided = () => {
+            if (typeof window !== 'undefined' && window.i18n) {
+                return window.i18n.t('beer.priceNotProvided');
+            }
+            return 'Not provided';
+        };
+        const priceLabel = getPriceLabel();
+        const priceValue = beer.price > 0 ? \`$\${beer.price.toFixed(2)}\` : getPriceNotProvided();
+        priceDiv.innerHTML = \`<span>\${priceLabel}</span> <span>•</span> <span>\${priceValue}</span>\`;
+
         const notes = document.createElement('p');
         notes.className = 'beer-card__notes';
         notes.textContent = beer.notes;
@@ -180,6 +199,7 @@ if (fs.existsSync(TEMPLATE_FILE)) {
 
         info.appendChild(name);
         info.appendChild(meta);
+        info.appendChild(priceDiv);
         info.appendChild(notes);
 
         // Radar chart container
@@ -458,6 +478,20 @@ if (fs.existsSync(TEMPLATE_FILE)) {
             case 'otherAromas':
             case 'overall':
                 return sorted.sort((a, b) => b.scores[sortBy] - a.scores[sortBy]);
+            case 'price':
+                // Sort beers with price > 0 first (by price ascending - low to high), then beers with price = 0
+                return sorted.sort((a, b) => {
+                    const aHasPrice = a.price > 0;
+                    const bHasPrice = b.price > 0;
+
+                    // If both have prices or both don't have prices, sort by price (ascending - low to high)
+                    if (aHasPrice === bHasPrice) {
+                        return a.price - b.price;
+                    }
+
+                    // Beers with price come before beers without price
+                    return bHasPrice ? 1 : -1;
+                });
             case 'date':
                 return sorted.sort((a, b) => new Date(b.date) - new Date(a.date));
             default:

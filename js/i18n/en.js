@@ -90,7 +90,10 @@ const translations_en = {
         sortClarity: "Clarity",
         sortBitterness: "Bitterness",
         sortOtherAromas: "Other Aromas",
+        sortPrice: "Price",
         sortDate: "Date Added (Newest)",
+        priceLabel: "Price",
+        priceNotProvided: "Not provided",
         // Chart labels - keep in Chinese as they are domain-specific
         labelMalt: "Malt",
         labelDepth: "Depth",

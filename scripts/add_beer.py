@@ -89,7 +89,7 @@ def process_image(image, beer_name):
     return f"assets/images/beers/{filename}.png"
 
 
-def add_beer(name, style, abv, notes, maltiness, color_depth, clarity, bitterness, other_aromas, overall, image):
+def add_beer(name, style, abv, price, notes, maltiness, color_depth, clarity, bitterness, other_aromas, overall, image):
     """Add a new beer to the collection"""
 
     # Validation
@@ -114,6 +114,7 @@ def add_beer(name, style, abv, notes, maltiness, color_depth, clarity, bitternes
         "style": style,
         "abv": round(abv, 1),
         "date": datetime.now().strftime("%Y-%m-%d"),
+        "price": round(price, 2),
         "imageUrl": image_url,
         "notes": notes.strip(),
         "scores": {
@@ -180,6 +181,7 @@ with gr.Blocks(title="🍺 Beer Rating System", theme=gr.themes.Soft()) as app:
                 name_input = gr.Textbox(label="Beer Name", placeholder="e.g., Guinness Draught")
                 style_input = gr.Dropdown(choices=BEER_STYLES, label="Beer Style", value="IPA (India Pale Ale)")
                 abv_input = gr.Slider(minimum=0, maximum=20, value=6.5, step=0.1, label="ABV (%)")
+                price_input = gr.Slider(minimum=0, maximum=100, value=0, step=0.01, label="价格 Price ($)")
                 notes_input = gr.Textbox(
                     label="Tasting Notes",
                     placeholder="Describe the beer's appearance, aroma, flavor, and your overall impression...",
@@ -201,7 +203,7 @@ with gr.Blocks(title="🍺 Beer Rating System", theme=gr.themes.Soft()) as app:
 
         submit_btn.click(
             fn=add_beer,
-            inputs=[name_input, style_input, abv_input, notes_input,
+            inputs=[name_input, style_input, abv_input, price_input, notes_input,
                    maltiness_input, color_depth_input, clarity_input,
                    bitterness_input, other_aromas_input, overall_input, image_input],
             outputs=output

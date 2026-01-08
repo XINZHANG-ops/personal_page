@@ -90,7 +90,10 @@ const translations_zh = {
         sortClarity: "清澈度",
         sortBitterness: "苦度",
         sortOtherAromas: "其他香味",
+        sortPrice: "价格",
         sortDate: "添加日期（最新）",
+        priceLabel: "价格",
+        priceNotProvided: "未提供",
         // 图表标签 - 保持中文，因为这些是特定领域术语
         labelMalt: "麦芽",
         labelDepth: "深浅",
