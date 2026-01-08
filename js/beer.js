@@ -63,13 +63,21 @@
     // Wait for DOM to be ready
     document.addEventListener('DOMContentLoaded', function () {
         initializeNavigation();
-        renderBeerGallery(beers);
+
+        // Sort by overall score on initial load (matches the default dropdown value)
+        const initialSorted = sortBeers(beers, 'overall');
+        renderBeerGallery(initialSorted);
+
         initializeSorting();
         initializeImageModal();
 
         // Listen for language changes and re-render charts
         window.addEventListener('languageChange', function() {
-            renderBeerGallery(beers);
+            // Re-render with current sort selection
+            const sortSelect = document.getElementById('sort-select');
+            const currentSort = sortSelect ? sortSelect.value : 'overall';
+            const sortedBeers = sortBeers(beers, currentSort);
+            renderBeerGallery(sortedBeers);
         });
     });
 
