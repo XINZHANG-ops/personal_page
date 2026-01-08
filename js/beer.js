@@ -78,6 +78,24 @@
             "otherAromas": 2,
             "overall": 4
         }
+    },
+    {
+        "id": "hoegaarden-original-belgian-wheat",
+        "name": "Hoegaarden Original Belgian Wheat",
+        "style": "Wheat Beer",
+        "abv": 4.9,
+        "date": "2026-01-08",
+        "price": 3.7,
+        "imageUrl": "../assets/images/beers/hoegaarden-original-belgian-wheat.png",
+        "notes": "This tastes like the wheat beer you’d get at Haidilao back in China. It has some orange peel notes, but they’re not very strong. There’s a touch of sweetness, though not the kind that comes from added sugar. Although it’s not a malt-forward style of beer, overall it’s not my favorite type—but it’s still quite good.",
+        "scores": {
+            "maltiness": 1.5,
+            "colorDepth": 9.5,
+            "clarity": 2.5,
+            "bitterness": 1.5,
+            "otherAromas": 9,
+            "overall": 8.5
+        }
     }
 ];
 
