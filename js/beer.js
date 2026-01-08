@@ -69,7 +69,7 @@
         "date": "2026-01-07",
         "price": 3.2,
         "imageUrl": "../assets/images/beers/czechvar-premium-lager.png",
-        "notes": "The first sip feels quite bitter and refreshing, with a slight ale-like character. There’s almost no malt aroma. Honestly, the flavor doesn’t stand out at all—it feels pretty plain and unremarkable.",
+        "notes": "The first sip feels quite bitter and refreshing, with a slight ale-like character. There’s almost no malt aroma. Honestly, the flavor doesn’t stand out at all—it feels pretty plain and unremarkable. Something intereting is the can is golden color.",
         "scores": {
             "maltiness": 2.5,
             "colorDepth": 4,
