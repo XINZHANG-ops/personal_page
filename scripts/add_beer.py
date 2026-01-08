@@ -58,22 +58,26 @@ def sanitize_filename(name):
 
 
 def process_image(image, beer_name):
-    """Process and save beer image"""
+    """Process and save beer image in high resolution"""
     if image is None:
         return None
 
     # Create filename from beer name
     filename = sanitize_filename(beer_name)
-    filepath = os.path.join(IMAGES_DIR, f"{filename}.png")
+    filepath = os.path.join(IMAGES_DIR, f"{filename}.jpg")
 
     # Open image
     img = Image.open(image)
 
-    # Resize to standard size (400x400) maintaining aspect ratio
-    img.thumbnail((400, 400), Image.Resampling.LANCZOS)
+    # Convert to RGB if needed (handles RGBA, etc.)
+    if img.mode != 'RGB':
+        img = img.convert('RGB')
+
+    # Resize to high-resolution standard size (1200x1200) maintaining aspect ratio
+    img.thumbnail((1200, 1200), Image.Resampling.LANCZOS)
 
     # Create a square image with padding if needed
-    square_size = 400
+    square_size = 1200
     square_img = Image.new('RGB', (square_size, square_size), (240, 240, 240))
 
     # Calculate position to center the image
@@ -83,10 +87,10 @@ def process_image(image, beer_name):
     # Paste the resized image onto the square background
     square_img.paste(img, (x, y))
 
-    # Save as PNG
-    square_img.save(filepath, 'PNG', optimize=True)
+    # Save as high-quality JPEG (quality=95 for excellent quality, optimized compression)
+    square_img.save(filepath, 'JPEG', quality=95, optimize=True)
 
-    return f"assets/images/beers/{filename}.png"
+    return f"assets/images/beers/{filename}.jpg"
 
 
 def add_beer(name, style, abv, price, notes, maltiness, color_depth, clarity, bitterness, other_aromas, overall, image):

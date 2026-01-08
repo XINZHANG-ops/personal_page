@@ -14,7 +14,7 @@
         "abv": 4.5,
         "date": "2026-01-07",
         "price": 3.65,
-        "imageUrl": "../assets/images/beers/wellington-helles-lager.png",
+        "imageUrl": "../assets/images/beers/wellington-helles-lager.jpg",
         "notes": "I don't really like this flavor. When I first drink it, there's an ale-like taste that I don't enjoy. Although a malty aroma comes through after a while, it isn't very strong.",
         "scores": {
             "maltiness": 3,
@@ -32,7 +32,7 @@
         "abv": 4,
         "date": "2026-01-07",
         "price": 3.05,
-        "imageUrl": "../assets/images/beers/carlsberg-lite.png",
+        "imageUrl": "../assets/images/beers/carlsberg-lite.jpg",
         "notes": "It's not a flavor I like either. On the first sip, there's a burnt or scorched taste. To be precise, it doesn't really feel like a lager, and there's almost no malt flavor at all.",
         "scores": {
             "maltiness": 2,
@@ -50,7 +50,7 @@
         "abv": 5,
         "date": "2026-01-07",
         "price": 2.75,
-        "imageUrl": "../assets/images/beers/grolsch-premium-pilsner.png",
+        "imageUrl": "../assets/images/beers/grolsch-premium-pilsner.jpg",
         "notes": "It's hard to describe. There is a malty aroma, but the first sip is very bitter, followed by a strong alcoholic note. Only after that do I start to perceive the malt aroma through the nose.",
         "scores": {
             "maltiness": 6,
@@ -68,8 +68,8 @@
         "abv": 5,
         "date": "2026-01-07",
         "price": 3.2,
-        "imageUrl": "../assets/images/beers/czechvar-premium-lager.png",
-        "notes": "The first sip feels quite bitter and refreshing, with a slight ale-like character. There’s almost no malt aroma. Honestly, the flavor doesn’t stand out at all—it feels pretty plain and unremarkable. Something intereting is the can is golden color.",
+        "imageUrl": "../assets/images/beers/czechvar-premium-lager.jpg",
+        "notes": "The first sip feels quite bitter and refreshing, with a slight ale-like character. There's almost no malt aroma. Honestly, the flavor doesn't stand out at all—it feels pretty plain and unremarkable. Something intereting is the can is golden color.",
         "scores": {
             "maltiness": 2.5,
             "colorDepth": 4,
@@ -86,8 +86,8 @@
         "abv": 4.9,
         "date": "2026-01-08",
         "price": 3.7,
-        "imageUrl": "../assets/images/beers/hoegaarden-original-belgian-wheat.png",
-        "notes": "This tastes like the wheat beer you’d get at Haidilao back in China. It has some orange peel notes, but they’re not very strong. There’s a touch of sweetness, though not the kind that comes from added sugar. Although it’s not a malt-forward style of beer, overall it’s not my favorite type—but it’s still quite good.",
+        "imageUrl": "../assets/images/beers/hoegaarden-original-belgian-wheat.jpg",
+        "notes": "This tastes like the wheat beer you'd get at Haidilao back in China. It has some orange peel notes, but they're not very strong. There's a touch of sweetness, though not the kind that comes from added sugar. Although it's not a malt-forward style of beer, overall it's not my favorite type—but it's still quite good.",
         "scores": {
             "maltiness": 1.5,
             "colorDepth": 9.5,
