@@ -96,6 +96,24 @@
             "otherAromas": 9,
             "overall": 8.5
         }
+    },
+    {
+        "id": "lwenbru",
+        "name": "Löwenbräu",
+        "style": "Lager",
+        "abv": 5.2,
+        "date": "2026-01-08",
+        "price": 0,
+        "imageUrl": "../assets/images/beers/lwenbru.jpg",
+        "notes": "The first sip is very crisp and refreshing, with a slightly sharp, peppery bite. This is followed by a lingering bitterness at the back of the tongue. Overall, the flavor is quite light, without any particularly noticeable aroma.",
+        "scores": {
+            "maltiness": 2,
+            "colorDepth": 8,
+            "clarity": 9.5,
+            "bitterness": 7.5,
+            "otherAromas": 1.5,
+            "overall": 6
+        }
     }
 ];
 
