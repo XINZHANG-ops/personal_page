@@ -90,6 +90,7 @@ const translations_zh = {
         sortClarity: "清澈度",
         sortBitterness: "苦度",
         sortOtherAromas: "其他香味",
+        sortAbv: "酒精度",
         sortPrice: "价格",
         sortDate: "添加日期（最新）",
         priceLabel: "价格",

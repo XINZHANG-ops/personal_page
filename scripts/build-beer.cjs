@@ -478,6 +478,9 @@ if (fs.existsSync(TEMPLATE_FILE)) {
             case 'otherAromas':
             case 'overall':
                 return sorted.sort((a, b) => b.scores[sortBy] - a.scores[sortBy]);
+            case 'abv':
+                // Sort by ABV (alcohol percentage) - high to low
+                return sorted.sort((a, b) => b.abv - a.abv);
             case 'price':
                 // Sort beers with price > 0 first (by price ascending - low to high), then beers with price = 0
                 return sorted.sort((a, b) => {

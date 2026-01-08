@@ -90,6 +90,7 @@ const translations_en = {
         sortClarity: "Clarity",
         sortBitterness: "Bitterness",
         sortOtherAromas: "Other Aromas",
+        sortAbv: "ABV (Alcohol %)",
         sortPrice: "Price",
         sortDate: "Date Added (Newest)",
         priceLabel: "Price",

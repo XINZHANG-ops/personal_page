@@ -103,7 +103,7 @@
         "style": "Lager",
         "abv": 5.2,
         "date": "2026-01-08",
-        "price": 0,
+        "price": 2.55,
         "imageUrl": "../assets/images/beers/lwenbru.jpg",
         "notes": "The first sip is very crisp and refreshing, with a slightly sharp, peppery bite. This is followed by a lingering bitterness at the back of the tongue. Overall, the flavor is quite light, without any particularly noticeable aroma.",
         "scores": {
@@ -535,6 +535,9 @@
             case 'otherAromas':
             case 'overall':
                 return sorted.sort((a, b) => b.scores[sortBy] - a.scores[sortBy]);
+            case 'abv':
+                // Sort by ABV (alcohol percentage) - high to low
+                return sorted.sort((a, b) => b.abv - a.abv);
             case 'price':
                 // Sort beers with price > 0 first (by price ascending - low to high), then beers with price = 0
                 return sorted.sort((a, b) => {
