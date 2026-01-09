@@ -10,6 +10,7 @@ import os
 from datetime import datetime
 from PIL import Image
 import re
+import subprocess
 
 # Get the directory where this script is located
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -173,6 +174,80 @@ def view_collection():
     return output
 
 
+def sync_to_git(beer_name=None):
+    """Build, commit and push changes to git"""
+    try:
+        output_messages = []
+
+        # Change to project root directory
+        os.chdir(ROOT_DIR)
+
+        # Step 1: Build all
+        output_messages.append("Step 1/4: Running build-all...")
+        result = subprocess.run(
+            "npm run build-all",
+            capture_output=True,
+            text=True,
+            timeout=60,
+            shell=True
+        )
+        if result.returncode != 0:
+            return f"Build failed:\n{result.stderr}"
+        output_messages.append("Build completed successfully")
+
+        # Step 2: Git add
+        output_messages.append("\nStep 2/4: Adding files to git...")
+        result = subprocess.run(
+            "git add -A",
+            capture_output=True,
+            text=True,
+            shell=True
+        )
+        if result.returncode != 0:
+            return f"Git add failed:\n{result.stderr}"
+        output_messages.append("Files added to git")
+
+        # Step 3: Git commit
+        commit_message = "new beer"
+        output_messages.append(f"\nStep 3/4: Committing with message: '{commit_message}'")
+        result = subprocess.run(
+            f'git commit -m "{commit_message}"',
+            capture_output=True,
+            text=True,
+            shell=True
+        )
+        if result.returncode != 0:
+            # Check if it's "nothing to commit"
+            if "nothing to commit" in result.stdout.lower():
+                output_messages.append("Nothing new to commit")
+            else:
+                return f"Git commit failed:\n{result.stderr}\n{result.stdout}"
+        else:
+            output_messages.append("Commit created successfully")
+
+        # Step 4: Git push
+        output_messages.append("\nStep 4/4: Pushing to remote...")
+        result = subprocess.run(
+            "git push",
+            capture_output=True,
+            text=True,
+            timeout=30,
+            shell=True
+        )
+        if result.returncode != 0:
+            return f"Git push failed:\n{result.stderr}\n{result.stdout}"
+        output_messages.append("Pushed to remote successfully")
+
+        # Success
+        output_messages.append("\n✅ Successfully synced to git!")
+        return "\n".join(output_messages)
+
+    except subprocess.TimeoutExpired:
+        return "Error: Operation timed out"
+    except Exception as e:
+        return f"Error during sync: {str(e)}"
+
+
 # Create Gradio interface
 with gr.Blocks(title="🍺 Beer Rating System", theme=gr.themes.Soft()) as app:
     gr.Markdown("# 🍺 Beer Rating System")
@@ -202,7 +277,10 @@ with gr.Blocks(title="🍺 Beer Rating System", theme=gr.themes.Soft()) as app:
                 other_aromas_input = gr.Slider(minimum=1, maximum=10, value=7.5, step=0.5, label="其他香味 Other Aromas (fruity, spicy, etc.)")
                 overall_input = gr.Slider(minimum=1, maximum=10, value=7.5, step=0.5, label="综合 Overall (total experience)")
 
-        submit_btn = gr.Button("💾 Save Beer", variant="primary", size="lg")
+        with gr.Row():
+            submit_btn = gr.Button("💾 Save Beer", variant="primary", size="lg", scale=2)
+            sync_btn = gr.Button("🔄 Sync to Git", variant="secondary", size="lg", scale=1)
+
         output = gr.Textbox(label="Status", lines=6)
 
         submit_btn.click(
@@ -210,6 +288,12 @@ with gr.Blocks(title="🍺 Beer Rating System", theme=gr.themes.Soft()) as app:
             inputs=[name_input, style_input, abv_input, price_input, notes_input,
                    maltiness_input, color_depth_input, clarity_input,
                    bitterness_input, other_aromas_input, overall_input, image_input],
+            outputs=output
+        )
+
+        sync_btn.click(
+            fn=sync_to_git,
+            inputs=[name_input],
             outputs=output
         )
 

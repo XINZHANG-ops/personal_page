@@ -132,6 +132,24 @@
             "otherAromas": 2,
             "overall": 6.5
         }
+    },
+    {
+        "id": "kronenbourg-1664-lager",
+        "name": "kronenbourg 1664 lager",
+        "style": "Lager",
+        "abv": 5,
+        "date": "2026-01-09",
+        "price": 3.4,
+        "imageUrl": "../assets/images/beers/kronenbourg-1664-lager.jpg",
+        "notes": "Kronenbourg 1664 Lager tastes fairly standard. It’s crisp on the first sip, slightly bitter, with no noticeable lingering aroma. There’s only a very faint malty aftertaste. Personally, I feel its value for money is just average.",
+        "scores": {
+            "maltiness": 4,
+            "colorDepth": 7.5,
+            "clarity": 9.5,
+            "bitterness": 4.5,
+            "otherAromas": 3,
+            "overall": 6
+        }
     }
 ];
 
