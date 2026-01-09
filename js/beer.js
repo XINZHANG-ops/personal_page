@@ -168,6 +168,24 @@
             "otherAromas": 7.5,
             "overall": 7
         }
+    },
+    {
+        "id": "cowbell-brewing-co-smooth-sailing-light-lager",
+        "name": "Cowbell Brewing Co. Smooth Sailing Light Lager",
+        "style": "Lager",
+        "abv": 4,
+        "date": "2026-01-09",
+        "price": 3.5,
+        "imageUrl": "../assets/images/beers/cowbell-brewing-co-smooth-sailing-light-lager.jpg",
+        "notes": "On the first sip, there’s a faint, hard-to-describe flavor—neither clearly good nor bad. Then there’s a slight sourness, followed by some malty notes in the aftertaste. I suspect the malt stands out mainly because the overall flavor is quite light.",
+        "scores": {
+            "maltiness": 6.5,
+            "colorDepth": 8.5,
+            "clarity": 9,
+            "bitterness": 1.5,
+            "otherAromas": 4,
+            "overall": 6
+        }
     }
 ];
 
