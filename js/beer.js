@@ -114,6 +114,24 @@
             "otherAromas": 1.5,
             "overall": 6
         }
+    },
+    {
+        "id": "left-field-brewery-leafs-lager",
+        "name": "Left Field Brewery Leafs Lager",
+        "style": "Lager",
+        "abv": 4.2,
+        "date": "2026-01-08",
+        "price": 3.85,
+        "imageUrl": "../assets/images/beers/left-field-brewery-leafs-lager.jpg",
+        "notes": "There isn’t much flavor on the first sip—it's light and almost watery, but still quite crisp. After it passes through the nose, there’s a clean, subtle aroma. It’s not particularly distinctive, but it’s solid and well-balanced.",
+        "scores": {
+            "maltiness": 5,
+            "colorDepth": 9.5,
+            "clarity": 9.5,
+            "bitterness": 2,
+            "otherAromas": 2,
+            "overall": 6.5
+        }
     }
 ];
 
