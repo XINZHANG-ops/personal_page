@@ -150,6 +150,24 @@
             "otherAromas": 3,
             "overall": 6
         }
+    },
+    {
+        "id": "nickel-brook-naughty-neighbor-pale-ale",
+        "name": "Nickel Brook Naughty Neighbor Pale Ale",
+        "style": "Pale Ale",
+        "abv": 4.9,
+        "date": "2026-01-09",
+        "price": 3.45,
+        "imageUrl": "../assets/images/beers/nickel-brook-naughty-neighbor-pale-ale.jpg",
+        "notes": "The first sip has a clearly ale-like character and is fairly bitter. After that, a subtle tea-like aroma comes through on the nose. This one has a bit of lemon added, so the “tea-like” note may actually be lemon aroma. For someone like me who doesn’t usually like ales, that hint of lingering tea-like (or lemony) aroma adds a bit to the experience.",
+        "scores": {
+            "maltiness": 2,
+            "colorDepth": 9,
+            "clarity": 2,
+            "bitterness": 8,
+            "otherAromas": 7.5,
+            "overall": 7
+        }
     }
 ];
 
