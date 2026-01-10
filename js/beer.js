@@ -204,6 +204,24 @@
             "otherAromas": 4,
             "overall": 5
         }
+    },
+    {
+        "id": "molson-cold-shots-max",
+        "name": "Molson Cold Shots Max",
+        "style": "Other",
+        "abv": 7.1,
+        "date": "2026-01-10",
+        "price": 2.59,
+        "imageUrl": "../assets/images/beers/molson-cold-shots-max.jpg",
+        "notes": "Being a higher-ABV beer, you can immediately sense the alcohol on the nose on the first sip. It has a bitter, slightly astringent character, followed by a faint aroma. Personally, I’m not particularly fond of high-alcohol beers. Shots type of beer.",
+        "scores": {
+            "maltiness": 4.5,
+            "colorDepth": 6.5,
+            "clarity": 9.5,
+            "bitterness": 5.5,
+            "otherAromas": 2.5,
+            "overall": 5
+        }
     }
 ];
 
