@@ -186,6 +186,24 @@
             "otherAromas": 4,
             "overall": 6
         }
+    },
+    {
+        "id": "mill-street-original-organic",
+        "name": "Mill Street Original Organic",
+        "style": "Lager",
+        "abv": 4.2,
+        "date": "2026-01-09",
+        "price": 3.39,
+        "imageUrl": "../assets/images/beers/mill-street-original-organic.jpg",
+        "notes": "The first sip has a mild bitterness with a slightly burnt note. Overall, the flavor stays quite consistent throughout, and the mouthfeel is fairly smooth.",
+        "scores": {
+            "maltiness": 2,
+            "colorDepth": 6.5,
+            "clarity": 9.5,
+            "bitterness": 2,
+            "otherAromas": 4,
+            "overall": 5
+        }
     }
 ];
 
