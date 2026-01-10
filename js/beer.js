@@ -222,6 +222,24 @@
             "otherAromas": 2.5,
             "overall": 5
         }
+    },
+    {
+        "id": "coors-light",
+        "name": "Coors Light",
+        "style": "Lager",
+        "abv": 4,
+        "date": "2026-01-10",
+        "price": 2.69,
+        "imageUrl": "../assets/images/beers/coors-light.jpg",
+        "notes": "The first sip has a metallic note, followed by a faint aroma. Aside from that unusual initial taste, the rest of the flavors are very subdued.",
+        "scores": {
+            "maltiness": 5.5,
+            "colorDepth": 8,
+            "clarity": 9.5,
+            "bitterness": 2,
+            "otherAromas": 2,
+            "overall": 7
+        }
     }
 ];
 
