@@ -240,6 +240,42 @@
             "otherAromas": 2,
             "overall": 7
         }
+    },
+    {
+        "id": "great-lakes-lager",
+        "name": "GREAT LAKES LAGER",
+        "style": "Lager",
+        "abv": 5,
+        "date": "2026-01-10",
+        "price": 2.57,
+        "imageUrl": "../assets/images/beers/great-lakes-lager.jpg",
+        "notes": "The first sip has a mildly bitter, metallic note with a sharp, prickly edge. This is followed by a sensation that I’m not entirely sure about—possibly something related to fermentation.",
+        "scores": {
+            "maltiness": 3,
+            "colorDepth": 5.5,
+            "clarity": 9.5,
+            "bitterness": 4,
+            "otherAromas": 4,
+            "overall": 5
+        }
+    },
+    {
+        "id": "cowbell-brewing-co-shindig-lager",
+        "name": "Cowbell Brewing Co. Shindig Lager",
+        "style": "Lager",
+        "abv": 4.5,
+        "date": "2026-01-10",
+        "price": 3.5,
+        "imageUrl": "../assets/images/beers/cowbell-brewing-co-shindig-lager.jpg",
+        "notes": "Although it’s labeled as a lager, it drinks entirely like an ale. The mouthfeel is somewhat fuller, with a smooth, almost creamy texture.",
+        "scores": {
+            "maltiness": 2.5,
+            "colorDepth": 7,
+            "clarity": 7.5,
+            "bitterness": 5,
+            "otherAromas": 3,
+            "overall": 4.5
+        }
     }
 ];
 
