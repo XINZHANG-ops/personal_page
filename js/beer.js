@@ -276,6 +276,24 @@
             "otherAromas": 3,
             "overall": 4.5
         }
+    },
+    {
+        "id": "warsteiner-premium-pilsener",
+        "name": "Warsteiner Premium Pilsener",
+        "style": "Pilsner",
+        "abv": 4.8,
+        "date": "2026-01-11",
+        "price": 2.95,
+        "imageUrl": "../assets/images/beers/warsteiner-premium-pilsener.jpg",
+        "notes": "The first sip is dominated by a fairly strong bitterness along with a sharp, prickly sensation from the carbonation. The aftertaste is also slightly bitter, with no other particularly distinctive flavors.",
+        "scores": {
+            "maltiness": 4,
+            "colorDepth": 6,
+            "clarity": 9.5,
+            "bitterness": 8,
+            "otherAromas": 2,
+            "overall": 4.5
+        }
     }
 ];
 
