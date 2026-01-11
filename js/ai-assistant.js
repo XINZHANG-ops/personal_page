@@ -19,6 +19,10 @@ class AIAssistant {
     this.messages = [];
     this.isTyping = false;
     this.sessionId = this.getSessionId();
+    this.wasDragging = false;
+
+    // Track position as percentage for zoom consistency
+    this.positionPercentage = null; // { x: %, y: % }
 
     // Initialize
     this.init();
@@ -47,11 +51,14 @@ class AIAssistant {
       messages: document.getElementById('ai-messages'),
       input: document.getElementById('ai-input'),
       send: document.getElementById('ai-send'),
-      status: document.getElementById('ai-status')
+      status: document.getElementById('ai-status'),
+      header: document.getElementById('ai-header')
     };
 
     // Add event listeners
     this.setupEventListeners();
+    this.setupDraggable();
+    this.setupResizeHandler();
   }
 
   createChatWidget() {
@@ -84,7 +91,7 @@ class AIAssistant {
         <!-- Chat Window -->
         <div id="ai-window" class="ai-assistant__window">
           <!-- Header -->
-          <div class="ai-assistant__header">
+          <div id="ai-header" class="ai-assistant__header">
             <h3 class="ai-assistant__title">
               <span id="ai-status" class="ai-assistant__status"></span>
               <span data-i18n="ai.title">${t.title}</span>
@@ -127,8 +134,13 @@ class AIAssistant {
   }
 
   setupEventListeners() {
-    // Toggle chat window
-    this.elements.toggle.addEventListener('click', () => this.toggleChat());
+    // Toggle chat window - will be prevented if dragging
+    this.elements.toggle.addEventListener('click', (e) => {
+      if (!this.wasDragging) {
+        this.toggleChat();
+      }
+      this.wasDragging = false;
+    });
     this.elements.close.addEventListener('click', () => this.closeChat());
 
     // Send message
@@ -151,12 +163,16 @@ class AIAssistant {
     this.isOpen = !this.isOpen;
     this.saveChatState(this.isOpen);
     this.updateChatVisibility();
+    if (this.isOpen) {
+      this.updateWindowPosition();
+    }
   }
 
   openChat() {
     this.isOpen = true;
     this.saveChatState(true);
     this.updateChatVisibility();
+    this.updateWindowPosition();
   }
 
   closeChat() {
@@ -176,6 +192,54 @@ class AIAssistant {
       this.elements.window.classList.remove('ai-assistant__window--open');
       this.elements.toggle.classList.remove('ai-assistant__toggle--active');
       this.elements.toggle.innerHTML = '🤖';
+    }
+  }
+
+  // Smart positioning: position window based on toggle button location
+  updateWindowPosition() {
+    const toggleRect = this.elements.toggle.getBoundingClientRect();
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    const chatWidth = 380;
+    const chatHeight = 500;
+    const gap = 5; // Reduced gap for closer positioning
+
+    // Reset any previous positioning
+    this.elements.window.style.left = '';
+    this.elements.window.style.right = '';
+    this.elements.window.style.top = '';
+    this.elements.window.style.bottom = '';
+
+    // Determine horizontal position
+    const spaceOnRight = windowWidth - toggleRect.right;
+    const spaceOnLeft = toggleRect.left;
+
+    if (spaceOnRight >= chatWidth) {
+      // Position to the right of toggle
+      this.elements.window.style.left = `${toggleRect.right + gap}px`;
+    } else if (spaceOnLeft >= chatWidth) {
+      // Position to the left of toggle
+      this.elements.window.style.right = `${windowWidth - toggleRect.left + gap}px`;
+    } else {
+      // Center horizontally if not enough space on either side
+      const left = Math.max(gap, (windowWidth - chatWidth) / 2);
+      this.elements.window.style.left = `${left}px`;
+    }
+
+    // Determine vertical position
+    const spaceBelow = windowHeight - toggleRect.bottom;
+    const spaceAbove = toggleRect.top;
+
+    if (spaceBelow >= chatHeight) {
+      // Position below toggle
+      this.elements.window.style.top = `${toggleRect.bottom + gap}px`;
+    } else if (spaceAbove >= chatHeight) {
+      // Position above toggle
+      this.elements.window.style.bottom = `${windowHeight - toggleRect.top + gap}px`;
+    } else {
+      // Center vertically if not enough space above or below
+      const top = Math.max(gap, (windowHeight - chatHeight) / 2);
+      this.elements.window.style.top = `${top}px`;
     }
   }
 
@@ -467,6 +531,228 @@ class AIAssistant {
         this.elements.input.placeholder = window.i18n.t(placeholder, lang);
       }
     }
+  }
+
+  // Setup resize handler to constrain toggle within viewport on zoom/resize
+  setupResizeHandler() {
+    let resizeTimeout;
+    let isResizing = false;
+
+    window.addEventListener('resize', () => {
+      // Immediately update position on resize start (no debounce for first update)
+      if (!isResizing && this.positionPercentage) {
+        isResizing = true;
+        this.updatePositionFromPercentage();
+      }
+
+      // Debounce for subsequent updates during continuous resize
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        if (this.positionPercentage) {
+          this.updatePositionFromPercentage();
+        }
+        isResizing = false;
+      }, 50); // Reduced debounce for smoother updates
+    });
+  }
+
+  // Helper method to update position from stored percentage
+  updatePositionFromPercentage() {
+    if (!this.positionPercentage) return;
+
+    // Get toggle button dimensions
+    const toggleRect = this.elements.toggle.getBoundingClientRect();
+    const toggleWidth = toggleRect.width;
+    const toggleHeight = toggleRect.height;
+
+    // Get viewport dimensions
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    // Get margin (same as CSS --space-lg: 2rem)
+    const margin = parseFloat(getComputedStyle(document.documentElement).fontSize) * 2; // 2rem in pixels
+
+    // Calculate position from percentage
+    let newX = (this.positionPercentage.x / 100) * viewportWidth;
+    let newY = (this.positionPercentage.y / 100) * viewportHeight;
+
+    // Constrain to viewport boundaries with margin
+    const minX = margin;
+    const maxX = viewportWidth - toggleWidth - margin;
+    const minY = margin;
+    const maxY = viewportHeight - toggleHeight - margin;
+
+    newX = Math.max(minX, Math.min(newX, maxX));
+    newY = Math.max(minY, Math.min(newY, maxY));
+
+    // Update position
+    this.elements.widget.style.left = `${newX}px`;
+    this.elements.widget.style.top = `${newY}px`;
+
+    // Update chat window position if open
+    if (this.isOpen) {
+      this.updateWindowPosition();
+    }
+  }
+
+  // Setup draggable functionality
+  setupDraggable() {
+    let isDragging = false;
+    let hasMoved = false;
+    let currentX;
+    let currentY;
+    let initialX;
+    let initialY;
+    let dragThreshold = 5; // Minimum pixels to move before considering it a drag
+
+    const dragStart = (e) => {
+      // Prevent dragging when interacting with input or textarea
+      if (e.target.closest('input, textarea')) {
+        return;
+      }
+
+      // Only allow dragging on toggle button (not header)
+      const isToggle = e.target.closest('#ai-toggle');
+      const isCloseButton = e.target.closest('#ai-close');
+
+      if (!isToggle || isCloseButton) {
+        return;
+      }
+
+      if (e.type === 'touchstart') {
+        initialX = e.touches[0].clientX;
+        initialY = e.touches[0].clientY;
+      } else {
+        initialX = e.clientX;
+        initialY = e.clientY;
+      }
+
+      // Get current position
+      const rect = this.elements.widget.getBoundingClientRect();
+      currentX = rect.left;
+      currentY = rect.top;
+
+      isDragging = true;
+      hasMoved = false;
+    };
+
+    const drag = (e) => {
+      if (!isDragging) return;
+
+      let clientX, clientY;
+      if (e.type === 'touchmove') {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+      } else {
+        clientX = e.clientX;
+        clientY = e.clientY;
+      }
+
+      const deltaX = clientX - initialX;
+      const deltaY = clientY - initialY;
+
+      // Check if movement exceeds threshold
+      if (Math.abs(deltaX) > dragThreshold || Math.abs(deltaY) > dragThreshold) {
+        hasMoved = true;
+        e.preventDefault();
+
+        let newX = currentX + deltaX;
+        let newY = currentY + deltaY;
+
+        // Get toggle button dimensions
+        const toggleRect = this.elements.toggle.getBoundingClientRect();
+        const toggleWidth = toggleRect.width;
+        const toggleHeight = toggleRect.height;
+
+        // Get viewport dimensions
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+
+        // Get margin (same as CSS --space-lg: 2rem)
+        const margin = parseFloat(getComputedStyle(document.documentElement).fontSize) * 2; // 2rem in pixels
+
+        // Constrain to viewport boundaries with margin
+        const minX = margin;
+        const maxX = viewportWidth - toggleWidth - margin;
+        const minY = margin;
+        const maxY = viewportHeight - toggleHeight - margin;
+
+        newX = Math.max(minX, Math.min(newX, maxX));
+        newY = Math.max(minY, Math.min(newY, maxY));
+
+        // Store position as percentage for zoom consistency
+        this.positionPercentage = {
+          x: (newX / viewportWidth) * 100,
+          y: (newY / viewportHeight) * 100
+        };
+
+        // Update position
+        this.elements.widget.style.position = 'fixed';
+        this.elements.widget.style.left = `${newX}px`;
+        this.elements.widget.style.top = `${newY}px`;
+        this.elements.widget.style.right = 'auto';
+        this.elements.widget.style.bottom = 'auto';
+
+        // Update cursor
+        this.elements.widget.style.cursor = 'grabbing';
+        if (this.elements.header) {
+          this.elements.header.style.cursor = 'grabbing';
+        }
+        this.elements.toggle.style.cursor = 'grabbing';
+
+        // Update chat window position in real-time if open
+        if (this.isOpen) {
+          this.updateWindowPosition();
+        }
+      }
+    };
+
+    const dragEnd = (e) => {
+      if (!isDragging) return;
+
+      // If the user didn't move (just clicked), allow the click event to proceed
+      if (!hasMoved) {
+        isDragging = false;
+        hasMoved = false;
+        this.wasDragging = false;
+        return;
+      }
+
+      // Set flag to prevent toggle on drag
+      this.wasDragging = true;
+
+      // Prevent click event if user was dragging
+      e.preventDefault();
+      e.stopPropagation();
+
+      isDragging = false;
+      hasMoved = false;
+      this.elements.widget.style.cursor = '';
+      if (this.elements.header) {
+        this.elements.header.style.cursor = '';
+      }
+      this.elements.toggle.style.cursor = '';
+
+      // Update window position if chat is open
+      if (this.isOpen && hasMoved) {
+        this.updateWindowPosition();
+      }
+
+      // Reset flag after a short delay to allow click event to be skipped
+      setTimeout(() => {
+        this.wasDragging = false;
+      }, 100);
+    };
+
+    // Toggle button dragging only
+    this.elements.toggle.addEventListener('mousedown', dragStart);
+    this.elements.toggle.addEventListener('touchstart', dragStart);
+
+    // Global mouse/touch move and end events
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('touchmove', drag, { passive: false });
+    document.addEventListener('mouseup', dragEnd);
+    document.addEventListener('touchend', dragEnd);
   }
 }
 

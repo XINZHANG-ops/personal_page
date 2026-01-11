@@ -16,17 +16,22 @@
   border: none;
   color: var(--color-white);
   font-size: 28px;
-  cursor: pointer;
+  cursor: grab;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transition: all var(--transition);
   display: flex;
   align-items: center;
   justify-content: center;
+  user-select: none;
 }
 
 .ai-assistant__toggle:hover {
   transform: scale(1.1);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.ai-assistant__toggle:active {
+  cursor: grabbing;
 }
 
 .ai-assistant__toggle--active {
@@ -35,11 +40,11 @@
 
 /* Chat Window */
 .ai-assistant__window {
-  position: absolute;
-  bottom: 80px;
-  right: 0;
-  width: 380px;
-  height: 500px;
+  position: fixed;
+  width: min(380px, 90vw);
+  height: min(500px, 70vh);
+  max-width: 90vw;
+  max-height: 70vh;
   background: var(--color-white);
   border-radius: var(--border-radius);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
@@ -67,12 +72,14 @@
 
 /* Chat Header */
 .ai-assistant__header {
+  flex: 0 0 auto;
   padding: var(--space-md);
   background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
   color: var(--color-white);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  user-select: none;
 }
 
 .ai-assistant__title {
@@ -128,7 +135,8 @@
 
 /* Chat Messages */
 .ai-assistant__messages {
-  flex: 1;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
   padding: var(--space-md);
   background: var(--color-secondary);
@@ -233,6 +241,7 @@
 
 /* Chat Input */
 .ai-assistant__input-container {
+  flex: 0 0 auto;
   padding: var(--space-md);
   background: var(--color-white);
   border-top: 1px solid var(--color-gray-medium);
@@ -308,8 +317,10 @@
   }
 
   .ai-assistant__window {
-    width: calc(100vw - var(--space-lg));
-    height: 400px;
+    width: min(calc(100vw - var(--space-lg)), 90vw);
+    height: min(400px, 70vh);
+    max-width: 90vw;
+    max-height: 70vh;
     bottom: 70px;
   }
 
