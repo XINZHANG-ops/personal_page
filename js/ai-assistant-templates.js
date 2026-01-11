@@ -79,6 +79,12 @@
 
         <!-- Chat Window -->
         <div id="ai-window" class="${CSS_CLASSES.WINDOW}">
+          <!-- Resize Handles (dynamically shown based on position) -->
+          <div class="ai-assistant__resize-handle ai-assistant__resize-handle--nw" data-resize="nw"></div>
+          <div class="ai-assistant__resize-handle ai-assistant__resize-handle--ne" data-resize="ne"></div>
+          <div class="ai-assistant__resize-handle ai-assistant__resize-handle--sw" data-resize="sw"></div>
+          <div class="ai-assistant__resize-handle ai-assistant__resize-handle--se" data-resize="se"></div>
+
           <!-- Header -->
           <div id="ai-header" class="ai-assistant__header">
             <h3 class="ai-assistant__title">

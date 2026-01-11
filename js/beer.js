@@ -294,6 +294,24 @@
             "otherAromas": 2,
             "overall": 4.5
         }
+    },
+    {
+        "id": "hofbrau-original-lager",
+        "name": "Hofbrau Original Lager",
+        "style": "Lager",
+        "abv": 5.1,
+        "date": "2026-01-11",
+        "price": 3.95,
+        "imageUrl": "../assets/images/beers/hofbrau-original-lager.jpg",
+        "notes": "The flavor is also on the bitter side at the first sip, with a fleeting, subtle note that’s hard to describe—possibly from the yeast. Overall, bitterness is the dominant characteristic.",
+        "scores": {
+            "maltiness": 3,
+            "colorDepth": 5.5,
+            "clarity": 9.5,
+            "bitterness": 7.5,
+            "otherAromas": 4,
+            "overall": 5.5
+        }
     }
 ];
 

@@ -31,6 +31,13 @@ class AIAssistant {
     // Track position as percentage for zoom consistency
     this.positionPercentage = null; // { x: %, y: % }
 
+    // Track chat window size - Load from localStorage or use defaults
+    const savedSize = this.loadChatSize();
+    this.chatSize = {
+      width: savedSize?.width || DIMENSIONS.CHAT_WIDTH,
+      height: savedSize?.height || DIMENSIONS.CHAT_HEIGHT
+    };
+
     // Initialize
     this.init();
     this.checkConnection();
@@ -68,13 +75,16 @@ class AIAssistant {
     // Add event listeners
     this.setupEventListeners();
     this.setupDraggable();
+    this.setupResizable();
     this.setupResizeHandler();
   }
 
   applyChatDimensions() {
-    // Apply chat window dimensions from constants
-    this.elements.window.style.width = `min(${DIMENSIONS.CHAT_WIDTH}px, 90vw)`;
-    this.elements.window.style.height = `min(${DIMENSIONS.CHAT_HEIGHT}px, 70vh)`;
+    // Apply chat window dimensions from saved size or constants
+    this.elements.window.style.width = `${this.chatSize.width}px`;
+    this.elements.window.style.height = `${this.chatSize.height}px`;
+    this.elements.window.style.maxWidth = `${DIMENSIONS.CHAT_MAX_WIDTH_VW}vw`;
+    this.elements.window.style.maxHeight = `${DIMENSIONS.CHAT_MAX_HEIGHT_VH}vh`;
   }
 
   getTranslations(lang) {
@@ -180,6 +190,64 @@ class AIAssistant {
     // Calculate and apply optimal position
     const position = PositionManager.calculateChatPosition(toggleRect, windowWidth, windowHeight);
     DOMUtils.applyPosition(this.elements.window, position);
+
+    // Update resize handle based on window position
+    this.updateResizeHandle();
+  }
+
+  // Determine and show the appropriate resize handle based on chat window position
+  updateResizeHandle() {
+    const toggleRect = this.elements.toggle.getBoundingClientRect();
+    const windowRect = this.elements.window.getBoundingClientRect();
+
+    // Get all resize handles
+    const handles = {
+      nw: this.elements.window.querySelector('.ai-assistant__resize-handle--nw'),
+      ne: this.elements.window.querySelector('.ai-assistant__resize-handle--ne'),
+      sw: this.elements.window.querySelector('.ai-assistant__resize-handle--sw'),
+      se: this.elements.window.querySelector('.ai-assistant__resize-handle--se')
+    };
+
+    // Hide all handles first
+    Object.values(handles).forEach(handle => {
+      if (handle) handle.classList.remove('ai-assistant__resize-handle--active');
+    });
+
+    // Determine which handle to show based on toggle position relative to window
+    // The resize handle should be in the SAME corner as the chat window position
+    // Toggle在右下 → Chat在左上 → Resize handle在左上 (nw)
+    // Toggle在右上 → Chat在左下 → Resize handle在左下 (sw)
+    // Toggle在左上 → Chat在右下 → Resize handle在右下 (se)
+    // Toggle在左下 → Chat在右上 → Resize handle在右上 (ne)
+
+    const toggleCenterX = toggleRect.left + toggleRect.width / 2;
+    const toggleCenterY = toggleRect.top + toggleRect.height / 2;
+    const windowCenterX = windowRect.left + windowRect.width / 2;
+    const windowCenterY = windowRect.top + windowRect.height / 2;
+
+    const toggleIsRight = toggleCenterX > windowCenterX;
+    const toggleIsBelow = toggleCenterY > windowCenterY;
+
+    let activeHandle = null;
+
+    if (toggleIsRight && toggleIsBelow) {
+      // Toggle在右下 → Chat在左上 → use nw handle
+      activeHandle = handles.nw;
+    } else if (toggleIsRight && !toggleIsBelow) {
+      // Toggle在右上 → Chat在左下 → use sw handle
+      activeHandle = handles.sw;
+    } else if (!toggleIsRight && toggleIsBelow) {
+      // Toggle在左下 → Chat在右上 → use ne handle
+      activeHandle = handles.ne;
+    } else {
+      // Toggle在左上 → Chat在右下 → use se handle
+      activeHandle = handles.se;
+    }
+
+    // Show the selected handle
+    if (activeHandle) {
+      activeHandle.classList.add('ai-assistant__resize-handle--active');
+    }
   }
 
   async sendMessage() {
@@ -211,10 +279,14 @@ class AIAssistant {
   }
 
   async sendToServer(message) {
+    // Get current page information
+    const currentPage = this.getCurrentPageInfo();
+
     // Include session ID for user isolation
     const requestData = {
       message: message,
       session_id: this.sessionId,
+      current_page: currentPage,
       context: {
         ...CONTEXT_INFO,
         timestamp: new Date().toISOString()
@@ -385,6 +457,40 @@ class AIAssistant {
       const translations = this.getTranslations(currentLang);
       this.elements.messages.innerHTML = Templates.welcomeMessage(translations.welcome);
     }
+  }
+
+  saveChatSize() {
+    StorageManager.set(STORAGE_KEYS.CHAT_SIZE, this.chatSize);
+  }
+
+  loadChatSize() {
+    return StorageManager.get(STORAGE_KEYS.CHAT_SIZE, null);
+  }
+
+  getCurrentPageInfo() {
+    // Get current page URL and path
+    const url = window.location.href;
+    const pathname = window.location.pathname;
+    const title = document.title;
+
+    // Extract page name from pathname
+    let pageName = 'home';
+    if (pathname.includes('/pages/')) {
+      // Extract filename without .html
+      const match = pathname.match(/\/pages\/([^\/]+)\.html/);
+      if (match) {
+        pageName = match[1];
+      }
+    } else if (pathname === '/' || pathname === '/index.html') {
+      pageName = 'home';
+    }
+
+    return {
+      url: url,
+      pathname: pathname,
+      title: title,
+      page_name: pageName
+    };
   }
 
   // Update translations when language changes
@@ -606,6 +712,175 @@ class AIAssistant {
     document.addEventListener('touchmove', drag, { passive: false });
     document.addEventListener('mouseup', dragEnd);
     document.addEventListener('touchend', dragEnd);
+  }
+
+  // Setup resizable functionality (dynamic corner based on position)
+  setupResizable() {
+    const resizeHandles = this.elements.window.querySelectorAll('.ai-assistant__resize-handle');
+
+    let isResizing = false;
+    let currentHandle = null;
+    let startX, startY;
+    let startWidth, startHeight;
+    let startLeft, startTop;
+
+    const resizeStart = (e) => {
+      // Prevent text selection during resize
+      e.preventDefault();
+
+      // Get the handle being dragged
+      currentHandle = e.target.getAttribute('data-resize');
+      if (!currentHandle) return;
+
+      const coords = DOMUtils.getEventCoordinates(e);
+      isResizing = true;
+
+      startX = coords.clientX;
+      startY = coords.clientY;
+
+      const rect = this.elements.window.getBoundingClientRect();
+      startWidth = rect.width;
+      startHeight = rect.height;
+      startLeft = rect.left;
+      startTop = rect.top;
+
+      // Add resizing class for visual feedback
+      this.elements.window.style.transition = 'none';
+      document.body.style.cursor = `${currentHandle}-resize`;
+      document.body.style.userSelect = 'none';
+    };
+
+    const resize = (e) => {
+      if (!isResizing || !currentHandle) return;
+
+      e.preventDefault();
+      const coords = DOMUtils.getEventCoordinates(e);
+
+      const deltaX = coords.clientX - startX;
+      const deltaY = coords.clientY - startY;
+
+      // Get viewport constraints
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      const maxWidth = viewportWidth * (DIMENSIONS.CHAT_MAX_WIDTH_VW / 100);
+      const maxHeight = viewportHeight * (DIMENSIONS.CHAT_MAX_HEIGHT_VH / 100);
+
+      let newWidth = startWidth;
+      let newHeight = startHeight;
+      let newLeft = startLeft;
+      let newTop = startTop;
+
+      // Handle different resize directions
+      if (currentHandle === 'nw') {
+        // Top-left: drag left/up increases size
+        const desiredWidth = startWidth - deltaX;
+        const desiredHeight = startHeight - deltaY;
+        newWidth = Math.max(DIMENSIONS.CHAT_MIN_WIDTH, Math.min(desiredWidth, maxWidth));
+        newHeight = Math.max(DIMENSIONS.CHAT_MIN_HEIGHT, Math.min(desiredHeight, maxHeight));
+
+        // Only move if not constrained
+        if (newWidth === desiredWidth) {
+          newLeft = Math.max(0, startLeft + deltaX);
+          newWidth = startLeft + startWidth - newLeft;
+        } else {
+          newLeft = startLeft + startWidth - newWidth;
+        }
+        if (newHeight === desiredHeight) {
+          newTop = Math.max(0, startTop + deltaY);
+          newHeight = startTop + startHeight - newTop;
+        } else {
+          newTop = startTop + startHeight - newHeight;
+        }
+      } else if (currentHandle === 'ne') {
+        // Top-right: drag right/up increases size
+        const desiredWidth = startWidth + deltaX;
+        const desiredHeight = startHeight - deltaY;
+        newWidth = Math.max(DIMENSIONS.CHAT_MIN_WIDTH, Math.min(desiredWidth, maxWidth));
+        newHeight = Math.max(DIMENSIONS.CHAT_MIN_HEIGHT, Math.min(desiredHeight, maxHeight));
+
+        // Constrain to viewport
+        if (startLeft + newWidth > viewportWidth) {
+          newWidth = viewportWidth - startLeft;
+        }
+        if (newHeight === desiredHeight) {
+          newTop = Math.max(0, startTop + deltaY);
+          newHeight = startTop + startHeight - newTop;
+        } else {
+          newTop = startTop + startHeight - newHeight;
+        }
+      } else if (currentHandle === 'sw') {
+        // Bottom-left: drag left/down increases size
+        const desiredWidth = startWidth - deltaX;
+        const desiredHeight = startHeight + deltaY;
+        newWidth = Math.max(DIMENSIONS.CHAT_MIN_WIDTH, Math.min(desiredWidth, maxWidth));
+        newHeight = Math.max(DIMENSIONS.CHAT_MIN_HEIGHT, Math.min(desiredHeight, maxHeight));
+
+        // Constrain to viewport
+        if (newWidth === desiredWidth) {
+          newLeft = Math.max(0, startLeft + deltaX);
+          newWidth = startLeft + startWidth - newLeft;
+        } else {
+          newLeft = startLeft + startWidth - newWidth;
+        }
+        if (startTop + newHeight > viewportHeight) {
+          newHeight = viewportHeight - startTop;
+        }
+      } else if (currentHandle === 'se') {
+        // Bottom-right: drag right/down increases size
+        const desiredWidth = startWidth + deltaX;
+        const desiredHeight = startHeight + deltaY;
+        newWidth = Math.max(DIMENSIONS.CHAT_MIN_WIDTH, Math.min(desiredWidth, maxWidth));
+        newHeight = Math.max(DIMENSIONS.CHAT_MIN_HEIGHT, Math.min(desiredHeight, maxHeight));
+
+        // Constrain to viewport
+        if (startLeft + newWidth > viewportWidth) {
+          newWidth = viewportWidth - startLeft;
+        }
+        if (startTop + newHeight > viewportHeight) {
+          newHeight = viewportHeight - startTop;
+        }
+      }
+
+      // Apply new dimensions and position
+      this.elements.window.style.width = `${newWidth}px`;
+      this.elements.window.style.height = `${newHeight}px`;
+      this.elements.window.style.left = `${newLeft}px`;
+      this.elements.window.style.top = `${newTop}px`;
+
+      // Store size
+      this.chatSize.width = newWidth;
+      this.chatSize.height = newHeight;
+    };
+
+    const resizeEnd = () => {
+      if (!isResizing) return;
+
+      isResizing = false;
+      currentHandle = null;
+
+      // Remove visual feedback
+      this.elements.window.style.transition = '';
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+
+      // Save size to localStorage
+      this.saveChatSize();
+
+      // Update resize handle position after resize
+      this.updateResizeHandle();
+    };
+
+    // Attach listeners to resize handle (only one - bottom-right corner)
+    resizeHandles.forEach(handle => {
+      handle.addEventListener('mousedown', resizeStart);
+      handle.addEventListener('touchstart', resizeStart, { passive: false });
+    });
+
+    // Global resize and end events
+    document.addEventListener('mousemove', resize);
+    document.addEventListener('touchmove', resize, { passive: false });
+    document.addEventListener('mouseup', resizeEnd);
+    document.addEventListener('touchend', resizeEnd);
   }
 }
 

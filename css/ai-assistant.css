@@ -43,6 +43,8 @@
   position: fixed;
   width: min(380px, 90vw);
   height: min(500px, 70vh);
+  min-width: 280px;
+  min-height: 300px;
   max-width: 90vw;
   max-height: 70vh;
   background: var(--color-white);
@@ -360,4 +362,101 @@
     border-color: #374151;
     color: #e5e7eb;
   }
+}
+
+/* Resize Handles (dynamically shown based on window position) */
+.ai-assistant__resize-handle {
+  position: absolute;
+  z-index: 10;
+  user-select: none;
+  -webkit-user-select: none;
+  display: none; /* Hidden by default, shown dynamically */
+}
+
+.ai-assistant__resize-handle--active {
+  display: block;
+}
+
+/* Top-left corner */
+.ai-assistant__resize-handle--nw {
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  cursor: nw-resize;
+}
+
+.ai-assistant__resize-handle--nw::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: rgba(74, 144, 226, 0.3);
+  border: 1px solid rgba(74, 144, 226, 0.5);
+  border-radius: 2px;
+  top: 4px;
+  left: 4px;
+}
+
+/* Top-right corner */
+.ai-assistant__resize-handle--ne {
+  top: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  cursor: ne-resize;
+}
+
+.ai-assistant__resize-handle--ne::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: rgba(74, 144, 226, 0.3);
+  border: 1px solid rgba(74, 144, 226, 0.5);
+  border-radius: 2px;
+  top: 4px;
+  right: 4px;
+}
+
+/* Bottom-left corner */
+.ai-assistant__resize-handle--sw {
+  bottom: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  cursor: sw-resize;
+}
+
+.ai-assistant__resize-handle--sw::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: rgba(74, 144, 226, 0.3);
+  border: 1px solid rgba(74, 144, 226, 0.5);
+  border-radius: 2px;
+  bottom: 4px;
+  left: 4px;
+}
+
+/* Bottom-right corner */
+.ai-assistant__resize-handle--se {
+  bottom: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  cursor: se-resize;
+}
+
+.ai-assistant__resize-handle--se::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: rgba(74, 144, 226, 0.3);
+  border: 1px solid rgba(74, 144, 226, 0.5);
+  border-radius: 2px;
+  bottom: 4px;
+  right: 4px;
 }

@@ -17,6 +17,10 @@
   const DIMENSIONS = {
     CHAT_WIDTH: 380,
     CHAT_HEIGHT: 500,
+    CHAT_MIN_WIDTH: 280,
+    CHAT_MIN_HEIGHT: 300,
+    CHAT_MAX_WIDTH_VW: 90,
+    CHAT_MAX_HEIGHT_VH: 70,
     POSITION_GAP: 1,
     DRAG_THRESHOLD: 5,
     TOGGLE_WIDTH: 60,
@@ -46,7 +50,8 @@
   const STORAGE_KEYS = {
     CHAT_HISTORY: 'ai-chat-history',
     CHAT_OPEN: 'ai-chat-open',
-    SESSION_ID: 'ai-session-id'
+    SESSION_ID: 'ai-session-id',
+    CHAT_SIZE: 'ai-chat-size'
   };
 
   const CSS_CLASSES = {
