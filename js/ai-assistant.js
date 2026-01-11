@@ -62,6 +62,7 @@ class AIAssistant {
       toggle: document.getElementById('ai-toggle'),
       window: document.getElementById('ai-window'),
       close: document.getElementById('ai-close'),
+      newSession: document.getElementById('ai-new-session'),
       messages: document.getElementById('ai-messages'),
       input: document.getElementById('ai-input'),
       send: document.getElementById('ai-send'),
@@ -93,13 +94,15 @@ class AIAssistant {
         title: 'AI Assistant',
         welcome: "Hi! I'm Xin's AI assistant. Ask me about his work, projects, or research!",
         placeholder: 'Type your message...',
-        send: 'Send'
+        send: 'Send',
+        newSession: 'New'
       },
       zh: {
         title: 'AI 助手',
         welcome: '你好！我是张信的AI助手。可以问我关于他的工作、项目或研究的问题！',
         placeholder: '输入您的消息...',
-        send: '发送'
+        send: '发送',
+        newSession: '新对话'
       }
     };
     return translations[lang] || translations.en;
@@ -125,6 +128,9 @@ class AIAssistant {
       this.wasDragging = false;
     });
     this.elements.close.addEventListener('click', () => this.closeChat());
+
+    // New session button
+    this.elements.newSession.addEventListener('click', () => this.startNewSession());
 
     // Send message
     this.elements.send.addEventListener('click', () => this.sendMessage());
@@ -457,6 +463,11 @@ class AIAssistant {
       const translations = this.getTranslations(currentLang);
       this.elements.messages.innerHTML = Templates.welcomeMessage(translations.welcome);
     }
+  }
+
+  startNewSession() {
+    // Directly clear session without notification
+    this.clearSession();
   }
 
   saveChatSize() {

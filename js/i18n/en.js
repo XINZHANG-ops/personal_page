@@ -138,6 +138,7 @@ const translations_en = {
         welcome: "Hi! I'm Xin's AI assistant. Ask me about his work, projects, or research!",
         placeholder: "Type your message...",
         send: "Send",
+        newSession: "New",
         offline: "I'm offline right now. Please make sure the AI server is running locally on port 8080.",
         error: "Sorry, I encountered an error. Please try again later."
     },

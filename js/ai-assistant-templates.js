@@ -91,9 +91,14 @@
               <span id="ai-status" class="${CSS_CLASSES.STATUS}"></span>
               <span data-i18n="ai.title">${translations.title}</span>
             </h3>
-            <button id="ai-close" class="ai-assistant__close" aria-label="Close">
-              ${ICONS.CLOSE_X}
-            </button>
+            <div class="ai-assistant__header-actions">
+              <button id="ai-new-session" class="ai-assistant__new-session" aria-label="New Session" title="Start new conversation">
+                <span data-i18n="ai.newSession">New</span>
+              </button>
+              <button id="ai-close" class="ai-assistant__close" aria-label="Close">
+                ${ICONS.CLOSE_X}
+              </button>
+            </div>
           </div>
 
           <!-- Messages -->

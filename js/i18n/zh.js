@@ -138,6 +138,7 @@ const translations_zh = {
         welcome: "你好！我是张信的AI助手。可以问我关于他的工作、项目或研究的问题！",
         placeholder: "输入您的消息...",
         send: "发送",
+        newSession: "新对话",
         offline: "我现在离线了。请确保AI服务器在本地8080端口运行。",
         error: "抱歉，我遇到了错误。请稍后再试。"
     },
