@@ -62,10 +62,19 @@ class AIAssistant {
       header: document.getElementById('ai-header')
     };
 
+    // Apply dimensions from constants to override CSS
+    this.applyChatDimensions();
+
     // Add event listeners
     this.setupEventListeners();
     this.setupDraggable();
     this.setupResizeHandler();
+  }
+
+  applyChatDimensions() {
+    // Apply chat window dimensions from constants
+    this.elements.window.style.width = `min(${DIMENSIONS.CHAT_WIDTH}px, 90vw)`;
+    this.elements.window.style.height = `min(${DIMENSIONS.CHAT_HEIGHT}px, 70vh)`;
   }
 
   getTranslations(lang) {

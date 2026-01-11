@@ -23,6 +23,8 @@ js/
 
 **File:** `js/ai-assistant-constants.js`
 
+Look for `window.AI_CONSTANTS = {` and find the `ICONS` section:
+
 ```javascript
 ICONS: {
   ROBOT: '🤖',      // ← Change this to any emoji you want
