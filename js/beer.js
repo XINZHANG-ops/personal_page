@@ -312,6 +312,24 @@
             "otherAromas": 4,
             "overall": 5.5
         }
+    },
+    {
+        "id": "kostritzer-edel-pils",
+        "name": "Kostritzer Edel Pils",
+        "style": "Pilsner",
+        "abv": 4.8,
+        "date": "2026-01-11",
+        "price": 2.55,
+        "imageUrl": "../assets/images/beers/kostritzer-edel-pils.jpg",
+        "notes": "On the first sip, there’s a slightly herbal note. I’m not sure if it’s influenced by the spicy chicken wings from Wild Wing that I was eating at the same time, but there’s a kind of herbal bitterness that feels a bit different.",
+        "scores": {
+            "maltiness": 2,
+            "colorDepth": 7.5,
+            "clarity": 9.5,
+            "bitterness": 7.5,
+            "otherAromas": 5,
+            "overall": 4.5
+        }
     }
 ];
 
