@@ -132,6 +132,16 @@ const translations_zh = {
         copyright: "© 2024 AI/ML工程师。保留所有权利。"
     },
 
+    // AI 助手
+    ai: {
+        title: "AI 助手",
+        welcome: "你好！我是张信的AI助手。可以问我关于他的工作、项目或研究的问题！",
+        placeholder: "输入您的消息...",
+        send: "发送",
+        offline: "我现在离线了。请确保AI服务器在本地8080端口运行。",
+        error: "抱歉，我遇到了错误。请稍后再试。"
+    },
+
     // 无障碍标签
     a11y: {
         skipLink: "跳转到主要内容",

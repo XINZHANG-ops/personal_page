@@ -132,6 +132,16 @@ const translations_en = {
         copyright: "© 2024 AI/ML Engineer. All rights reserved."
     },
 
+    // AI Assistant
+    ai: {
+        title: "AI Assistant",
+        welcome: "Hi! I'm Xin's AI assistant. Ask me about his work, projects, or research!",
+        placeholder: "Type your message...",
+        send: "Send",
+        offline: "I'm offline right now. Please make sure the AI server is running locally on port 8080.",
+        error: "Sorry, I encountered an error. Please try again later."
+    },
+
     // Accessibility labels
     a11y: {
         skipLink: "Skip to main content",
