@@ -11,7 +11,7 @@ const AI_CONFIG = {
   LOCAL: 'http://localhost:8080/chat',
 
   // For GitHub Pages with ngrok tunnel (update with your ngrok URL)
-  NGROK: 'https://your-ngrok-id.ngrok.io/chat',  // UPDATE THIS!
+  NGROK: 'https://e22368da6234.ngrok-free.app/chat',  // Your actual ngrok URL
 
   // For production with a proper backend
   PRODUCTION: 'https://your-api-server.com/chat'  // UPDATE THIS!
