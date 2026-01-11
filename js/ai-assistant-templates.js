@@ -1,0 +1,119 @@
+/**
+ * AI Assistant HTML Templates
+ * Centralized HTML generation for consistent markup
+ */
+
+(function(window) {
+  'use strict';
+
+  class Templates {
+    /**
+     * Generate message HTML
+     * @param {string} type - Message type ('user' or 'assistant')
+     * @param {string} content - Message content (already escaped)
+     * @returns {string} Message HTML
+     */
+    static message(type, content) {
+      const ICONS = window.ICONS;
+      const CSS_CLASSES = window.CSS_CLASSES;
+      const avatar = type === 'user' ? ICONS.USER : ICONS.ROBOT;
+      return `
+      <div class="${CSS_CLASSES.MESSAGE} ${CSS_CLASSES[`MESSAGE_${type.toUpperCase()}`]}">
+        <div class="${CSS_CLASSES.MESSAGE_AVATAR}">${avatar}</div>
+        <div class="${CSS_CLASSES.MESSAGE_CONTENT}">${content}</div>
+      </div>
+    `;
+    }
+
+    /**
+     * Generate typing indicator HTML
+     * @returns {string} Typing indicator HTML
+     */
+    static typingIndicator() {
+      const ICONS = window.ICONS;
+      const CSS_CLASSES = window.CSS_CLASSES;
+      return `
+      <div class="${CSS_CLASSES.MESSAGE} ${CSS_CLASSES.MESSAGE_ASSISTANT}">
+        <div class="${CSS_CLASSES.MESSAGE_AVATAR}">${ICONS.ROBOT}</div>
+        <div class="${CSS_CLASSES.MESSAGE_CONTENT} ${CSS_CLASSES.MESSAGE_TYPING}">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    `;
+    }
+
+    /**
+     * Generate welcome message HTML
+     * @param {string} welcomeText - Welcome message text
+     * @returns {string} Welcome message HTML
+     */
+    static welcomeMessage(welcomeText) {
+      const ICONS = window.ICONS;
+      const CSS_CLASSES = window.CSS_CLASSES;
+      return `
+      <div class="${CSS_CLASSES.MESSAGE} ${CSS_CLASSES.MESSAGE_ASSISTANT}">
+        <div class="${CSS_CLASSES.MESSAGE_AVATAR}">${ICONS.ROBOT}</div>
+        <div class="${CSS_CLASSES.MESSAGE_CONTENT}" data-i18n="ai.welcome">
+          ${welcomeText}
+        </div>
+      </div>
+    `;
+    }
+
+    /**
+     * Generate main chat widget HTML
+     * @param {Object} translations - Translation object {title, welcome, placeholder, send}
+     * @returns {string} Complete widget HTML
+     */
+    static chatWidget(translations) {
+      const ICONS = window.ICONS;
+      const CSS_CLASSES = window.CSS_CLASSES;
+      return `
+      <div id="ai-assistant" class="ai-assistant">
+        <!-- Toggle Button -->
+        <button id="ai-toggle" class="${CSS_CLASSES.TOGGLE}" aria-label="Open AI Assistant">
+          ${ICONS.ROBOT}
+        </button>
+
+        <!-- Chat Window -->
+        <div id="ai-window" class="${CSS_CLASSES.WINDOW}">
+          <!-- Header -->
+          <div id="ai-header" class="ai-assistant__header">
+            <h3 class="ai-assistant__title">
+              <span id="ai-status" class="${CSS_CLASSES.STATUS}"></span>
+              <span data-i18n="ai.title">${translations.title}</span>
+            </h3>
+            <button id="ai-close" class="ai-assistant__close" aria-label="Close">
+              ${ICONS.CLOSE_X}
+            </button>
+          </div>
+
+          <!-- Messages -->
+          <div id="ai-messages" class="ai-assistant__messages">
+            ${Templates.welcomeMessage(translations.welcome)}
+          </div>
+
+          <!-- Input -->
+          <div class="ai-assistant__input-container">
+            <textarea
+              id="ai-input"
+              class="ai-assistant__input"
+              placeholder="${translations.placeholder}"
+              data-i18n-placeholder="ai.placeholder"
+              rows="1"
+            ></textarea>
+            <button id="ai-send" class="ai-assistant__send">
+              <span data-i18n="ai.send">${translations.send}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    }
+  }
+
+  window.Templates = Templates;
+
+})(window);
