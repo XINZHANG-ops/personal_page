@@ -27,6 +27,7 @@ class AIAssistant {
     this.isTyping = false;
     this.sessionId = this.getSessionId();
     this.wasDragging = false;
+    this.shouldAutoFocus = true; // Track if input should auto-focus
 
     // Track position as percentage for zoom consistency
     this.positionPercentage = null; // { x: %, y: % }
@@ -146,6 +147,22 @@ class AIAssistant {
       this.elements.input.style.height = 'auto';
       this.elements.input.style.height = Math.min(this.elements.input.scrollHeight, DIMENSIONS.INPUT_MAX_HEIGHT) + 'px';
     });
+
+    // Track user interaction with input - if user focuses input, enable auto-focus
+    this.elements.input.addEventListener('focus', () => {
+      this.shouldAutoFocus = true;
+    });
+
+    // If user clicks outside chat messages/input area, disable auto-focus
+    this.elements.window.addEventListener('click', (e) => {
+      // Check if click is outside input and messages area
+      const isInputArea = e.target.closest('.ai-assistant__input-container');
+      const isMessagesArea = e.target.closest('.ai-assistant__messages');
+
+      if (!isInputArea && !isMessagesArea) {
+        this.shouldAutoFocus = false;
+      }
+    });
   }
 
   toggleChat() {
@@ -175,12 +192,16 @@ class AIAssistant {
       this.elements.window.classList.add(CSS_CLASSES.WINDOW_OPEN);
       this.elements.toggle.classList.add(CSS_CLASSES.TOGGLE_ACTIVE);
       this.elements.toggle.innerHTML = ICONS.CLOSE_CROSS;
+      // Enable auto-focus when opening chat and focus input
+      this.shouldAutoFocus = true;
       this.elements.input.focus();
       this.scrollToBottom();
     } else {
       this.elements.window.classList.remove(CSS_CLASSES.WINDOW_OPEN);
       this.elements.toggle.classList.remove(CSS_CLASSES.TOGGLE_ACTIVE);
       this.elements.toggle.innerHTML = ICONS.ROBOT;
+      // Disable auto-focus when closing
+      this.shouldAutoFocus = false;
     }
   }
 
@@ -371,6 +392,14 @@ class AIAssistant {
       if (typingIndicator) {
         DOMUtils.removeElement(typingIndicator);
       }
+
+      // Auto-focus input after response if user was actively using it
+      if (this.shouldAutoFocus) {
+        // Small delay to ensure DOM is updated
+        setTimeout(() => {
+          this.elements.input.focus();
+        }, 100);
+      }
     }
   }
 
@@ -468,6 +497,12 @@ class AIAssistant {
   startNewSession() {
     // Directly clear session without notification
     this.clearSession();
+
+    // Re-focus input after clearing session
+    this.shouldAutoFocus = true;
+    setTimeout(() => {
+      this.elements.input.focus();
+    }, 100);
   }
 
   saveChatSize() {
