@@ -350,7 +350,6 @@
     height: min(400px, 70vh);
     max-width: 90vw;
     max-height: 70vh;
-    bottom: 70px;
   }
 
   .ai-assistant__toggle {

@@ -145,7 +145,7 @@
           position.bottom = `${windowHeight - toggleRect.bottom}px`;
         }
       } else if (spaceOnRight >= chatWidth + gap) {
-        // Chat to the right of toggle
+        // Chat to the right of toggle (add gap to avoid covering blue focus ring)
         position.left = `${toggleRect.right + gap}px`;
 
         // Align vertically - use toggle center position to decide alignment
