@@ -109,48 +109,52 @@
         // Chat above toggle
         position.bottom = `${windowHeight - toggleRect.top + gap}px`;
 
-        // Align horizontally - toggle at bottom-right or bottom-left of chat
-        if (spaceOnRight >= chatWidth) {
-          // Toggle at bottom-left corner of chat
+        // Align horizontally - use toggle center position to decide alignment
+        const toggleCenterX = toggleRect.left + (toggleRect.width / 2);
+        if (toggleCenterX < windowWidth / 2) {
+          // Toggle on left half, align chat to left
           position.left = `${toggleRect.left}px`;
         } else {
-          // Toggle at bottom-right corner of chat
+          // Toggle on right half, align chat to right
           position.right = `${windowWidth - toggleRect.right}px`;
         }
       } else if (spaceBelow >= chatHeight + gap) {
         // Chat below toggle
         position.top = `${toggleRect.bottom + gap}px`;
 
-        // Align horizontally - toggle at top-right or top-left of chat
-        if (spaceOnRight >= chatWidth) {
-          // Toggle at top-left corner of chat
+        // Align horizontally - use toggle center position to decide alignment
+        const toggleCenterX = toggleRect.left + (toggleRect.width / 2);
+        if (toggleCenterX < windowWidth / 2) {
+          // Toggle on left half, align chat to left
           position.left = `${toggleRect.left}px`;
         } else {
-          // Toggle at top-right corner of chat
+          // Toggle on right half, align chat to right
           position.right = `${windowWidth - toggleRect.right}px`;
         }
       } else if (spaceOnLeft >= chatWidth + gap) {
         // Chat to the left of toggle
-        position.right = `${windowWidth - toggleRect.left + gap}px`;
+        position.right = `${windowWidth - toggleRect.left}px`;
 
-        // Align vertically - toggle at top-right or bottom-right of chat
-        if (spaceBelow >= chatHeight) {
-          // Toggle at top-right corner of chat
+        // Align vertically - use toggle center position to decide alignment
+        const toggleCenterY = toggleRect.top + (toggleRect.height / 2);
+        if (toggleCenterY < windowHeight / 2) {
+          // Toggle on top half, align chat to top
           position.top = `${toggleRect.top}px`;
         } else {
-          // Toggle at bottom-right corner of chat
+          // Toggle on bottom half, align chat to bottom
           position.bottom = `${windowHeight - toggleRect.bottom}px`;
         }
       } else if (spaceOnRight >= chatWidth + gap) {
         // Chat to the right of toggle
         position.left = `${toggleRect.right + gap}px`;
 
-        // Align vertically - toggle at top-left or bottom-left of chat
-        if (spaceBelow >= chatHeight) {
-          // Toggle at top-left corner of chat
+        // Align vertically - use toggle center position to decide alignment
+        const toggleCenterY = toggleRect.top + (toggleRect.height / 2);
+        if (toggleCenterY < windowHeight / 2) {
+          // Toggle on top half, align chat to top
           position.top = `${toggleRect.top}px`;
         } else {
-          // Toggle at bottom-left corner of chat
+          // Toggle on bottom half, align chat to bottom
           position.bottom = `${windowHeight - toggleRect.bottom}px`;
         }
       } else {
