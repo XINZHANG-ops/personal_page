@@ -102,7 +102,7 @@
       const spaceBelow = windowHeight - toggleRect.bottom;
       const spaceAbove = toggleRect.top;
 
-      // Determine best position: prioritize above, then below, then left, then right
+      // Determine best position: prioritize above, then below, then left/right
       // Position chat window so toggle is attached to one of its corners
 
       if (spaceAbove >= chatHeight + gap) {
