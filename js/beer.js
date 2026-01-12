@@ -330,6 +330,24 @@
             "otherAromas": 5,
             "overall": 4.5
         }
+    },
+    {
+        "id": "harp-lager",
+        "name": "Harp Lager",
+        "style": "Lager",
+        "abv": 5,
+        "date": "2026-01-11",
+        "price": 3.45,
+        "imageUrl": "../assets/images/beers/harp-lager.jpg",
+        "notes": "Although the first sip is quite bitter, it’s followed by a subtle sweetness. There’s a certain refined, hard-to-define sense of quality to the mouthfeel, even though the overall flavor isn’t exactly my favorite.",
+        "scores": {
+            "maltiness": 5,
+            "colorDepth": 7,
+            "clarity": 10,
+            "bitterness": 7,
+            "otherAromas": 2.5,
+            "overall": 7
+        }
     }
 ];
 
