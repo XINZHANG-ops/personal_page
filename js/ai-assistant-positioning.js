@@ -78,6 +78,7 @@
 
     /**
      * Calculate optimal chat window position relative to toggle
+     * Chat window is positioned with toggle button attached to its corner
      * @param {DOMRect} toggleRect - Toggle button bounding rect
      * @param {number} windowWidth - Viewport width
      * @param {number} windowHeight - Viewport height
@@ -95,29 +96,68 @@
         bottom: ''
       };
 
-      // Calculate available space
+      // Calculate available space on each side
       const spaceOnRight = windowWidth - toggleRect.right;
       const spaceOnLeft = toggleRect.left;
       const spaceBelow = windowHeight - toggleRect.bottom;
       const spaceAbove = toggleRect.top;
 
-      // Determine horizontal position
-      if (spaceOnRight >= chatWidth) {
-        position.left = `${toggleRect.right + gap}px`;
-      } else if (spaceOnLeft >= chatWidth) {
-        position.right = `${windowWidth - toggleRect.left + gap}px`;
-      } else {
-        const left = Math.max(gap, (windowWidth - chatWidth) / 2);
-        position.left = `${left}px`;
-      }
+      // Determine best position: prioritize above, then below, then left, then right
+      // Position chat window so toggle is attached to one of its corners
 
-      // Determine vertical position
-      if (spaceBelow >= chatHeight) {
-        position.top = `${toggleRect.bottom + gap}px`;
-      } else if (spaceAbove >= chatHeight) {
+      if (spaceAbove >= chatHeight + gap) {
+        // Chat above toggle
         position.bottom = `${windowHeight - toggleRect.top + gap}px`;
+
+        // Align horizontally - toggle at bottom-right or bottom-left of chat
+        if (spaceOnRight >= chatWidth) {
+          // Toggle at bottom-left corner of chat
+          position.left = `${toggleRect.left}px`;
+        } else {
+          // Toggle at bottom-right corner of chat
+          position.right = `${windowWidth - toggleRect.right}px`;
+        }
+      } else if (spaceBelow >= chatHeight + gap) {
+        // Chat below toggle
+        position.top = `${toggleRect.bottom + gap}px`;
+
+        // Align horizontally - toggle at top-right or top-left of chat
+        if (spaceOnRight >= chatWidth) {
+          // Toggle at top-left corner of chat
+          position.left = `${toggleRect.left}px`;
+        } else {
+          // Toggle at top-right corner of chat
+          position.right = `${windowWidth - toggleRect.right}px`;
+        }
+      } else if (spaceOnLeft >= chatWidth + gap) {
+        // Chat to the left of toggle
+        position.right = `${windowWidth - toggleRect.left + gap}px`;
+
+        // Align vertically - toggle at top-right or bottom-right of chat
+        if (spaceBelow >= chatHeight) {
+          // Toggle at top-right corner of chat
+          position.top = `${toggleRect.top}px`;
+        } else {
+          // Toggle at bottom-right corner of chat
+          position.bottom = `${windowHeight - toggleRect.bottom}px`;
+        }
+      } else if (spaceOnRight >= chatWidth + gap) {
+        // Chat to the right of toggle
+        position.left = `${toggleRect.right + gap}px`;
+
+        // Align vertically - toggle at top-left or bottom-left of chat
+        if (spaceBelow >= chatHeight) {
+          // Toggle at top-left corner of chat
+          position.top = `${toggleRect.top}px`;
+        } else {
+          // Toggle at bottom-left corner of chat
+          position.bottom = `${windowHeight - toggleRect.bottom}px`;
+        }
       } else {
+        // Not enough space anywhere, center it
+        const left = Math.max(gap, (windowWidth - chatWidth) / 2);
         const top = Math.max(gap, (windowHeight - chatHeight) / 2);
+        position.left = `${left}px`;
         position.top = `${top}px`;
       }
 
