@@ -402,6 +402,24 @@
             "otherAromas": 2.5,
             "overall": 5
         }
+    },
+    {
+        "id": "zywiec-beer",
+        "name": "ZYWIEC BEER",
+        "style": "Lager",
+        "abv": 5.5,
+        "date": "2026-01-12",
+        "price": 2.52,
+        "imageUrl": "../assets/images/beers/zywiec-beer.jpg",
+        "notes": "To be honest, it’s that familiar combination of bitterness and hop flavor again. After the first sip, the alcohol aroma hits the nose right away, which I don’t like.",
+        "scores": {
+            "maltiness": 4,
+            "colorDepth": 6.5,
+            "clarity": 9.5,
+            "bitterness": 5,
+            "otherAromas": 1.5,
+            "overall": 4.5
+        }
     }
 ];
 
