@@ -348,6 +348,24 @@
             "otherAromas": 2.5,
             "overall": 7
         }
+    },
+    {
+        "id": "hacker-pschorr-munich-gold-lager",
+        "name": "Hacker Pschorr Munich Gold Lager",
+        "style": "Lager",
+        "abv": 5.5,
+        "date": "2026-01-12",
+        "price": 2.85,
+        "imageUrl": "../assets/images/beers/hacker-pschorr-munich-gold-lager.jpg",
+        "notes": "Slightly bitter, with the alcohol aroma quickly reaching the nose. Overall, it feels crisp and carbonated with a mild bitterness, finishing with just a hint of malt.",
+        "scores": {
+            "maltiness": 5,
+            "colorDepth": 8,
+            "clarity": 9.5,
+            "bitterness": 6,
+            "otherAromas": 1.5,
+            "overall": 5.5
+        }
     }
 ];
 
