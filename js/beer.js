@@ -420,6 +420,24 @@
             "otherAromas": 1.5,
             "overall": 4.5
         }
+    },
+    {
+        "id": "budweiser",
+        "name": "BUDWEISER",
+        "style": "Lager",
+        "abv": 5,
+        "date": "2026-01-13",
+        "price": 2.79,
+        "imageUrl": "../assets/images/beers/budweiser.jpg",
+        "notes": "Budweiser is one of the few lagers in Canada that I actually find quite pleasant. There’s just a hint of bitterness on the first sip, which fades quickly, followed by a light malty aftertaste. Although it’s not very pronounced, it’s still one of the more drinkable and acceptable beers for me here.",
+        "scores": {
+            "maltiness": 7.5,
+            "colorDepth": 7.5,
+            "clarity": 9.5,
+            "bitterness": 3,
+            "otherAromas": 1.5,
+            "overall": 8
+        }
     }
 ];
 
