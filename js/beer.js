@@ -384,6 +384,24 @@
             "otherAromas": 7,
             "overall": 6
         }
+    },
+    {
+        "id": "kingfisher-lager",
+        "name": "Kingfisher Lager",
+        "style": "Lager",
+        "abv": 4.5,
+        "date": "2026-01-12",
+        "price": 2.7,
+        "imageUrl": "../assets/images/beers/kingfisher-lager.jpg",
+        "notes": "Putting the beer itself aside for a moment, the blue bird design on the bottle cap has a lot of emotional appeal. In terms of flavor, it has a fairly classic bitterness—not the kind of beer you’d want to keep drinking once you’re a bit tipsy, as it can start to feel uncomfortable. Other notes are said to include corn and barley, but I’m not very sensitive to those flavors and mostly just perceive a slight bitterness. Although I don’t particularly enjoy the taste, the blue bird definitely adds a few points for me.",
+        "scores": {
+            "maltiness": 1.5,
+            "colorDepth": 4.5,
+            "clarity": 9.5,
+            "bitterness": 7,
+            "otherAromas": 2.5,
+            "overall": 5
+        }
     }
 ];
 
