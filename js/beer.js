@@ -366,6 +366,24 @@
             "otherAromas": 1.5,
             "overall": 5.5
         }
+    },
+    {
+        "id": "amsterdam-blonde-lager",
+        "name": "Amsterdam Blonde Lager",
+        "style": "Lager",
+        "abv": 5,
+        "date": "2026-01-12",
+        "price": 3.6,
+        "imageUrl": "../assets/images/beers/amsterdam-blonde-lager.jpg",
+        "notes": "The first sip has an egg-like note—though I’m not entirely sure—but it does feel distinctly different. It seems like an unusual hop character, which is the most distinctive aspect of this beer. The mouthfeel is fairly round, with noticeable carbonation.",
+        "scores": {
+            "maltiness": 3,
+            "colorDepth": 7,
+            "clarity": 9.5,
+            "bitterness": 3.5,
+            "otherAromas": 7,
+            "overall": 6
+        }
     }
 ];
 
