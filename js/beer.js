@@ -438,6 +438,24 @@
             "otherAromas": 1.5,
             "overall": 8
         }
+    },
+    {
+        "id": "innis-gunn-lager",
+        "name": "INNIS & GUNN LAGER",
+        "style": "Lager",
+        "abv": 4.6,
+        "date": "2026-01-13",
+        "price": 2.29,
+        "imageUrl": "../assets/images/beers/innis-gunn-lager.jpg",
+        "notes": "This one actually tastes quite different. There’s a touch of hop character at first, followed by an herbal note with a bit of sweetness. As it goes down, the aroma reaching the nose also has a distinctly medicinal, herbal quality. It’s quite unique.",
+        "scores": {
+            "maltiness": 2,
+            "colorDepth": 6.5,
+            "clarity": 9.5,
+            "bitterness": 3,
+            "otherAromas": 7,
+            "overall": 6
+        }
     }
 ];
 
