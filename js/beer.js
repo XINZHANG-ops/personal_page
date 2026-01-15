@@ -528,6 +528,24 @@
             "otherAromas": 1.5,
             "overall": 6.5
         }
+    },
+    {
+        "id": "moosehead-lager",
+        "name": "MOOSEHEAD LAGER",
+        "style": "Lager",
+        "abv": 5,
+        "date": "2026-01-15",
+        "price": 2.69,
+        "imageUrl": "../assets/images/beers/moosehead-lager.jpg",
+        "notes": "This green-bottle Moose has a noticeably strong alcohol presence on the first sip. It doesn’t feel light enough, and the malt aroma isn’t very pronounced, but overall it’s still acceptable.",
+        "scores": {
+            "maltiness": 6,
+            "colorDepth": 7,
+            "clarity": 9.5,
+            "bitterness": 2,
+            "otherAromas": 2,
+            "overall": 6.5
+        }
     }
 ];
 
