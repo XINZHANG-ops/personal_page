@@ -510,6 +510,24 @@
             "otherAromas": 5,
             "overall": 4
         }
+    },
+    {
+        "id": "molson-canadian",
+        "name": "MOLSON CANADIAN",
+        "style": "Lager",
+        "abv": 5,
+        "date": "2026-01-14",
+        "price": 2.69,
+        "imageUrl": "../assets/images/beers/molson-canadian.jpg",
+        "notes": "After taking a sip, there’s just a trace of bitterness, followed by a faint hint of malt—both are barely noticeable. It’s certainly very clean and clear, but it also truly doesn’t have much flavor.",
+        "scores": {
+            "maltiness": 5.5,
+            "colorDepth": 7.5,
+            "clarity": 9.5,
+            "bitterness": 3,
+            "otherAromas": 1.5,
+            "overall": 6.5
+        }
     }
 ];
 
