@@ -1593,6 +1593,55 @@ img[data-src] {
   color: rgba(255, 255, 255, 0.9);
 }
 
+/* Beer statistics */
+.beer-stats {
+  padding: var(--space-2xl) 0;
+  background: var(--color-secondary);
+}
+
+.beer-stats__title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: var(--space-xl);
+  color: var(--color-text);
+}
+
+.beer-stats__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--space-lg);
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+}
+
+.beer-stats__chart-container {
+  background: var(--color-white);
+  border-radius: var(--border-radius);
+  padding: var(--space-md);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.beer-stats__chart-container:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.beer-stats__chart-title {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: var(--space-sm);
+  color: var(--color-text);
+}
+
+.beer-stats__chart {
+  width: 100%;
+  height: 220px;
+  display: block;
+}
+
 /* Beer controls (sorting) */
 .beer-controls {
   padding: var(--space-xl) 0;
@@ -1605,6 +1654,13 @@ img[data-src] {
   align-items: center;
   justify-content: center;
   gap: var(--space-sm);
+}
+
+.beer-controls__count {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-right: var(--space-md);
 }
 
 .beer-controls__label {

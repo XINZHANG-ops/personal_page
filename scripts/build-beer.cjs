@@ -64,20 +64,25 @@ if (fs.existsSync(TEMPLATE_FILE)) {
     document.addEventListener('DOMContentLoaded', function () {
         initializeNavigation();
 
+        // Render statistics charts
+        renderStatisticsCharts();
+
         // Sort by overall score on initial load (matches the default dropdown value)
         const initialSorted = sortBeers(beers, 'overall');
         renderBeerGallery(initialSorted);
+        updateBeerCount(beers.length);
 
         initializeSorting();
         initializeImageModal();
 
-        // Listen for language changes and re-render charts
+        // Listen for language changes and re-render charts and count
         window.addEventListener('languageChange', function() {
             // Re-render with current sort selection
             const sortSelect = document.getElementById('sort-select');
             const currentSort = sortSelect ? sortSelect.value : 'overall';
             const sortedBeers = sortBeers(beers, currentSort);
             renderBeerGallery(sortedBeers);
+            updateBeerCount(beers.length);
         });
     });
 
@@ -109,6 +114,398 @@ if (fs.existsSync(TEMPLATE_FILE)) {
                 navToggle.classList.remove('nav__toggle--active');
             });
         });
+    }
+
+    /**
+     * Update beer count display
+     */
+    function updateBeerCount(count) {
+        const countElement = document.getElementById('beer-count');
+        if (!countElement) return;
+
+        const getCountText = () => {
+            if (typeof window !== 'undefined' && window.i18n) {
+                return window.i18n.t('beer.totalBeers');
+            }
+            return 'Total Beers';
+        };
+
+        const countText = getCountText();
+        countElement.textContent = \`\${countText}: \${count}\`;
+    }
+
+    /**
+     * Render all statistics charts
+     */
+    function renderStatisticsCharts() {
+        renderStylePieChart();
+        renderAbvHistogram();
+        renderMaltScoreScatter();
+    }
+
+    /**
+     * Render beer style distribution pie chart
+     */
+    function renderStylePieChart() {
+        const svg = document.getElementById('style-pie-chart');
+        if (!svg) return;
+
+        // Count beers by style
+        const styleCounts = {};
+        beers.forEach(beer => {
+            styleCounts[beer.style] = (styleCounts[beer.style] || 0) + 1;
+        });
+
+        // Convert to array and sort by count
+        const styleData = Object.entries(styleCounts)
+            .map(([style, count]) => ({ style, count }))
+            .sort((a, b) => b.count - a.count);
+
+        // Colors from your theme
+        const colors = [
+            '#007bff', '#17a2b8', '#28a745', '#ffc107',
+            '#dc3545', '#6610f2', '#fd7e14', '#20c997',
+            '#e83e8c', '#6c757d'
+        ];
+
+        const width = 300;
+        const height = 300;
+        const radius = Math.min(width, height) / 2 - 20;
+        const centerX = width / 2;
+        const centerY = height / 2;
+
+        svg.setAttribute('viewBox', \`0 0 \${width} \${height}\`);
+        svg.innerHTML = '';
+
+        // Calculate total for percentages
+        const total = styleData.reduce((sum, d) => sum + d.count, 0);
+
+        // Draw pie slices
+        let currentAngle = -Math.PI / 2; // Start from top
+        styleData.forEach((d, i) => {
+            const sliceAngle = (d.count / total) * 2 * Math.PI;
+            const endAngle = currentAngle + sliceAngle;
+
+            // Create path for pie slice
+            const x1 = centerX + radius * Math.cos(currentAngle);
+            const y1 = centerY + radius * Math.sin(currentAngle);
+            const x2 = centerX + radius * Math.cos(endAngle);
+            const y2 = centerY + radius * Math.sin(endAngle);
+
+            const largeArcFlag = sliceAngle > Math.PI ? 1 : 0;
+
+            const pathData = [
+                \`M \${centerX} \${centerY}\`,
+                \`L \${x1} \${y1}\`,
+                \`A \${radius} \${radius} 0 \${largeArcFlag} 1 \${x2} \${y2}\`,
+                'Z'
+            ].join(' ');
+
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute('d', pathData);
+            path.setAttribute('fill', colors[i % colors.length]);
+            path.setAttribute('stroke', '#fff');
+            path.setAttribute('stroke-width', '2');
+            path.style.cursor = 'pointer';
+
+            // Add hover effect
+            path.addEventListener('mouseenter', function() {
+                this.setAttribute('opacity', '0.8');
+            });
+            path.addEventListener('mouseleave', function() {
+                this.setAttribute('opacity', '1');
+            });
+
+            // Add label
+            const midAngle = currentAngle + sliceAngle / 2;
+            const labelRadius = radius * 0.7;
+            const labelX = centerX + labelRadius * Math.cos(midAngle);
+            const labelY = centerY + labelRadius * Math.sin(midAngle);
+
+            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            text.setAttribute('x', labelX);
+            text.setAttribute('y', labelY);
+            text.setAttribute('text-anchor', 'middle');
+            text.setAttribute('dominant-baseline', 'middle');
+            text.setAttribute('fill', '#fff');
+            text.setAttribute('font-size', '12');
+            text.setAttribute('font-weight', 'bold');
+            text.textContent = d.count;
+
+            svg.appendChild(path);
+            svg.appendChild(text);
+
+            currentAngle = endAngle;
+        });
+
+        // Add legend
+        const legendX = 10;
+        let legendY = 10;
+        styleData.forEach((d, i) => {
+            const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            rect.setAttribute('x', legendX);
+            rect.setAttribute('y', legendY);
+            rect.setAttribute('width', '12');
+            rect.setAttribute('height', '12');
+            rect.setAttribute('fill', colors[i % colors.length]);
+
+            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            text.setAttribute('x', legendX + 16);
+            text.setAttribute('y', legendY + 10);
+            text.setAttribute('font-size', '10');
+            text.setAttribute('fill', '#333');
+            text.textContent = \`\${d.style} (\${d.count})\`;
+
+            svg.appendChild(rect);
+            svg.appendChild(text);
+
+            legendY += 16;
+        });
+    }
+
+    /**
+     * Render ABV distribution histogram
+     */
+    function renderAbvHistogram() {
+        const svg = document.getElementById('abv-histogram');
+        if (!svg) return;
+
+        const width = 300;
+        const height = 300;
+        const margin = { top: 20, right: 20, bottom: 40, left: 40 };
+        const chartWidth = width - margin.left - margin.right;
+        const chartHeight = height - margin.top - margin.bottom;
+
+        svg.setAttribute('viewBox', \`0 0 \${width} \${height}\`);
+        svg.innerHTML = '';
+
+        // Create bins for ABV ranges
+        const binSize = 0.5;
+        const minAbv = Math.floor(Math.min(...beers.map(b => b.abv)) / binSize) * binSize;
+        const maxAbv = Math.ceil(Math.max(...beers.map(b => b.abv)) / binSize) * binSize;
+
+        const bins = [];
+        for (let i = minAbv; i < maxAbv; i += binSize) {
+            bins.push({
+                min: i,
+                max: i + binSize,
+                count: 0,
+                label: \`\${i.toFixed(1)}-\${(i + binSize).toFixed(1)}\`
+            });
+        }
+
+        beers.forEach(beer => {
+            const bin = bins.find(b => beer.abv >= b.min && beer.abv < b.max);
+            if (bin) bin.count++;
+        });
+
+        const maxCount = Math.max(...bins.map(b => b.count));
+
+        // Draw bars
+        const barWidth = chartWidth / bins.length - 2;
+        bins.forEach((bin, i) => {
+            const barHeight = (bin.count / maxCount) * chartHeight;
+            const x = margin.left + i * (chartWidth / bins.length);
+            const y = margin.top + chartHeight - barHeight;
+
+            const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            rect.setAttribute('x', x);
+            rect.setAttribute('y', y);
+            rect.setAttribute('width', barWidth);
+            rect.setAttribute('height', barHeight);
+            rect.setAttribute('fill', '#007bff');
+            rect.setAttribute('stroke', '#fff');
+            rect.setAttribute('stroke-width', '1');
+            rect.style.cursor = 'pointer';
+
+            rect.addEventListener('mouseenter', function() {
+                this.setAttribute('fill', '#0056b3');
+            });
+            rect.addEventListener('mouseleave', function() {
+                this.setAttribute('fill', '#007bff');
+            });
+
+            // Add count label on top of bar
+            if (bin.count > 0) {
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', x + barWidth / 2);
+                text.setAttribute('y', y - 5);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-size', '10');
+                text.setAttribute('fill', '#333');
+                text.textContent = bin.count;
+                svg.appendChild(text);
+            }
+
+            svg.appendChild(rect);
+        });
+
+        // Draw axes
+        const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        xAxis.setAttribute('x1', margin.left);
+        xAxis.setAttribute('y1', height - margin.bottom);
+        xAxis.setAttribute('x2', width - margin.right);
+        xAxis.setAttribute('y2', height - margin.bottom);
+        xAxis.setAttribute('stroke', '#333');
+        xAxis.setAttribute('stroke-width', '2');
+        svg.appendChild(xAxis);
+
+        const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        yAxis.setAttribute('x1', margin.left);
+        yAxis.setAttribute('y1', margin.top);
+        yAxis.setAttribute('x2', margin.left);
+        yAxis.setAttribute('y2', height - margin.bottom);
+        yAxis.setAttribute('stroke', '#333');
+        yAxis.setAttribute('stroke-width', '2');
+        svg.appendChild(yAxis);
+
+        // Add x-axis label
+        const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        xLabel.setAttribute('x', width / 2);
+        xLabel.setAttribute('y', height - 5);
+        xLabel.setAttribute('text-anchor', 'middle');
+        xLabel.setAttribute('font-size', '12');
+        xLabel.setAttribute('fill', '#333');
+        xLabel.textContent = 'ABV (%)';
+        svg.appendChild(xLabel);
+
+        // Add y-axis label
+        const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        yLabel.setAttribute('x', 10);
+        yLabel.setAttribute('y', 15);
+        yLabel.setAttribute('font-size', '12');
+        yLabel.setAttribute('fill', '#333');
+        yLabel.textContent = 'Count';
+        svg.appendChild(yLabel);
+    }
+
+    /**
+     * Render Maltiness vs Overall Score scatter plot
+     */
+    function renderMaltScoreScatter() {
+        const svg = document.getElementById('malt-score-scatter');
+        if (!svg) return;
+
+        const width = 300;
+        const height = 300;
+        const margin = { top: 20, right: 20, bottom: 40, left: 40 };
+        const chartWidth = width - margin.left - margin.right;
+        const chartHeight = height - margin.top - margin.bottom;
+
+        svg.setAttribute('viewBox', \`0 0 \${width} \${height}\`);
+        svg.innerHTML = '';
+
+        const minMalt = 0;
+        const maxMalt = 10;
+        const minScore = 0;
+        const maxScore = 10;
+
+        // Draw axes
+        const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        xAxis.setAttribute('x1', margin.left);
+        xAxis.setAttribute('y1', height - margin.bottom);
+        xAxis.setAttribute('x2', width - margin.right);
+        xAxis.setAttribute('y2', height - margin.bottom);
+        xAxis.setAttribute('stroke', '#333');
+        xAxis.setAttribute('stroke-width', '2');
+        svg.appendChild(xAxis);
+
+        const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        yAxis.setAttribute('x1', margin.left);
+        yAxis.setAttribute('y1', margin.top);
+        yAxis.setAttribute('x2', margin.left);
+        yAxis.setAttribute('y2', height - margin.bottom);
+        yAxis.setAttribute('stroke', '#333');
+        yAxis.setAttribute('stroke-width', '2');
+        svg.appendChild(yAxis);
+
+        // Draw grid lines
+        for (let i = 2; i <= 10; i += 2) {
+            // Horizontal grid lines (for overall score)
+            const y = margin.top + chartHeight - ((i - minScore) / (maxScore - minScore)) * chartHeight;
+            const hGridLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            hGridLine.setAttribute('x1', margin.left);
+            hGridLine.setAttribute('y1', y);
+            hGridLine.setAttribute('x2', width - margin.right);
+            hGridLine.setAttribute('y2', y);
+            hGridLine.setAttribute('stroke', 'rgba(0, 0, 0, 0.1)');
+            hGridLine.setAttribute('stroke-width', '1');
+            svg.appendChild(hGridLine);
+
+            const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            yLabel.setAttribute('x', margin.left - 5);
+            yLabel.setAttribute('y', y + 3);
+            yLabel.setAttribute('text-anchor', 'end');
+            yLabel.setAttribute('font-size', '10');
+            yLabel.setAttribute('fill', '#666');
+            yLabel.textContent = i;
+            svg.appendChild(yLabel);
+
+            // Vertical grid lines (for maltiness)
+            const x = margin.left + ((i - minMalt) / (maxMalt - minMalt)) * chartWidth;
+            const vGridLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            vGridLine.setAttribute('x1', x);
+            vGridLine.setAttribute('y1', margin.top);
+            vGridLine.setAttribute('x2', x);
+            vGridLine.setAttribute('y2', height - margin.bottom);
+            vGridLine.setAttribute('stroke', 'rgba(0, 0, 0, 0.1)');
+            vGridLine.setAttribute('stroke-width', '1');
+            svg.appendChild(vGridLine);
+
+            const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            xLabel.setAttribute('x', x);
+            xLabel.setAttribute('y', height - margin.bottom + 15);
+            xLabel.setAttribute('text-anchor', 'middle');
+            xLabel.setAttribute('font-size', '10');
+            xLabel.setAttribute('fill', '#666');
+            xLabel.textContent = i;
+            svg.appendChild(xLabel);
+        }
+
+        // Plot points
+        beers.forEach(beer => {
+            const x = margin.left + ((beer.scores.maltiness - minMalt) / (maxMalt - minMalt)) * chartWidth;
+            const y = margin.top + chartHeight - ((beer.scores.overall - minScore) / (maxScore - minScore)) * chartHeight;
+
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', x);
+            circle.setAttribute('cy', y);
+            circle.setAttribute('r', '4');
+            circle.setAttribute('fill', '#007bff');
+            circle.setAttribute('stroke', '#fff');
+            circle.setAttribute('stroke-width', '1');
+            circle.style.cursor = 'pointer';
+
+            circle.addEventListener('mouseenter', function() {
+                this.setAttribute('r', '6');
+                this.setAttribute('fill', '#ffc107');
+            });
+            circle.addEventListener('mouseleave', function() {
+                this.setAttribute('r', '4');
+                this.setAttribute('fill', '#007bff');
+            });
+
+            svg.appendChild(circle);
+        });
+
+        // Add x-axis label
+        const xAxisLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        xAxisLabel.setAttribute('x', width / 2);
+        xAxisLabel.setAttribute('y', height - 5);
+        xAxisLabel.setAttribute('text-anchor', 'middle');
+        xAxisLabel.setAttribute('font-size', '12');
+        xAxisLabel.setAttribute('fill', '#333');
+        xAxisLabel.textContent = 'Maltiness';
+        svg.appendChild(xAxisLabel);
+
+        // Add y-axis label
+        const yAxisLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        yAxisLabel.setAttribute('x', 10);
+        yAxisLabel.setAttribute('y', 15);
+        yAxisLabel.setAttribute('font-size', '12');
+        yAxisLabel.setAttribute('fill', '#333');
+        yAxisLabel.textContent = 'Overall';
+        svg.appendChild(yAxisLabel);
     }
 
     /**

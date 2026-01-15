@@ -95,6 +95,11 @@ const translations_en = {
         sortDate: "Date Added (Newest)",
         priceLabel: "Price",
         priceNotProvided: "Not provided",
+        totalBeers: "Total Beers",
+        statsTitle: "Collection Statistics",
+        statsStyleDistribution: "Beer Style Distribution",
+        statsAbvDistribution: "ABV Distribution",
+        statsMaltVsScore: "Maltiness vs Overall Score",
         // Chart labels - keep in Chinese as they are domain-specific
         labelMalt: "Malt",
         labelDepth: "Depth",

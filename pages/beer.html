@@ -56,9 +56,30 @@
             </div>
         </section>
 
+        <section class="beer-stats">
+            <div class="container">
+                <h2 class="beer-stats__title" data-i18n="beer.statsTitle">Collection Statistics</h2>
+                <div class="beer-stats__grid">
+                    <div class="beer-stats__chart-container">
+                        <h3 class="beer-stats__chart-title" data-i18n="beer.statsStyleDistribution">Beer Style Distribution</h3>
+                        <svg id="style-pie-chart" class="beer-stats__chart"></svg>
+                    </div>
+                    <div class="beer-stats__chart-container">
+                        <h3 class="beer-stats__chart-title" data-i18n="beer.statsAbvDistribution">ABV Distribution</h3>
+                        <svg id="abv-histogram" class="beer-stats__chart"></svg>
+                    </div>
+                    <div class="beer-stats__chart-container">
+                        <h3 class="beer-stats__chart-title" data-i18n="beer.statsMaltVsScore">Maltiness vs Overall Score</h3>
+                        <svg id="malt-score-scatter" class="beer-stats__chart"></svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section class="beer-controls">
             <div class="container">
                 <div class="beer-controls__wrapper">
+                    <span class="beer-controls__count" id="beer-count"></span>
                     <label for="sort-select" class="beer-controls__label" data-i18n="beer.sortLabel">Sort by:</label>
                     <select id="sort-select" class="beer-controls__select">
                         <option value="overall" selected data-i18n="beer.sortOverall">Overall Score</option>
