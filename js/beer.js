@@ -513,6 +513,12 @@
     }
 ];
 
+    // Global filter state
+    let activeFilter = {
+        type: null,  // 'style', 'abv', 'price', or 'maltScore'
+        value: null  // style name, range {min, max}, or {maltiness, overall} for scatter point
+    };
+
     // Wait for DOM to be ready
     document.addEventListener('DOMContentLoaded', function () {
         initializeNavigation();
@@ -533,9 +539,10 @@
             // Re-render with current sort selection
             const sortSelect = document.getElementById('sort-select');
             const currentSort = sortSelect ? sortSelect.value : 'overall';
-            const sortedBeers = sortBeers(beers, currentSort);
+            const filteredBeers = applyFilter(beers);
+            const sortedBeers = sortBeers(filteredBeers, currentSort);
             renderBeerGallery(sortedBeers);
-            updateBeerCount(beers.length);
+            updateBeerCount(filteredBeers.length);
         });
     });
 
@@ -588,11 +595,79 @@
     }
 
     /**
+     * Apply active filter to beer list
+     */
+    function applyFilter(beerList) {
+        if (!activeFilter.type) {
+            return beerList;
+        }
+
+        if (activeFilter.type === 'style') {
+            return beerList.filter(beer => beer.style === activeFilter.value);
+        }
+
+        if (activeFilter.type === 'abv') {
+            return beerList.filter(beer =>
+                beer.abv >= activeFilter.value.min && beer.abv < activeFilter.value.max
+            );
+        }
+
+        if (activeFilter.type === 'price') {
+            return beerList.filter(beer =>
+                beer.price >= activeFilter.value.min && beer.price < activeFilter.value.max
+            );
+        }
+
+        if (activeFilter.type === 'maltScore') {
+            return beerList.filter(beer =>
+                beer.scores.maltiness === activeFilter.value.maltiness &&
+                beer.scores.overall === activeFilter.value.overall
+            );
+        }
+
+        return beerList;
+    }
+
+    /**
+     * Update display with current filter and sort
+     */
+    function updateDisplay() {
+        const sortSelect = document.getElementById('sort-select');
+        const currentSort = sortSelect ? sortSelect.value : 'overall';
+        const filteredBeers = applyFilter(beers);
+        const sortedBeers = sortBeers(filteredBeers, currentSort);
+        renderBeerGallery(sortedBeers);
+        updateBeerCount(filteredBeers.length);
+    }
+
+    /**
+     * Set filter and update display
+     */
+    function setFilter(type, value) {
+        // Toggle off if clicking the same filter
+        if (activeFilter.type === type &&
+            ((type === 'style' && activeFilter.value === value) ||
+             ((type === 'abv' || type === 'price') && activeFilter.value.min === value.min && activeFilter.value.max === value.max) ||
+             (type === 'maltScore' && activeFilter.value.maltiness === value.maltiness && activeFilter.value.overall === value.overall))) {
+            activeFilter = { type: null, value: null };
+        } else {
+            activeFilter = { type, value };
+        }
+
+        // Re-render charts to update visual state
+        renderStatisticsCharts();
+
+        // Update beer display
+        updateDisplay();
+    }
+
+    /**
      * Render all statistics charts
      */
     function renderStatisticsCharts() {
         renderStylePieChart();
         renderAbvHistogram();
+        renderPriceHistogram();
         renderMaltScoreScatter();
     }
 
@@ -661,12 +736,43 @@
             path.setAttribute('stroke-width', '2');
             path.style.cursor = 'pointer';
 
+            // Add tooltip
+            const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+            title.textContent = `${d.style}: ${d.count} beer${d.count > 1 ? 's' : ''}`;
+            path.appendChild(title);
+
+            // Check if this slice is currently filtered
+            const isActive = activeFilter.type === 'style' && activeFilter.value === d.style;
+            const isOtherActive = activeFilter.type === 'style' && activeFilter.value !== d.style;
+
+            // Set initial opacity based on filter state
+            if (isActive) {
+                path.setAttribute('opacity', '1');
+            } else if (isOtherActive) {
+                path.setAttribute('opacity', '0.3');
+            } else {
+                path.setAttribute('opacity', '1');
+            }
+
             // Add hover effect
             path.addEventListener('mouseenter', function() {
-                this.setAttribute('opacity', '0.8');
+                if (!isOtherActive) {
+                    this.setAttribute('opacity', '0.8');
+                }
             });
             path.addEventListener('mouseleave', function() {
-                this.setAttribute('opacity', '1');
+                if (isActive) {
+                    this.setAttribute('opacity', '1');
+                } else if (isOtherActive) {
+                    this.setAttribute('opacity', '0.3');
+                } else {
+                    this.setAttribute('opacity', '1');
+                }
+            });
+
+            // Add click event to filter by style
+            path.addEventListener('click', function() {
+                setFilter('style', d.style);
             });
 
             // Add label
@@ -766,16 +872,46 @@
             rect.setAttribute('y', y);
             rect.setAttribute('width', barWidth);
             rect.setAttribute('height', barHeight);
-            rect.setAttribute('fill', '#007bff');
-            rect.setAttribute('stroke', '#fff');
-            rect.setAttribute('stroke-width', '1');
             rect.style.cursor = 'pointer';
 
+            // Add tooltip
+            const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+            title.textContent = `ABV: ${bin.min.toFixed(1)}%-${bin.max.toFixed(1)}% (${bin.count} beer${bin.count > 1 ? 's' : ''})`;
+            rect.appendChild(title);
+
+            // Check if this bar is currently filtered
+            const isActive = activeFilter.type === 'abv' &&
+                activeFilter.value.min === bin.min &&
+                activeFilter.value.max === bin.max;
+            const isOtherActive = activeFilter.type === 'abv' &&
+                (activeFilter.value.min !== bin.min || activeFilter.value.max !== bin.max);
+
+            // Set fill and opacity based on filter state
+            if (isActive) {
+                rect.setAttribute('fill', '#007bff');
+                rect.setAttribute('opacity', '1');
+            } else if (isOtherActive) {
+                rect.setAttribute('fill', '#007bff');
+                rect.setAttribute('opacity', '0.3');
+            } else {
+                rect.setAttribute('fill', '#007bff');
+                rect.setAttribute('opacity', '1');
+            }
+            rect.setAttribute('stroke', '#fff');
+            rect.setAttribute('stroke-width', '1');
+
             rect.addEventListener('mouseenter', function() {
-                this.setAttribute('fill', '#0056b3');
+                if (!isOtherActive) {
+                    this.setAttribute('fill', '#0056b3');
+                }
             });
             rect.addEventListener('mouseleave', function() {
                 this.setAttribute('fill', '#007bff');
+            });
+
+            // Add click event to filter by ABV range
+            rect.addEventListener('click', function() {
+                setFilter('abv', { min: bin.min, max: bin.max });
             });
 
             // Add count label on top of bar
@@ -820,6 +956,154 @@
         xLabel.setAttribute('font-size', '12');
         xLabel.setAttribute('fill', '#333');
         xLabel.textContent = 'ABV (%)';
+        svg.appendChild(xLabel);
+
+        // Add y-axis label
+        const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        yLabel.setAttribute('x', 10);
+        yLabel.setAttribute('y', 15);
+        yLabel.setAttribute('font-size', '12');
+        yLabel.setAttribute('fill', '#333');
+        yLabel.textContent = 'Count';
+        svg.appendChild(yLabel);
+    }
+
+    /**
+     * Render price distribution histogram
+     */
+    function renderPriceHistogram() {
+        const svg = document.getElementById('price-histogram');
+        if (!svg) return;
+
+        const width = 300;
+        const height = 300;
+        const margin = { top: 20, right: 20, bottom: 40, left: 40 };
+        const chartWidth = width - margin.left - margin.right;
+        const chartHeight = height - margin.top - margin.bottom;
+
+        svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+        svg.innerHTML = '';
+
+        // Filter beers with price data
+        const beersWithPrice = beers.filter(b => b.price && b.price > 0);
+        if (beersWithPrice.length === 0) return;
+
+        // Find price range
+        const prices = beersWithPrice.map(b => b.price);
+        const minPrice = Math.floor(Math.min(...prices));
+        const maxPrice = Math.ceil(Math.max(...prices));
+
+        // Create bins (e.g., $1 increments)
+        const binSize = 1.0;
+        const bins = [];
+        for (let i = minPrice; i < maxPrice; i += binSize) {
+            bins.push({ min: i, max: i + binSize, count: 0 });
+        }
+
+        // Count beers in each bin
+        beersWithPrice.forEach(beer => {
+            const bin = bins.find(b => beer.price >= b.min && beer.price < b.max);
+            if (bin) bin.count++;
+        });
+
+        const maxCount = Math.max(...bins.map(b => b.count));
+
+        // Draw bars
+        const barWidth = chartWidth / bins.length - 2;
+        bins.forEach((bin, i) => {
+            const barHeight = (bin.count / maxCount) * chartHeight;
+            const x = margin.left + i * (chartWidth / bins.length);
+            const y = margin.top + chartHeight - barHeight;
+
+            const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            rect.setAttribute('x', x);
+            rect.setAttribute('y', y);
+            rect.setAttribute('width', barWidth);
+            rect.setAttribute('height', barHeight);
+            rect.style.cursor = 'pointer';
+
+            // Add tooltip
+            const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+            title.textContent = `Price: $${bin.min.toFixed(2)}-$${bin.max.toFixed(2)} (${bin.count} beer${bin.count > 1 ? 's' : ''})`;
+            rect.appendChild(title);
+
+            // Check if this bar is currently filtered
+            const isActive = activeFilter.type === 'price' &&
+                activeFilter.value.min === bin.min &&
+                activeFilter.value.max === bin.max;
+            const isOtherActive = activeFilter.type === 'price' &&
+                (activeFilter.value.min !== bin.min || activeFilter.value.max !== bin.max);
+
+            // Set fill and opacity based on filter state
+            if (isActive) {
+                rect.setAttribute('fill', '#28a745');
+                rect.setAttribute('opacity', '1');
+            } else if (isOtherActive) {
+                rect.setAttribute('fill', '#28a745');
+                rect.setAttribute('opacity', '0.3');
+            } else {
+                rect.setAttribute('fill', '#28a745');
+                rect.setAttribute('opacity', '1');
+            }
+            rect.setAttribute('stroke', '#fff');
+            rect.setAttribute('stroke-width', '1');
+
+            rect.addEventListener('mouseenter', function() {
+                if (!isOtherActive) {
+                    this.setAttribute('fill', '#1e7e34');
+                }
+            });
+            rect.addEventListener('mouseleave', function() {
+                this.setAttribute('fill', '#28a745');
+            });
+
+            // Add click event to filter by price range
+            rect.addEventListener('click', function() {
+                setFilter('price', { min: bin.min, max: bin.max });
+            });
+
+            // Add count label on top of bar
+            if (bin.count > 0) {
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', x + barWidth / 2);
+                text.setAttribute('y', y - 5);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-size', '10');
+                text.setAttribute('fill', '#333');
+                text.textContent = bin.count;
+                svg.appendChild(text);
+            }
+
+            svg.appendChild(rect);
+        });
+
+        // Draw axes
+        const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        xAxis.setAttribute('x1', margin.left);
+        xAxis.setAttribute('y1', height - margin.bottom);
+        xAxis.setAttribute('x2', width - margin.right);
+        xAxis.setAttribute('y2', height - margin.bottom);
+        xAxis.setAttribute('stroke', '#333');
+        xAxis.setAttribute('stroke-width', '2');
+        svg.appendChild(xAxis);
+
+        const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        yAxis.setAttribute('x1', margin.left);
+        yAxis.setAttribute('y1', margin.top);
+        yAxis.setAttribute('x2', margin.left);
+        yAxis.setAttribute('y2', height - margin.bottom);
+        yAxis.setAttribute('stroke', '#333');
+        yAxis.setAttribute('stroke-width', '2');
+        svg.appendChild(yAxis);
+
+        // Add x-axis label
+        const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        xLabel.setAttribute('x', width / 2);
+        xLabel.setAttribute('y', height - 5);
+        xLabel.setAttribute('text-anchor', 'middle');
+        xLabel.setAttribute('font-size', '12');
+        xLabel.setAttribute('fill', '#333');
+        xLabel.textContent = 'Price ($)';
         svg.appendChild(xLabel);
 
         // Add y-axis label
@@ -915,27 +1199,138 @@
             svg.appendChild(xLabel);
         }
 
-        // Plot points
+        // Group beers by same maltiness and overall score
+        const pointGroups = {};
         beers.forEach(beer => {
-            const x = margin.left + ((beer.scores.maltiness - minMalt) / (maxMalt - minMalt)) * chartWidth;
-            const y = margin.top + chartHeight - ((beer.scores.overall - minScore) / (maxScore - minScore)) * chartHeight;
+            const key = `${beer.scores.maltiness},${beer.scores.overall}`;
+            if (!pointGroups[key]) {
+                pointGroups[key] = [];
+            }
+            pointGroups[key].push(beer);
+        });
 
+        // Store circles and labels for two-pass rendering
+        const circlesData = [];
+
+        // First pass: Create text labels and prepare circle data
+        Object.entries(pointGroups).forEach(([key, beersAtPoint]) => {
+            const maltiness = beersAtPoint[0].scores.maltiness;
+            const overall = beersAtPoint[0].scores.overall;
+            const x = margin.left + ((maltiness - minMalt) / (maxMalt - minMalt)) * chartWidth;
+            const y = margin.top + chartHeight - ((overall - minScore) / (maxScore - minScore)) * chartHeight;
+
+            // Check if this point is currently filtered
+            const isActive = activeFilter.type === 'maltScore' &&
+                activeFilter.value.maltiness === maltiness &&
+                activeFilter.value.overall === overall;
+            const isOtherActive = activeFilter.type === 'maltScore' &&
+                (activeFilter.value.maltiness !== maltiness || activeFilter.value.overall !== overall);
+
+            // Prepare beer names for display (max 3, each on new line with number prefix)
+            const beerNamesArray = beersAtPoint.slice(0, 3).map((b, idx) => `${idx + 1}. ${b.name}`);
+            if (beersAtPoint.length > 3) {
+                beerNamesArray.push('...');
+            }
+
+            // Create label group for hover with background
+            const labelGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            labelGroup.setAttribute('pointer-events', 'none');
+            labelGroup.style.display = 'none';
+
+            // Background rectangle
+            const bgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            bgRect.setAttribute('fill', 'rgba(255, 255, 255, 0.95)');
+            bgRect.setAttribute('stroke', '#333');
+            bgRect.setAttribute('stroke-width', '1');
+            bgRect.setAttribute('rx', '3');
+
+            // Create text lines (one per beer)
+            const lineHeight = 12;
+            const startY = y - 10 - (beerNamesArray.length * lineHeight);
+            const maxTextWidth = Math.max(...beerNamesArray.map(n => n.length)) * 6;
+            const padding = 4;
+
+            beerNamesArray.forEach((name, idx) => {
+                const textLine = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                textLine.setAttribute('x', x + 10);
+                textLine.setAttribute('y', startY + (idx * lineHeight) + 10);
+                textLine.setAttribute('font-size', '10');
+                textLine.setAttribute('fill', '#333');
+                textLine.setAttribute('font-weight', 'bold');
+                textLine.textContent = name;
+                labelGroup.appendChild(textLine);
+            });
+
+            // Set background rectangle dimensions
+            bgRect.setAttribute('x', x + 10 - padding);
+            bgRect.setAttribute('y', startY);
+            bgRect.setAttribute('width', maxTextWidth + padding * 2);
+            bgRect.setAttribute('height', beerNamesArray.length * lineHeight + padding);
+            labelGroup.insertBefore(bgRect, labelGroup.firstChild);
+
+            svg.appendChild(labelGroup);
+
+            // Store circle data for second pass
+            circlesData.push({
+                x, y, maltiness, overall, isActive, isOtherActive,
+                beersAtPoint, labelGroup, beerNamesArray
+            });
+        });
+
+        // Second pass: Create and append circles (so they appear on top)
+        circlesData.forEach(data => {
+            const { x, y, maltiness, overall, isActive, isOtherActive, beersAtPoint, labelGroup, beerNamesArray } = data;
+
+            // Create circle
             const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
             circle.setAttribute('cx', x);
             circle.setAttribute('cy', y);
             circle.setAttribute('r', '4');
-            circle.setAttribute('fill', '#007bff');
-            circle.setAttribute('stroke', '#fff');
-            circle.setAttribute('stroke-width', '1');
             circle.style.cursor = 'pointer';
 
+            // Set fill and opacity based on filter state
+            if (isActive) {
+                circle.setAttribute('fill', '#ffc107');
+                circle.setAttribute('opacity', '1');
+            } else if (isOtherActive) {
+                circle.setAttribute('fill', '#007bff');
+                circle.setAttribute('opacity', '0.3');
+            } else {
+                circle.setAttribute('fill', '#007bff');
+                circle.setAttribute('opacity', '1');
+            }
+            circle.setAttribute('stroke', '#fff');
+            circle.setAttribute('stroke-width', '1');
+
+            // Create tooltip (native browser tooltip)
+            const tooltipText = beerNamesArray.join('\n');
+            const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+            title.textContent = `${tooltipText}\nMalt: ${maltiness}, Overall: ${overall}`;
+            circle.appendChild(title);
+
+            // Hover effects
             circle.addEventListener('mouseenter', function() {
-                this.setAttribute('r', '6');
-                this.setAttribute('fill', '#ffc107');
+                if (!isOtherActive) {
+                    this.setAttribute('r', '6');
+                    this.setAttribute('fill', '#ffc107');
+                    labelGroup.style.display = 'block';
+                    // Move labelGroup to end of SVG so it appears on top of all circles
+                    svg.appendChild(labelGroup);
+                }
             });
             circle.addEventListener('mouseleave', function() {
                 this.setAttribute('r', '4');
-                this.setAttribute('fill', '#007bff');
+                if (isActive) {
+                    this.setAttribute('fill', '#ffc107');
+                } else {
+                    this.setAttribute('fill', '#007bff');
+                }
+                labelGroup.style.display = 'none';
+            });
+
+            // Click to filter
+            circle.addEventListener('click', function() {
+                setFilter('maltScore', { maltiness, overall });
             });
 
             svg.appendChild(circle);
@@ -1308,9 +1703,7 @@
         if (!sortSelect) return;
 
         sortSelect.addEventListener('change', function () {
-            const sortBy = this.value;
-            const sortedBeers = sortBeers(beers, sortBy);
-            renderBeerGallery(sortedBeers);
+            updateDisplay();
         });
     }
 

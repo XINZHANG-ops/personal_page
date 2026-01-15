@@ -99,6 +99,7 @@ const translations_zh = {
         statsTitle: "收藏统计",
         statsStyleDistribution: "啤酒风格分布",
         statsAbvDistribution: "酒精度分布",
+        statsPriceDistribution: "价格分布",
         statsMaltVsScore: "麦芽香与综合评分",
         // 图表标签 - 保持中文，因为这些是特定领域术语
         labelMalt: "麦芽",

@@ -99,6 +99,7 @@ const translations_en = {
         statsTitle: "Collection Statistics",
         statsStyleDistribution: "Beer Style Distribution",
         statsAbvDistribution: "ABV Distribution",
+        statsPriceDistribution: "Price Distribution",
         statsMaltVsScore: "Maltiness vs Overall Score",
         // Chart labels - keep in Chinese as they are domain-specific
         labelMalt: "Malt",
