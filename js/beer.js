@@ -546,6 +546,24 @@
             "otherAromas": 2,
             "overall": 6.5
         }
+    },
+    {
+        "id": "busch-light",
+        "name": "Busch Light",
+        "style": "Lager",
+        "abv": 4,
+        "date": "2026-01-15",
+        "price": 2.55,
+        "imageUrl": "../assets/images/beers/busch-light.jpg",
+        "notes": "It tastes almost flavorless—there’s no real bitterness, sweetness, or aroma, just a very faint, basic taste. Perhaps it’s only in this overall light, muted profile that a slight hint of malt can be perceived.",
+        "scores": {
+            "maltiness": 6,
+            "colorDepth": 7.5,
+            "clarity": 9.5,
+            "bitterness": 1,
+            "otherAromas": 1,
+            "overall": 7
+        }
     }
 ];
 
