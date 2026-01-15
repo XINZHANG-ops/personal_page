@@ -456,6 +456,24 @@
             "otherAromas": 7,
             "overall": 6
         }
+    },
+    {
+        "id": "burdock-brewery-deluxe",
+        "name": "Burdock Brewery Deluxe",
+        "style": "Lager",
+        "abv": 4.5,
+        "date": "2026-01-14",
+        "price": 4.5,
+        "imageUrl": "../assets/images/beers/burdock-brewery-deluxe.jpg",
+        "notes": "It has a fairly typical first impression, with that initial hop-driven hit. What sets this one apart is the mid-palate, where there’s a pleasantly sweet, malty aroma that’s noticeably richer than in most of the beers I’ve tasted, which earns it quite a few extra points.",
+        "scores": {
+            "maltiness": 4.5,
+            "colorDepth": 7,
+            "clarity": 9.5,
+            "bitterness": 4.5,
+            "otherAromas": 2,
+            "overall": 7
+        }
     }
 ];
 
