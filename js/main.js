@@ -46,16 +46,6 @@
     // To add new writing entries, simply add objects to this array following the same structure
     const writings = [
         {
-            id: "show-case-blog",
-            title: "Kaiming He",
-            type: "blog-post",
-            venue: "Medium",
-            date: "2025-05-23",
-            summary: "Introduction of Kaiming He and his famouse ResNet.",
-            url: "https://medium.com/@1528371521zx/kaiming-he-aa980c688eff",
-            tags: ["ResNet", "Kaiming He"]
-        },
-        {
             id: "medium-blog-post",
             title: "My Medium Blog",
             type: "blog-post",
@@ -66,14 +56,14 @@
             tags: ["AI", "AI Characters"]
         },
         {
-            id: "show-case-reading",
-            title: "mHC: Manifold-Constrained Hyper-Connections",
-            type: "paper-reading",
-            venue: "ArXiv",
-            date: "2026-01-02",
-            summary: "My take away for paper mHC: Manifold-Constrained Hyper-Connections.",
-            url: "https://xinzhang-ops.github.io/daily_paper/dailies/pages/2026-01-02.html",
-            tags: ["ResNet", "Manifold-Constrained Hyper-Connections (mHC)", "Transformer"]
+            id: "show-case-blog",
+            title: "Kaiming He",
+            type: "blog-post",
+            venue: "Medium",
+            date: "2025-05-23",
+            summary: "Introduction of Kaiming He and his famouse ResNet.",
+            url: "https://medium.com/@1528371521zx/kaiming-he-aa980c688eff",
+            tags: ["ResNet", "Kaiming He"]
         },
         {
             id: "paper-reading-github-pages",
@@ -84,6 +74,16 @@
             summary: "My Daily Paper Reading and take aways.",
             url: "https://xinzhang-ops.github.io/daily_paper/index.html",
             tags: ["ML", "AI"]
+        },
+        {
+            id: "show-case-reading",
+            title: "mHC: Manifold-Constrained Hyper-Connections",
+            type: "paper-reading",
+            venue: "ArXiv",
+            date: "2026-01-02",
+            summary: "My take away for paper mHC: Manifold-Constrained Hyper-Connections.",
+            url: "https://xinzhang-ops.github.io/daily_paper/dailies/pages/2026-01-02.html",
+            tags: ["ResNet", "Manifold-Constrained Hyper-Connections (mHC)", "Transformer"]
         }
     ];
 
