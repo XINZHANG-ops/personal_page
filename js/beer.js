@@ -467,7 +467,7 @@
         "imageUrl": "../assets/images/beers/burdock-brewery-deluxe.jpg",
         "notes": "It has a fairly typical first impression, with that initial hop-driven hit. What sets this one apart is the mid-palate, where there’s a pleasantly sweet, malty aroma that’s noticeably richer than in most of the beers I’ve tasted, which earns it quite a few extra points.",
         "scores": {
-            "maltiness": 4.5,
+            "maltiness": 6.5,
             "colorDepth": 7,
             "clarity": 9.5,
             "bitterness": 4.5,
