@@ -474,6 +474,24 @@
             "otherAromas": 2,
             "overall": 7
         }
+    },
+    {
+        "id": "prince-eddys-dunkle-lager",
+        "name": "Prince Eddy's Dunkle Lager",
+        "style": "Lager",
+        "abv": 4.5,
+        "date": "2026-01-14",
+        "price": 3.85,
+        "imageUrl": "../assets/images/beers/prince-eddys-dunkle-lager.jpg",
+        "notes": "It tastes pretty much like what you’d expect from a dark lager: there’s a burnt, caramelized note on the first sip, and the overall flavor is quite heavy. I’m not particularly fond of this style.",
+        "scores": {
+            "maltiness": 2,
+            "colorDepth": 2,
+            "clarity": 9.5,
+            "bitterness": 3.5,
+            "otherAromas": 5.5,
+            "overall": 3.5
+        }
     }
 ];
 
