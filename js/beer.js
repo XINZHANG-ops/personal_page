@@ -754,11 +754,6 @@
             path.setAttribute('stroke-width', '2');
             path.style.cursor = 'pointer';
 
-            // Add tooltip
-            const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
-            title.textContent = `${d.style}: ${d.count} beer${d.count > 1 ? 's' : ''}`;
-            path.appendChild(title);
-
             // Check if this slice is currently filtered
             const isActive = activeFilter.type === 'style' && activeFilter.value === d.style;
             const isOtherActive = activeFilter.type === 'style' && activeFilter.value !== d.style;
@@ -772,10 +767,46 @@
                 path.setAttribute('opacity', '1');
             }
 
+            // Create label group for hover
+            const labelGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            labelGroup.setAttribute('pointer-events', 'none');
+            labelGroup.style.display = 'none';
+
+            const labelText = `${d.style}: ${d.count} beer${d.count > 1 ? 's' : ''}`;
+            const textWidth = labelText.length * 6;
+            const padding = 6;
+
+            // Background rectangle
+            const bgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            bgRect.setAttribute('x', centerX - textWidth / 2 - padding);
+            bgRect.setAttribute('y', centerY - 25);
+            bgRect.setAttribute('width', textWidth + padding * 2);
+            bgRect.setAttribute('height', 18);
+            bgRect.setAttribute('fill', 'rgba(255, 255, 255, 0.95)');
+            bgRect.setAttribute('stroke', '#333');
+            bgRect.setAttribute('stroke-width', '1');
+            bgRect.setAttribute('rx', '3');
+            labelGroup.appendChild(bgRect);
+
+            // Text
+            const textElem = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            textElem.setAttribute('x', centerX);
+            textElem.setAttribute('y', centerY - 13);
+            textElem.setAttribute('text-anchor', 'middle');
+            textElem.setAttribute('font-size', '11');
+            textElem.setAttribute('fill', '#333');
+            textElem.setAttribute('font-weight', 'bold');
+            textElem.textContent = labelText;
+            labelGroup.appendChild(textElem);
+
+            svg.appendChild(labelGroup);
+
             // Add hover effect
             path.addEventListener('mouseenter', function() {
                 if (!isOtherActive) {
                     this.setAttribute('opacity', '0.8');
+                    labelGroup.style.display = 'block';
+                    svg.appendChild(labelGroup);
                 }
             });
             path.addEventListener('mouseleave', function() {
@@ -786,6 +817,7 @@
                 } else {
                     this.setAttribute('opacity', '1');
                 }
+                labelGroup.style.display = 'none';
             });
 
             // Add click event to filter by style
@@ -892,11 +924,6 @@
             rect.setAttribute('height', barHeight);
             rect.style.cursor = 'pointer';
 
-            // Add tooltip
-            const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
-            title.textContent = `ABV: ${bin.min.toFixed(1)}%-${bin.max.toFixed(1)}% (${bin.count} beer${bin.count > 1 ? 's' : ''})`;
-            rect.appendChild(title);
-
             // Check if this bar is currently filtered
             const isActive = activeFilter.type === 'abv' &&
                 activeFilter.value.min === bin.min &&
@@ -918,13 +945,50 @@
             rect.setAttribute('stroke', '#fff');
             rect.setAttribute('stroke-width', '1');
 
+            // Create label group for hover
+            const labelGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            labelGroup.setAttribute('pointer-events', 'none');
+            labelGroup.style.display = 'none';
+
+            const labelText = `ABV: ${bin.min.toFixed(1)}%-${bin.max.toFixed(1)}% (${bin.count} beer${bin.count > 1 ? 's' : ''})`;
+            const textWidth = labelText.length * 5.5;
+            const padding = 6;
+
+            // Background rectangle
+            const bgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            bgRect.setAttribute('x', x + barWidth / 2 - textWidth / 2 - padding);
+            bgRect.setAttribute('y', y - 25);
+            bgRect.setAttribute('width', textWidth + padding * 2);
+            bgRect.setAttribute('height', 18);
+            bgRect.setAttribute('fill', 'rgba(255, 255, 255, 0.95)');
+            bgRect.setAttribute('stroke', '#333');
+            bgRect.setAttribute('stroke-width', '1');
+            bgRect.setAttribute('rx', '3');
+            labelGroup.appendChild(bgRect);
+
+            // Text
+            const textElem = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            textElem.setAttribute('x', x + barWidth / 2);
+            textElem.setAttribute('y', y - 13);
+            textElem.setAttribute('text-anchor', 'middle');
+            textElem.setAttribute('font-size', '10');
+            textElem.setAttribute('fill', '#333');
+            textElem.setAttribute('font-weight', 'bold');
+            textElem.textContent = labelText;
+            labelGroup.appendChild(textElem);
+
+            svg.appendChild(labelGroup);
+
             rect.addEventListener('mouseenter', function() {
                 if (!isOtherActive) {
                     this.setAttribute('fill', '#0056b3');
+                    labelGroup.style.display = 'block';
+                    svg.appendChild(labelGroup);
                 }
             });
             rect.addEventListener('mouseleave', function() {
                 this.setAttribute('fill', '#007bff');
+                labelGroup.style.display = 'none';
             });
 
             // Add click event to filter by ABV range
@@ -1040,11 +1104,6 @@
             rect.setAttribute('height', barHeight);
             rect.style.cursor = 'pointer';
 
-            // Add tooltip
-            const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
-            title.textContent = `Price: $${bin.min.toFixed(2)}-$${bin.max.toFixed(2)} (${bin.count} beer${bin.count > 1 ? 's' : ''})`;
-            rect.appendChild(title);
-
             // Check if this bar is currently filtered
             const isActive = activeFilter.type === 'price' &&
                 activeFilter.value.min === bin.min &&
@@ -1066,13 +1125,50 @@
             rect.setAttribute('stroke', '#fff');
             rect.setAttribute('stroke-width', '1');
 
+            // Create label group for hover
+            const labelGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            labelGroup.setAttribute('pointer-events', 'none');
+            labelGroup.style.display = 'none';
+
+            const labelText = `Price: $${bin.min.toFixed(2)}-$${bin.max.toFixed(2)} (${bin.count} beer${bin.count > 1 ? 's' : ''})`;
+            const textWidth = labelText.length * 5.5;
+            const padding = 6;
+
+            // Background rectangle
+            const bgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            bgRect.setAttribute('x', x + barWidth / 2 - textWidth / 2 - padding);
+            bgRect.setAttribute('y', y - 25);
+            bgRect.setAttribute('width', textWidth + padding * 2);
+            bgRect.setAttribute('height', 18);
+            bgRect.setAttribute('fill', 'rgba(255, 255, 255, 0.95)');
+            bgRect.setAttribute('stroke', '#333');
+            bgRect.setAttribute('stroke-width', '1');
+            bgRect.setAttribute('rx', '3');
+            labelGroup.appendChild(bgRect);
+
+            // Text
+            const textElem = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            textElem.setAttribute('x', x + barWidth / 2);
+            textElem.setAttribute('y', y - 13);
+            textElem.setAttribute('text-anchor', 'middle');
+            textElem.setAttribute('font-size', '10');
+            textElem.setAttribute('fill', '#333');
+            textElem.setAttribute('font-weight', 'bold');
+            textElem.textContent = labelText;
+            labelGroup.appendChild(textElem);
+
+            svg.appendChild(labelGroup);
+
             rect.addEventListener('mouseenter', function() {
                 if (!isOtherActive) {
                     this.setAttribute('fill', '#1e7e34');
+                    labelGroup.style.display = 'block';
+                    svg.appendChild(labelGroup);
                 }
             });
             rect.addEventListener('mouseleave', function() {
                 this.setAttribute('fill', '#28a745');
+                labelGroup.style.display = 'none';
             });
 
             // Add click event to filter by price range
