@@ -492,6 +492,24 @@
             "otherAromas": 5.5,
             "overall": 3.5
         }
+    },
+    {
+        "id": "sneaky-weasel-lager",
+        "name": "SNEAKY WEASEL LAGER",
+        "style": "Lager",
+        "abv": 5.6,
+        "date": "2026-01-14",
+        "price": 1.75,
+        "imageUrl": "../assets/images/beers/sneaky-weasel-lager.jpg",
+        "notes": "After the first sip, there’s a very strong fermented yeast note, along with what seems like a corn-like flavor. After tasting it a few more times, it really comes across as an intense yeast character. Beyond that, there isn’t much of an after-aroma to speak of.",
+        "scores": {
+            "maltiness": 3,
+            "colorDepth": 8,
+            "clarity": 9.5,
+            "bitterness": 3,
+            "otherAromas": 5,
+            "overall": 4
+        }
     }
 ];
 
