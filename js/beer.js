@@ -591,14 +591,14 @@
         "date": "2026-01-15",
         "price": 4.25,
         "imageUrl": "../assets/images/beers/crest-super-lager.jpg",
-        "notes": "It’s definitely a high-ABV beer. I’m not sure why, but it actually feels harsher than wine at a similar alcohol level. There’s no bitterness at all on the first sip—instead, it’s quite sweet, followed by a strong alcohol presence. If you’re just looking for that dizzy, buzzed feeling rather than any particular flavor, this one would do the job.",
+        "notes": "It’s definitely a high-ABV beer. I’m not sure why, but it actually feels harsher than wine at a similar alcohol level. There’s no bitterness at all on the first sip—instead, it’s quite sweet, there’s even a hint reminiscent of rice wine, followed by a strong alcohol presence. If you’re just looking for that dizzy, buzzed feeling rather than any particular flavor, this one would do the job.",
         "scores": {
             "maltiness": 1.5,
             "colorDepth": 6,
             "clarity": 9.5,
             "bitterness": 1.5,
             "otherAromas": 1.5,
-            "overall": 5.5
+            "overall": 5
         }
     }
 ];
