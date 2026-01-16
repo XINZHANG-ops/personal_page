@@ -779,11 +779,12 @@
             .map(([style, count]) => ({ style, count }))
             .sort((a, b) => b.count - a.count);
 
-        // Modern color palette with better visual appeal
+        // Modern color palette with deeper, richer colors (15 distinct colors)
         const colors = [
-            '#4A90E2', '#7B68EE', '#50C878', '#FFB347',
-            '#FF6B9D', '#00CED1', '#FF7F50', '#9370DB',
-            '#20B2AA', '#DDA0DD'
+            '#3A7BC8', '#6A5ACD', '#3CB371', '#FFA500',
+            '#E6537D', '#20B2AA', '#FF6347', '#8B4789',
+            '#1E8B8B', '#BA55D3', '#CD853F', '#4169E1',
+            '#32CD32', '#FF1493', '#8B7355'
         ];
 
         const width = 300;
@@ -1048,13 +1049,13 @@
 
             // Set fill and opacity based on filter state with rounded corners
             if (isActive) {
-                rect.setAttribute('fill', '#5B9BD5');
+                rect.setAttribute('fill', '#4682B4');
                 rect.setAttribute('opacity', '1');
             } else if (isOtherActive) {
-                rect.setAttribute('fill', '#5B9BD5');
+                rect.setAttribute('fill', '#4682B4');
                 rect.setAttribute('opacity', '0.3');
             } else {
-                rect.setAttribute('fill', '#5B9BD5');
+                rect.setAttribute('fill', '#4682B4');
                 rect.setAttribute('opacity', '1');
             }
             rect.setAttribute('stroke', '#fff');
@@ -1098,14 +1099,14 @@
 
             rect.addEventListener('mouseenter', function() {
                 if (!isOtherActive) {
-                    this.setAttribute('fill', '#4178BE');
+                    this.setAttribute('fill', '#36648B');
                     this.style.filter = 'url(#drop-shadow)';
                     labelGroup.style.display = 'block';
                     svg.appendChild(labelGroup);
                 }
             });
             rect.addEventListener('mouseleave', function() {
-                this.setAttribute('fill', '#5B9BD5');
+                this.setAttribute('fill', '#4682B4');
                 this.style.filter = '';
                 labelGroup.style.display = 'none';
             });
@@ -1235,13 +1236,13 @@
 
             // Set fill and opacity based on filter state with rounded corners
             if (isActive) {
-                rect.setAttribute('fill', '#70C1B3');
+                rect.setAttribute('fill', '#48A999');
                 rect.setAttribute('opacity', '1');
             } else if (isOtherActive) {
-                rect.setAttribute('fill', '#70C1B3');
+                rect.setAttribute('fill', '#48A999');
                 rect.setAttribute('opacity', '0.3');
             } else {
-                rect.setAttribute('fill', '#70C1B3');
+                rect.setAttribute('fill', '#48A999');
                 rect.setAttribute('opacity', '1');
             }
             rect.setAttribute('stroke', '#fff');
@@ -1285,14 +1286,14 @@
 
             rect.addEventListener('mouseenter', function() {
                 if (!isOtherActive) {
-                    this.setAttribute('fill', '#5AAA95');
+                    this.setAttribute('fill', '#3A8B7A');
                     this.style.filter = 'url(#drop-shadow)';
                     labelGroup.style.display = 'block';
                     svg.appendChild(labelGroup);
                 }
             });
             rect.addEventListener('mouseleave', function() {
-                this.setAttribute('fill', '#70C1B3');
+                this.setAttribute('fill', '#48A999');
                 this.style.filter = '';
                 labelGroup.style.display = 'none';
             });
@@ -1528,23 +1529,43 @@
         const maxBeerCount = Math.max(...beerCounts);
 
         // Function to calculate radius based on beer count
-        // Scale by area (area proportional to beer count)
+        // Area is directly proportional to beer count
         const getRadius = (beerCount) => {
             if (maxBeerCount === minBeerCount) {
                 // If all points have same count, use middle size
                 return (minRadiusLimit + maxRadiusLimit) / 2;
             }
-            // We want area to be proportional to beer count
-            // Area = π * r^2, so if we want area ratio = count ratio,
-            // then r^2 ratio = count ratio, so r ratio = sqrt(count ratio)
 
-            // Calculate area limits
+            // We want: area_at_count / area_at_min = count / minCount
+            // So: area_at_count = (count / minCount) * area_at_min
+            // But we also need: area_at_max corresponds to maxCount
+            // So: area_at_min = (minCount / maxCount) * area_at_max
+
+            // Work backwards from the constraints:
+            // At minCount: use minRadiusLimit, so area = π * minRadiusLimit²
+            // At maxCount: use maxRadiusLimit, so area = π * maxRadiusLimit²
+            // For count beers: area should be proportional to count
+
+            // Scale factor to make minCount → minRadius and maxCount → maxRadius
+            // area(count) = k * count, where k is chosen such that:
+            // k * minCount = π * minRadiusLimit²
+            // k * maxCount = π * maxRadiusLimit²
+            // But these two constraints conflict unless we scale differently
+
+            // Better approach: scale area linearly with count within our min/max bounds
             const minArea = Math.PI * minRadiusLimit * minRadiusLimit;
             const maxArea = Math.PI * maxRadiusLimit * maxRadiusLimit;
 
-            // Linear interpolation of area based on beer count
-            const areaRatio = (beerCount - minBeerCount) / (maxBeerCount - minBeerCount);
-            const targetArea = minArea + areaRatio * (maxArea - minArea);
+            // Area should grow proportionally: area(n) / area(min) = n / min
+            // So area(n) = area(min) * (n / min)
+            // But we need to fit this into [minArea, maxArea] range
+            // Let's use: area(n) = baseArea * (n / minCount)
+            // where baseArea is chosen so that area(maxCount) = maxArea
+            // baseArea * (maxCount / minCount) = maxArea
+            // baseArea = maxArea * (minCount / maxCount)
+
+            const baseArea = maxArea * (minBeerCount / maxBeerCount);
+            const targetArea = baseArea * (beerCount / minBeerCount);
 
             // Convert area back to radius: r = sqrt(area / π)
             return Math.sqrt(targetArea / Math.PI);
