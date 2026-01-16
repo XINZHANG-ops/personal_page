@@ -976,7 +976,10 @@
         }
 
         beers.forEach(beer => {
-            const bin = bins.find(b => beer.abv >= b.min && beer.abv < b.max);
+            // For the last bin, use <= to include the max value (e.g., ABV = 10.0)
+            const bin = bins.find((b, idx) =>
+                beer.abv >= b.min && (idx === bins.length - 1 ? beer.abv <= b.max : beer.abv < b.max)
+            );
             if (bin) bin.count++;
         });
 
@@ -1156,7 +1159,10 @@
 
         // Count beers in each bin
         beersWithPrice.forEach(beer => {
-            const bin = bins.find(b => beer.price >= b.min && beer.price < b.max);
+            // For the last bin, use <= to include the max value
+            const bin = bins.find((b, idx) =>
+                beer.price >= b.min && (idx === bins.length - 1 ? beer.price <= b.max : beer.price < b.max)
+            );
             if (bin) bin.count++;
         });
 
