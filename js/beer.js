@@ -564,6 +564,24 @@
             "otherAromas": 1,
             "overall": 7
         }
+    },
+    {
+        "id": "lezajsk-beer",
+        "name": "Lezajsk Beer",
+        "style": "Lager",
+        "abv": 5.3,
+        "date": "2026-01-15",
+        "price": 2.9,
+        "imageUrl": "../assets/images/beers/lezajsk-beer.jpg",
+        "notes": "It has that medicinal, herbal-liquor kind of flavor again. It tastes bitter as soon as you drink it, followed by a lingering, consistently bitter herbal note.",
+        "scores": {
+            "maltiness": 2,
+            "colorDepth": 6.5,
+            "clarity": 9.5,
+            "bitterness": 6,
+            "otherAromas": 3,
+            "overall": 3.5
+        }
     }
 ];
 
