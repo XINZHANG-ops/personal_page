@@ -600,6 +600,24 @@
             "otherAromas": 1.5,
             "overall": 5
         }
+    },
+    {
+        "id": "amsterdam-3-speed-lager",
+        "name": "Amsterdam 3 Speed Lager",
+        "style": "Lager",
+        "abv": 4.2,
+        "date": "2026-01-16",
+        "price": 3.6,
+        "imageUrl": "../assets/images/beers/amsterdam-3-speed-lager.jpg",
+        "notes": "This has a classic light beer profile. It’s crisp on the first sip, followed by a subtle malty aftertaste. Overall, it’s quite a pleasant beer.",
+        "scores": {
+            "maltiness": 8,
+            "colorDepth": 9,
+            "clarity": 9.5,
+            "bitterness": 1.5,
+            "otherAromas": 1.5,
+            "overall": 8.5
+        }
     }
 ];
 
