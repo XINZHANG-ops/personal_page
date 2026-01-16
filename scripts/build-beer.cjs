@@ -155,13 +155,13 @@ if (fs.existsSync(TEMPLATE_FILE)) {
 
         if (activeFilter.type === 'abv') {
             return beerList.filter(beer =>
-                beer.abv >= activeFilter.value.min && beer.abv < activeFilter.value.max
+                beer.abv >= activeFilter.value.min && beer.abv <= activeFilter.value.max
             );
         }
 
         if (activeFilter.type === 'price') {
             return beerList.filter(beer =>
-                beer.price >= activeFilter.value.min && beer.price < activeFilter.value.max
+                beer.price >= activeFilter.value.min && beer.price <= activeFilter.value.max
             );
         }
 
