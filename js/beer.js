@@ -779,11 +779,11 @@
             .map(([style, count]) => ({ style, count }))
             .sort((a, b) => b.count - a.count);
 
-        // Colors from your theme
+        // Modern color palette with better visual appeal
         const colors = [
-            '#007bff', '#17a2b8', '#28a745', '#ffc107',
-            '#dc3545', '#6610f2', '#fd7e14', '#20c997',
-            '#e83e8c', '#6c757d'
+            '#4A90E2', '#7B68EE', '#50C878', '#FFB347',
+            '#FF6B9D', '#00CED1', '#FF7F50', '#9370DB',
+            '#20B2AA', '#DDA0DD'
         ];
 
         const width = 300;
@@ -794,6 +794,44 @@
 
         svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
         svg.innerHTML = '';
+
+        // Add drop shadow filter
+        const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+        const filter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
+        filter.setAttribute('id', 'drop-shadow');
+        filter.setAttribute('x', '-50%');
+        filter.setAttribute('y', '-50%');
+        filter.setAttribute('width', '200%');
+        filter.setAttribute('height', '200%');
+
+        const feGaussianBlur = document.createElementNS('http://www.w3.org/2000/svg', 'feGaussianBlur');
+        feGaussianBlur.setAttribute('in', 'SourceAlpha');
+        feGaussianBlur.setAttribute('stdDeviation', '3');
+        filter.appendChild(feGaussianBlur);
+
+        const feOffset = document.createElementNS('http://www.w3.org/2000/svg', 'feOffset');
+        feOffset.setAttribute('dx', '0');
+        feOffset.setAttribute('dy', '2');
+        feOffset.setAttribute('result', 'offsetblur');
+        filter.appendChild(feOffset);
+
+        const feComponentTransfer = document.createElementNS('http://www.w3.org/2000/svg', 'feComponentTransfer');
+        const feFuncA = document.createElementNS('http://www.w3.org/2000/svg', 'feFuncA');
+        feFuncA.setAttribute('type', 'linear');
+        feFuncA.setAttribute('slope', '0.3');
+        feComponentTransfer.appendChild(feFuncA);
+        filter.appendChild(feComponentTransfer);
+
+        const feMerge = document.createElementNS('http://www.w3.org/2000/svg', 'feMerge');
+        const feMergeNode1 = document.createElementNS('http://www.w3.org/2000/svg', 'feMergeNode');
+        const feMergeNode2 = document.createElementNS('http://www.w3.org/2000/svg', 'feMergeNode');
+        feMergeNode2.setAttribute('in', 'SourceGraphic');
+        feMerge.appendChild(feMergeNode1);
+        feMerge.appendChild(feMergeNode2);
+        filter.appendChild(feMerge);
+
+        defs.appendChild(filter);
+        svg.appendChild(defs);
 
         // Calculate total for percentages
         const total = styleData.reduce((sum, d) => sum + d.count, 0);
@@ -873,10 +911,11 @@
 
             svg.appendChild(labelGroup);
 
-            // Add hover effect
+            // Add hover effect with shadow
             path.addEventListener('mouseenter', function() {
                 if (!isOtherActive) {
-                    this.setAttribute('opacity', '0.8');
+                    this.setAttribute('opacity', '0.9');
+                    this.style.filter = 'url(#drop-shadow)';
                     labelGroup.style.display = 'block';
                     svg.appendChild(labelGroup);
                 }
@@ -889,6 +928,7 @@
                 } else {
                     this.setAttribute('opacity', '1');
                 }
+                this.style.filter = '';
                 labelGroup.style.display = 'none';
             });
 
@@ -1006,19 +1046,21 @@
             const isOtherActive = activeFilter.type === 'abv' &&
                 (activeFilter.value.min !== bin.min || activeFilter.value.max !== bin.max);
 
-            // Set fill and opacity based on filter state
+            // Set fill and opacity based on filter state with rounded corners
             if (isActive) {
-                rect.setAttribute('fill', '#007bff');
+                rect.setAttribute('fill', '#5B9BD5');
                 rect.setAttribute('opacity', '1');
             } else if (isOtherActive) {
-                rect.setAttribute('fill', '#007bff');
+                rect.setAttribute('fill', '#5B9BD5');
                 rect.setAttribute('opacity', '0.3');
             } else {
-                rect.setAttribute('fill', '#007bff');
+                rect.setAttribute('fill', '#5B9BD5');
                 rect.setAttribute('opacity', '1');
             }
             rect.setAttribute('stroke', '#fff');
             rect.setAttribute('stroke-width', '1');
+            rect.setAttribute('rx', '3');
+            rect.setAttribute('ry', '3');
 
             // Create label group for hover
             const labelGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
@@ -1056,13 +1098,15 @@
 
             rect.addEventListener('mouseenter', function() {
                 if (!isOtherActive) {
-                    this.setAttribute('fill', '#0056b3');
+                    this.setAttribute('fill', '#4178BE');
+                    this.style.filter = 'url(#drop-shadow)';
                     labelGroup.style.display = 'block';
                     svg.appendChild(labelGroup);
                 }
             });
             rect.addEventListener('mouseleave', function() {
-                this.setAttribute('fill', '#007bff');
+                this.setAttribute('fill', '#5B9BD5');
+                this.style.filter = '';
                 labelGroup.style.display = 'none';
             });
 
@@ -1189,19 +1233,21 @@
             const isOtherActive = activeFilter.type === 'price' &&
                 (activeFilter.value.min !== bin.min || activeFilter.value.max !== bin.max);
 
-            // Set fill and opacity based on filter state
+            // Set fill and opacity based on filter state with rounded corners
             if (isActive) {
-                rect.setAttribute('fill', '#28a745');
+                rect.setAttribute('fill', '#70C1B3');
                 rect.setAttribute('opacity', '1');
             } else if (isOtherActive) {
-                rect.setAttribute('fill', '#28a745');
+                rect.setAttribute('fill', '#70C1B3');
                 rect.setAttribute('opacity', '0.3');
             } else {
-                rect.setAttribute('fill', '#28a745');
+                rect.setAttribute('fill', '#70C1B3');
                 rect.setAttribute('opacity', '1');
             }
             rect.setAttribute('stroke', '#fff');
             rect.setAttribute('stroke-width', '1');
+            rect.setAttribute('rx', '3');
+            rect.setAttribute('ry', '3');
 
             // Create label group for hover
             const labelGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
@@ -1239,13 +1285,15 @@
 
             rect.addEventListener('mouseenter', function() {
                 if (!isOtherActive) {
-                    this.setAttribute('fill', '#1e7e34');
+                    this.setAttribute('fill', '#5AAA95');
+                    this.style.filter = 'url(#drop-shadow)';
                     labelGroup.style.display = 'block';
                     svg.appendChild(labelGroup);
                 }
             });
             rect.addEventListener('mouseleave', function() {
-                this.setAttribute('fill', '#28a745');
+                this.setAttribute('fill', '#70C1B3');
+                this.style.filter = '';
                 labelGroup.style.display = 'none';
             });
 
@@ -1469,30 +1517,67 @@
             });
         });
 
+        // Calculate maximum radius based on 0.5 score units (minimum distance between points)
+        const unitDistance = (0.5 / (maxMalt - minMalt)) * chartWidth;
+        const maxRadiusLimit = unitDistance / 2; // Diameter should not exceed 0.5 units
+        const minRadiusLimit = 4; // Minimum radius for visibility
+
+        // Find min and max beer counts across all points
+        const beerCounts = circlesData.map(d => d.beersAtPoint.length);
+        const minBeerCount = Math.min(...beerCounts);
+        const maxBeerCount = Math.max(...beerCounts);
+
+        // Function to calculate radius based on beer count
+        // Scale by area (area proportional to beer count)
+        const getRadius = (beerCount) => {
+            if (maxBeerCount === minBeerCount) {
+                // If all points have same count, use middle size
+                return (minRadiusLimit + maxRadiusLimit) / 2;
+            }
+            // We want area to be proportional to beer count
+            // Area = π * r^2, so if we want area ratio = count ratio,
+            // then r^2 ratio = count ratio, so r ratio = sqrt(count ratio)
+
+            // Calculate area limits
+            const minArea = Math.PI * minRadiusLimit * minRadiusLimit;
+            const maxArea = Math.PI * maxRadiusLimit * maxRadiusLimit;
+
+            // Linear interpolation of area based on beer count
+            const areaRatio = (beerCount - minBeerCount) / (maxBeerCount - minBeerCount);
+            const targetArea = minArea + areaRatio * (maxArea - minArea);
+
+            // Convert area back to radius: r = sqrt(area / π)
+            return Math.sqrt(targetArea / Math.PI);
+        };
+
         // Second pass: Create and append circles (so they appear on top)
         circlesData.forEach(data => {
             const { x, y, maltiness, overall, isActive, isOtherActive, beersAtPoint, labelGroup, beerNamesArray } = data;
+
+            // Calculate radius based on number of beers at this point
+            const beerCount = beersAtPoint.length;
+            const radius = getRadius(beerCount);
 
             // Create circle
             const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
             circle.setAttribute('cx', x);
             circle.setAttribute('cy', y);
-            circle.setAttribute('r', '4');
+            circle.setAttribute('r', radius.toString());
             circle.style.cursor = 'pointer';
 
             // Set fill and opacity based on filter state
             if (isActive) {
-                circle.setAttribute('fill', '#ffc107');
+                circle.setAttribute('fill', '#FFB84D');
                 circle.setAttribute('opacity', '1');
             } else if (isOtherActive) {
-                circle.setAttribute('fill', '#007bff');
+                circle.setAttribute('fill', '#9370DB');
                 circle.setAttribute('opacity', '0.3');
             } else {
-                circle.setAttribute('fill', '#007bff');
+                circle.setAttribute('fill', '#9370DB');
                 circle.setAttribute('opacity', '1');
             }
             circle.setAttribute('stroke', '#fff');
-            circle.setAttribute('stroke-width', '1');
+            circle.setAttribute('stroke-width', '2');
 
             // Create tooltip (native browser tooltip)
             const tooltipText = beerNamesArray.join('\n');
@@ -1503,20 +1588,22 @@
             // Hover effects
             circle.addEventListener('mouseenter', function() {
                 if (!isOtherActive) {
-                    this.setAttribute('r', '6');
-                    this.setAttribute('fill', '#ffc107');
+                    this.setAttribute('r', (radius + 2).toString());
+                    this.setAttribute('fill', '#FFB84D');
+                    this.style.filter = 'url(#drop-shadow)';
                     labelGroup.style.display = 'block';
                     // Move labelGroup to end of SVG so it appears on top of all circles
                     svg.appendChild(labelGroup);
                 }
             });
             circle.addEventListener('mouseleave', function() {
-                this.setAttribute('r', '4');
+                this.setAttribute('r', radius.toString());
                 if (isActive) {
-                    this.setAttribute('fill', '#ffc107');
+                    this.setAttribute('fill', '#FFB84D');
                 } else {
-                    this.setAttribute('fill', '#007bff');
+                    this.setAttribute('fill', '#9370DB');
                 }
+                this.style.filter = '';
                 labelGroup.style.display = 'none';
             });
 
