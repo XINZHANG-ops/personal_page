@@ -108,13 +108,15 @@
 
           <!-- Input -->
           <div class="ai-assistant__input-container">
-            <textarea
+            <div
               id="ai-input"
               class="ai-assistant__input"
-              placeholder="${translations.placeholder}"
+              contenteditable="true"
+              data-placeholder="${translations.placeholder}"
               data-i18n-placeholder="ai.placeholder"
-              rows="1"
-            ></textarea>
+              role="textbox"
+              aria-multiline="true"
+            ></div>
             <button id="ai-send" class="ai-assistant__send">
               <span data-i18n="ai.send">${translations.send}</span>
             </button>

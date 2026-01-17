@@ -636,6 +636,24 @@
             "otherAromas": 1.5,
             "overall": 8
         }
+    },
+    {
+        "id": "holsten-premium-pilsner",
+        "name": "Holsten Premium Pilsner",
+        "style": "Pilsner",
+        "abv": 5,
+        "date": "2026-01-17",
+        "price": 2.75,
+        "imageUrl": "../assets/images/beers/holsten-premium-pilsner.jpg",
+        "notes": "Slightly bitter, with a typical Pilsner profile—the bitterness carries through to the nose.",
+        "scores": {
+            "maltiness": 4,
+            "colorDepth": 9,
+            "clarity": 9.5,
+            "bitterness": 3.5,
+            "otherAromas": 1.5,
+            "overall": 5
+        }
     }
 ];
 

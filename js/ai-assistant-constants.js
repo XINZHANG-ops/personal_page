@@ -94,6 +94,12 @@
     location: "Waterloo, ON"
   };
 
+  // Context type options for @ mentions
+  const CONTEXT_TYPES = [
+    { id: 'beer', label: 'Beer', icon: '🍺', color: '#FFA500' },
+    { id: 'paper', label: 'Paper', icon: '📄', color: '#4682B4' }
+  ];
+
   // Expose to window
   window.ICONS = ICONS;
   window.DIMENSIONS = DIMENSIONS;
@@ -105,6 +111,7 @@
   window.MESSAGES = MESSAGES;
   window.ARIA_LABELS = ARIA_LABELS;
   window.CONTEXT_INFO = CONTEXT_INFO;
+  window.CONTEXT_TYPES = CONTEXT_TYPES;
 
   // Also create a grouped object for convenience
   window.AI_CONSTANTS = {
@@ -117,7 +124,8 @@
     API_CONFIG,
     MESSAGES,
     ARIA_LABELS,
-    CONTEXT_INFO
+    CONTEXT_INFO,
+    CONTEXT_TYPES
   };
 
 })(window);

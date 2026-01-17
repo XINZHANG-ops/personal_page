@@ -7,7 +7,7 @@
   'use strict';
 
   // Use global utilities loaded from separate files
-  const { ICONS, DIMENSIONS, TIMING, LIMITS, STORAGE_KEYS, CSS_CLASSES, API_CONFIG, MESSAGES, CONTEXT_INFO } = window;
+  const { ICONS, DIMENSIONS, TIMING, LIMITS, STORAGE_KEYS, CSS_CLASSES, API_CONFIG, MESSAGES, CONTEXT_INFO, CONTEXT_TYPES } = window;
   const { StorageManager, PositionManager, Templates, DOMUtils } = window;
 
 class AIAssistant {
@@ -28,6 +28,8 @@ class AIAssistant {
     this.sessionId = this.getSessionId();
     this.wasDragging = false;
     this.shouldAutoFocus = true; // Track if input should auto-focus
+    this.selectedContextType = null; // Track @mentioned context type
+    this.showingMentionDropdown = false; // Track if @ dropdown is visible
 
     // Track position as percentage for zoom consistency
     this.positionPercentage = null; // { x: %, y: % }
@@ -71,11 +73,15 @@ class AIAssistant {
       header: document.getElementById('ai-header')
     };
 
+    // Create and inject mention dropdown
+    this.createMentionDropdown();
+
     // Apply dimensions from constants to override CSS
     this.applyChatDimensions();
 
     // Add event listeners
     this.setupEventListeners();
+    this.setupMentionListener();
     this.setupDraggable();
     this.setupResizable();
     this.setupResizeHandler();
@@ -163,6 +169,212 @@ class AIAssistant {
         this.shouldAutoFocus = false;
       }
     });
+  }
+
+  createMentionDropdown() {
+    // Create mention dropdown HTML
+    const dropdown = document.createElement('div');
+    dropdown.id = 'ai-mention-dropdown';
+    dropdown.className = 'ai-mention-dropdown';
+    dropdown.style.display = 'none';
+
+    // Add options from CONTEXT_TYPES
+    CONTEXT_TYPES.forEach(type => {
+      const option = document.createElement('div');
+      option.className = 'ai-mention-dropdown__option';
+      option.dataset.contextId = type.id;
+      option.innerHTML = `
+        <span class="ai-mention-dropdown__icon">${type.icon}</span>
+        <span class="ai-mention-dropdown__label">${type.label}</span>
+      `;
+      option.addEventListener('click', () => this.selectContextType(type));
+      dropdown.appendChild(option);
+    });
+
+    // Insert dropdown into the chat window
+    const inputContainer = document.querySelector('.ai-assistant__input-container');
+    inputContainer.appendChild(dropdown);
+    this.elements.mentionDropdown = dropdown;
+  }
+
+  setupMentionListener() {
+    this.elements.input.addEventListener('input', (e) => {
+      // Check if user deleted the tag
+      if (this.selectedContextType) {
+        const tag = this.elements.input.querySelector('.ai-context-tag');
+        if (!tag) {
+          // Tag was deleted, clear selection
+          this.removeContextType();
+        }
+      }
+
+      // Check if user just typed @
+      const sel = window.getSelection();
+      if (!sel.rangeCount) return;
+
+      const range = sel.getRangeAt(0);
+      const textNode = range.startContainer;
+
+      // Get text before cursor
+      if (textNode.nodeType === Node.TEXT_NODE) {
+        const textContent = textNode.textContent || '';
+        const cursorPos = range.startOffset;
+        const beforeCursor = textContent.substring(0, cursorPos);
+        const lastAtIndex = beforeCursor.lastIndexOf('@');
+
+        if (lastAtIndex !== -1) {
+          const textAfterAt = beforeCursor.substring(lastAtIndex + 1);
+          const isValidPosition = lastAtIndex === 0 || /\s/.test(beforeCursor[lastAtIndex - 1]);
+          const shouldShowDropdown = isValidPosition && textAfterAt.trim() === '';
+
+          if (shouldShowDropdown && !this.selectedContextType) {
+            this.showMentionDropdown();
+            return;
+          }
+        }
+      }
+
+      this.hideMentionDropdown();
+    });
+
+    // Hide dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#ai-mention-dropdown') && !e.target.closest('#ai-input')) {
+        this.hideMentionDropdown();
+      }
+    });
+
+    // Handle keyboard navigation in dropdown
+    this.elements.input.addEventListener('keydown', (e) => {
+      if (this.showingMentionDropdown) {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          this.hideMentionDropdown();
+        } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          this.navigateMentionDropdown(e.key === 'ArrowDown' ? 1 : -1);
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          this.selectHighlightedOption();
+        }
+      }
+    });
+  }
+
+  showMentionDropdown() {
+    this.showingMentionDropdown = true;
+    this.elements.mentionDropdown.style.display = 'block';
+
+    // Highlight first option by default
+    const firstOption = this.elements.mentionDropdown.querySelector('.ai-mention-dropdown__option');
+    if (firstOption) {
+      firstOption.classList.add('ai-mention-dropdown__option--highlighted');
+    }
+
+    // Position dropdown below cursor
+    const inputRect = this.elements.input.getBoundingClientRect();
+    const containerRect = this.elements.input.closest('.ai-assistant__input-container').getBoundingClientRect();
+    this.elements.mentionDropdown.style.bottom = `${containerRect.height}px`;
+    this.elements.mentionDropdown.style.left = '0px';
+  }
+
+  hideMentionDropdown() {
+    this.showingMentionDropdown = false;
+    this.elements.mentionDropdown.style.display = 'none';
+
+    // Remove highlighting
+    const options = this.elements.mentionDropdown.querySelectorAll('.ai-mention-dropdown__option');
+    options.forEach(opt => opt.classList.remove('ai-mention-dropdown__option--highlighted'));
+  }
+
+  navigateMentionDropdown(direction) {
+    const options = Array.from(this.elements.mentionDropdown.querySelectorAll('.ai-mention-dropdown__option'));
+    const highlighted = this.elements.mentionDropdown.querySelector('.ai-mention-dropdown__option--highlighted');
+
+    let newIndex = 0;
+    if (highlighted) {
+      const currentIndex = options.indexOf(highlighted);
+      newIndex = (currentIndex + direction + options.length) % options.length;
+      highlighted.classList.remove('ai-mention-dropdown__option--highlighted');
+    }
+
+    options[newIndex].classList.add('ai-mention-dropdown__option--highlighted');
+  }
+
+  selectHighlightedOption() {
+    const highlighted = this.elements.mentionDropdown.querySelector('.ai-mention-dropdown__option--highlighted');
+    if (highlighted) {
+      const contextId = highlighted.dataset.contextId;
+      const type = CONTEXT_TYPES.find(t => t.id === contextId);
+      if (type) {
+        this.selectContextType(type);
+      }
+    }
+  }
+
+  selectContextType(type) {
+    this.selectedContextType = type;
+    this.hideMentionDropdown();
+
+    // Get current content and find @ position
+    const content = this.elements.input.textContent || '';
+    const lastAtIndex = content.lastIndexOf('@');
+
+    if (lastAtIndex !== -1) {
+      // Store the tag info
+      this.elements.input.dataset.contextType = type.id;
+
+      // Create the tag element
+      const tag = document.createElement('span');
+      tag.className = `ai-context-tag ai-context-tag--${type.id}`;
+      tag.contentEditable = 'false';
+      tag.dataset.contextId = type.id;
+      tag.innerHTML = `${type.icon} ${type.label}`;
+
+      // Split content at @ and insert tag
+      const beforeAt = content.substring(0, lastAtIndex);
+      const afterAtRaw = content.substring(lastAtIndex + 1);
+      const afterAt = afterAtRaw.replace(/^\s*/, ''); // Remove whitespace after @
+
+      // Clear input and rebuild with tag
+      this.elements.input.innerHTML = '';
+
+      if (beforeAt) {
+        this.elements.input.appendChild(document.createTextNode(beforeAt));
+      }
+
+      this.elements.input.appendChild(tag);
+
+      // Add space after tag
+      const spaceNode = document.createTextNode('\u00A0');
+      this.elements.input.appendChild(spaceNode);
+
+      if (afterAt) {
+        this.elements.input.appendChild(document.createTextNode(afterAt));
+      }
+
+      // Focus and move cursor after tag
+      this.elements.input.focus();
+      const range = document.createRange();
+      const sel = window.getSelection();
+
+      // Move cursor after the space
+      range.setStartAfter(spaceNode);
+      range.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+  }
+
+  removeContextType() {
+    this.selectedContextType = null;
+    delete this.elements.input.dataset.contextType;
+
+    // Remove tag element from input
+    const tag = this.elements.input.querySelector('.ai-context-tag');
+    if (tag) {
+      tag.remove();
+    }
   }
 
   toggleChat() {
@@ -278,22 +490,27 @@ class AIAssistant {
   }
 
   async sendMessage() {
-    const message = this.elements.input.value.trim();
+    const message = this.elements.input.textContent.trim();
     if (!message || this.isTyping) return;
 
     // Add user message
     this.addMessage('user', message);
 
     // Clear input
-    this.elements.input.value = '';
+    this.elements.input.innerHTML = '';
     this.elements.input.style.height = 'auto';
+
+    // Clear context type selection after sending
+    const contextTypeToSend = this.selectedContextType;
+    this.selectedContextType = null;
+    delete this.elements.input.dataset.contextType;
 
     // Disable input while processing
     this.setTyping(true);
 
     try {
-      // Send to server
-      const response = await this.sendToServer(message);
+      // Send to server with the saved context type
+      const response = await this.sendToServer(message, contextTypeToSend);
 
       // Add AI response
       this.addMessage('assistant', response);
@@ -305,7 +522,7 @@ class AIAssistant {
     }
   }
 
-  async sendToServer(message) {
+  async sendToServer(message, contextType = null) {
     // Get current page information
     const currentPage = this.getCurrentPageInfo();
 
@@ -319,6 +536,11 @@ class AIAssistant {
         timestamp: new Date().toISOString()
       }
     };
+
+    // Add context_type if user selected one via @ mention
+    if (contextType) {
+      requestData.context_type = contextType.id;
+    }
 
     try {
       const response = await fetch(this.config.serverUrl, {
@@ -378,7 +600,7 @@ class AIAssistant {
 
   setTyping(isTyping) {
     this.isTyping = isTyping;
-    this.elements.input.disabled = isTyping;
+    this.elements.input.contentEditable = !isTyping;
     this.elements.send.disabled = isTyping;
 
     if (isTyping) {
