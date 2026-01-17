@@ -618,6 +618,24 @@
             "otherAromas": 1.5,
             "overall": 8.5
         }
+    },
+    {
+        "id": "laker-lager",
+        "name": "Laker Lager",
+        "style": "Lager",
+        "abv": 5,
+        "date": "2026-01-16",
+        "price": 1.9,
+        "imageUrl": "../assets/images/beers/laker-lager.jpg",
+        "notes": "The blue-bottle Lake Lager is something I regularly choose for everyday drinking. Given its low price and light flavor, it has a slightly bitter edge on the first sip along with a crisp mouthfeel, followed by a noticeable touch of malt aroma.",
+        "scores": {
+            "maltiness": 8,
+            "colorDepth": 7.5,
+            "clarity": 9.5,
+            "bitterness": 3.5,
+            "otherAromas": 1.5,
+            "overall": 8
+        }
     }
 ];
 
