@@ -236,6 +236,62 @@
   border-bottom-right-radius: 4px;
 }
 
+/* Markdown formatting in messages */
+.ai-message__content strong {
+  font-weight: 600;
+}
+
+.ai-message__content em {
+  font-style: italic;
+}
+
+.ai-message__content code {
+  background: rgba(0, 0, 0, 0.05);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+  font-size: 0.9em;
+}
+
+.ai-message__content a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  transition: color var(--transition);
+}
+
+.ai-message__content a:hover {
+  color: var(--color-accent);
+}
+
+.ai-message__content ol,
+.ai-message__content ul {
+  margin: 8px 0;
+  padding-left: 20px;
+}
+
+.ai-message__content li {
+  margin: 4px 0;
+}
+
+.ai-message__content h1,
+.ai-message__content h2,
+.ai-message__content h3 {
+  margin: 12px 0 8px 0;
+  font-weight: 600;
+}
+
+.ai-message__content h1 {
+  font-size: 1.3em;
+}
+
+.ai-message__content h2 {
+  font-size: 1.2em;
+}
+
+.ai-message__content h3 {
+  font-size: 1.1em;
+}
+
 /* Typing Indicator */
 .ai-message__typing {
   display: flex;

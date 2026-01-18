@@ -576,7 +576,12 @@ class AIAssistant {
   }
 
   addMessage(type, content) {
-    const messageHTML = Templates.message(type, DOMUtils.escapeHtml(content));
+    // Render markdown for assistant messages, escape HTML for user messages
+    const formattedContent = type === 'assistant'
+      ? this.renderMarkdown(content)
+      : DOMUtils.escapeHtml(content);
+
+    const messageHTML = Templates.message(type, formattedContent);
 
     // Remove typing indicator if exists
     const typingIndicator = this.elements.messages.querySelector(`.${CSS_CLASSES.MESSAGE_TYPING}`);
@@ -733,6 +738,137 @@ class AIAssistant {
 
   loadChatSize() {
     return StorageManager.get(STORAGE_KEYS.CHAT_SIZE, null);
+  }
+
+  renderMarkdown(text) {
+    if (!text) return '';
+
+    // Escape HTML first to prevent XSS
+    let html = DOMUtils.escapeHtml(text);
+
+    // Process line by line for better list handling
+    const lines = html.split('\n');
+    const processedLines = [];
+    let inOrderedList = false;
+    let inUnorderedList = false;
+
+    for (let i = 0; i < lines.length; i++) {
+      let line = lines[i];
+
+      // Skip empty lines within lists (but close lists if we hit two empty lines)
+      if (line.trim() === '') {
+        if (inOrderedList || inUnorderedList) {
+          // Check if next line is also empty or not a list item
+          const nextLine = lines[i + 1];
+          if (!nextLine || nextLine.trim() === '' ||
+              (!nextLine.match(/^(\s*)(\d+)[\.\)]\s+/) && !nextLine.match(/^(\s*)[-*]\s+/))) {
+            if (inOrderedList) {
+              processedLines.push('</ol>');
+              inOrderedList = false;
+            }
+            if (inUnorderedList) {
+              processedLines.push('</ul>');
+              inUnorderedList = false;
+            }
+          }
+        }
+        processedLines.push(line);
+        continue;
+      }
+
+      // Check for numbered list items: 1. item or 1) item
+      const orderedMatch = line.match(/^(\s*)(\d+)[\.\)]\s+(.+)$/);
+      if (orderedMatch) {
+        if (!inOrderedList) {
+          // Close unordered list if switching
+          if (inUnorderedList) {
+            processedLines.push('</ul>');
+            inUnorderedList = false;
+          }
+          processedLines.push('<ol>');
+          inOrderedList = true;
+        }
+        processedLines.push(`<li>${orderedMatch[3]}</li>`);
+        continue;
+      } else if (inOrderedList && !line.match(/^\s*$/)) {
+        // Close list if we hit a non-list line
+        processedLines.push('</ol>');
+        inOrderedList = false;
+      }
+
+      // Check for unordered list items: - item or * item (but not *** or ---)
+      const unorderedMatch = line.match(/^(\s*)([-*])\s+(.+)$/);
+      if (unorderedMatch && !line.match(/^[-*]{3,}$/)) {
+        if (!inUnorderedList) {
+          // Close ordered list if switching
+          if (inOrderedList) {
+            processedLines.push('</ol>');
+            inOrderedList = false;
+          }
+          processedLines.push('<ul>');
+          inUnorderedList = true;
+        }
+        processedLines.push(`<li>${unorderedMatch[3]}</li>`);
+        continue;
+      } else if (inUnorderedList && !line.match(/^\s*$/)) {
+        // Close list if we hit a non-list line
+        processedLines.push('</ul>');
+        inUnorderedList = false;
+      }
+
+      // Headers (only if line starts with # and has space after)
+      if (line.match(/^###\s+/)) {
+        processedLines.push(`<h3>${line.substring(4)}</h3>`);
+      } else if (line.match(/^##\s+/)) {
+        processedLines.push(`<h2>${line.substring(3)}</h2>`);
+      } else if (line.match(/^#\s+/)) {
+        processedLines.push(`<h1>${line.substring(2)}</h1>`);
+      } else {
+        processedLines.push(line);
+      }
+    }
+
+    // Close any open lists
+    if (inOrderedList) processedLines.push('</ol>');
+    if (inUnorderedList) processedLines.push('</ul>');
+
+    html = processedLines.join('\n');
+
+    // Inline formatting - IMPORTANT: Process in specific order to avoid conflicts
+    // Order matters! Links and code must be processed BEFORE italic to protect underscores
+
+    // 1. First process code blocks (to protect content inside backticks)
+    // Support both single-line and content with spaces
+    html = html.replace(/`([^`]+?)`/g, '<code>$1</code>');
+
+    // 2. Then process links (to protect underscores in URLs)
+    // This protects URLs like personal_page from being turned into personal<em>page</em>
+    html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/g, function(_match, text, url) {
+      // Make sure URL doesn't have spaces (basic validation)
+      url = url.trim();
+      return `<a href="${url}" target="_blank" rel="noopener noreferrer">${text}</a>`;
+    });
+
+    // 3. Then bold (needs to be before italic to handle ** vs *)
+    // Use non-greedy matching and ensure we don't match across multiple paragraphs
+    html = html.replace(/\*\*([^\n]+?)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/__([^\n]+?)__/g, '<strong>$1</strong>');
+
+    // 4. Finally italic - but ONLY match underscores/asterisks in plain text
+    // Avoid matching * in lists or _ in URLs/variable names
+    // Only match single * or _ that are surrounded by whitespace or punctuation
+    html = html.replace(/(?<![*\w<])\*([^*\n<>]+?)\*(?![*\w>])/g, '<em>$1</em>');
+    // For underscores, be more careful - only match if surrounded by spaces/punctuation
+    html = html.replace(/(?<![\w_<])_([^_\n<>]+?)_(?![_\w>])/g, '<em>$1</em>');
+
+    // Line breaks (convert remaining \n to <br>, but not after block elements)
+    // Also don't add <br> after closing or before opening tags
+    html = html.replace(/\n(?!<\/?(ol|ul|li|h[123]|br))/g, '<br>');
+    // Remove <br> that appear right after opening or before closing block tags
+    html = html.replace(/(<(ol|ul|h[123])>)<br>/g, '$1');
+    html = html.replace(/<br>(<\/(ol|ul|h[123])>)/g, '$1');
+
+    return html;
   }
 
   getCurrentPageInfo() {
