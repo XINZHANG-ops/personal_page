@@ -96,8 +96,18 @@
 
   // Context type options for @ mentions
   const CONTEXT_TYPES = [
-    { id: 'beer', label: 'Beer', icon: '🍺', color: '#FFA500' },
-    { id: 'paper', label: 'Paper', icon: '📄', color: '#4682B4' }
+    {
+      id: 'beer',
+      label: { en: 'Beer', zh: '啤酒' },
+      icon: '🍺',
+      color: '#FFA500'
+    },
+    {
+      id: 'paper',
+      label: { en: 'Paper', zh: '论文' },
+      icon: '📄',
+      color: '#4682B4'
+    }
   ];
 
   // Expose to window

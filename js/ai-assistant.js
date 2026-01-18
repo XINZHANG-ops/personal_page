@@ -178,14 +178,27 @@ class AIAssistant {
     dropdown.className = 'ai-mention-dropdown';
     dropdown.style.display = 'none';
 
+    // Add title header
+    const currentLang = window.i18n ? window.i18n.getCurrentLanguage() : 'en';
+    const translations = this.getTranslations(currentLang);
+    const title = document.createElement('div');
+    title.className = 'ai-mention-dropdown__title';
+    title.setAttribute('data-i18n', 'ai.mentionTitle');
+    title.textContent = translations.mentionTitle;
+    dropdown.appendChild(title);
+
     // Add options from CONTEXT_TYPES
     CONTEXT_TYPES.forEach(type => {
       const option = document.createElement('div');
       option.className = 'ai-mention-dropdown__option';
       option.dataset.contextId = type.id;
+
+      // Get localized label
+      const label = typeof type.label === 'string' ? type.label : type.label[currentLang] || type.label.en;
+
       option.innerHTML = `
         <span class="ai-mention-dropdown__icon">${type.icon}</span>
-        <span class="ai-mention-dropdown__label">${type.label}</span>
+        <span class="ai-mention-dropdown__label" data-context-label-en="${type.label.en}" data-context-label-zh="${type.label.zh}">${label}</span>
       `;
       option.addEventListener('click', () => this.selectContextType(type));
       dropdown.appendChild(option);
@@ -199,15 +212,6 @@ class AIAssistant {
 
   setupMentionListener() {
     this.elements.input.addEventListener('input', (e) => {
-      // Check if user deleted the tag
-      if (this.selectedContextType) {
-        const tag = this.elements.input.querySelector('.ai-context-tag');
-        if (!tag) {
-          // Tag was deleted, clear selection
-          this.removeContextType();
-        }
-      }
-
       // Check if user just typed @
       const sel = window.getSelection();
       if (!sel.rangeCount) return;
@@ -244,7 +248,7 @@ class AIAssistant {
       }
     });
 
-    // Handle keyboard navigation in dropdown
+    // Handle keyboard navigation in dropdown and backspace for tag deletion
     this.elements.input.addEventListener('keydown', (e) => {
       if (this.showingMentionDropdown) {
         if (e.key === 'Escape') {
@@ -256,6 +260,13 @@ class AIAssistant {
         } else if (e.key === 'Enter') {
           e.preventDefault();
           this.selectHighlightedOption();
+        }
+      } else if (e.key === 'Backspace' && this.selectedContextType) {
+        // If input is empty and there's a tag, delete the tag
+        const content = this.elements.input.textContent.trim();
+        if (content === '' || (e.target.selectionStart === 0 && e.target.selectionEnd === 0)) {
+          e.preventDefault();
+          this.removeContextTag();
         }
       }
     });
@@ -323,54 +334,61 @@ class AIAssistant {
     this.selectedContextType = type;
     this.hideMentionDropdown();
 
-    // Get current content and find @ position
+    // Get current content and remove @ symbol
     const content = this.elements.input.textContent || '';
     const lastAtIndex = content.lastIndexOf('@');
 
     if (lastAtIndex !== -1) {
-      // Store the tag info
-      this.elements.input.dataset.contextType = type.id;
-
-      // Create the tag element
-      const tag = document.createElement('span');
-      tag.className = `ai-context-tag ai-context-tag--${type.id}`;
-      tag.contentEditable = 'false';
-      tag.dataset.contextId = type.id;
-      tag.innerHTML = `${type.icon} ${type.label}`;
-
-      // Split content at @ and insert tag
+      // Remove the @ from input
       const beforeAt = content.substring(0, lastAtIndex);
       const afterAtRaw = content.substring(lastAtIndex + 1);
       const afterAt = afterAtRaw.replace(/^\s*/, ''); // Remove whitespace after @
+      this.elements.input.textContent = beforeAt + afterAt;
 
-      // Clear input and rebuild with tag
-      this.elements.input.innerHTML = '';
+      // Display tag in the separate tag display area
+      this.displayContextTag(type);
 
-      if (beforeAt) {
-        this.elements.input.appendChild(document.createTextNode(beforeAt));
-      }
-
-      this.elements.input.appendChild(tag);
-
-      // Add space after tag
-      const spaceNode = document.createTextNode('\u00A0');
-      this.elements.input.appendChild(spaceNode);
-
-      if (afterAt) {
-        this.elements.input.appendChild(document.createTextNode(afterAt));
-      }
-
-      // Focus and move cursor after tag
+      // Focus back on input at the position where @ was
       this.elements.input.focus();
       const range = document.createRange();
       const sel = window.getSelection();
-
-      // Move cursor after the space
-      range.setStartAfter(spaceNode);
-      range.collapse(true);
-      sel.removeAllRanges();
-      sel.addRange(range);
+      const textNode = this.elements.input.firstChild;
+      if (textNode && textNode.nodeType === Node.TEXT_NODE) {
+        const newPos = Math.min(lastAtIndex, textNode.length);
+        range.setStart(textNode, newPos);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
     }
+  }
+
+  displayContextTag(type) {
+    const tagDisplay = document.getElementById('ai-context-tag-display');
+    if (!tagDisplay) return;
+
+    // Get localized label
+    const currentLang = window.i18n ? window.i18n.getCurrentLanguage() : 'en';
+    const label = typeof type.label === 'string' ? type.label : type.label[currentLang] || type.label.en;
+
+    // Create the tag element
+    const tag = document.createElement('span');
+    tag.className = `ai-context-tag ai-context-tag--${type.id}`;
+    tag.dataset.contextId = type.id;
+    tag.innerHTML = `${type.icon} ${label}`;
+    tag.tabIndex = -1; // Make it focusable but not in tab order
+
+    // Clear any existing tag and add new one
+    tagDisplay.innerHTML = '';
+    tagDisplay.appendChild(tag);
+  }
+
+  removeContextTag() {
+    const tagDisplay = document.getElementById('ai-context-tag-display');
+    if (tagDisplay) {
+      tagDisplay.innerHTML = '';
+    }
+    this.selectedContextType = null;
   }
 
   removeContextType() {
@@ -507,9 +525,9 @@ class AIAssistant {
     this.elements.input.innerHTML = '';
     this.elements.input.style.height = 'auto';
 
-    // Clear context type selection after sending
+    // Clear context type selection and tag display after sending
     const contextTypeToSend = this.selectedContextType;
-    this.selectedContextType = null;
+    this.removeContextTag();
     delete this.elements.input.dataset.contextType;
 
     // Disable input while processing
@@ -914,6 +932,18 @@ class AIAssistant {
 
       // Update placeholder
       DOMUtils.updatePlaceholder(this.elements.input, window.i18n.t.bind(window.i18n), lang);
+
+      // Update mention dropdown options
+      if (this.elements.mentionDropdown) {
+        const labels = this.elements.mentionDropdown.querySelectorAll('.ai-mention-dropdown__label');
+        labels.forEach(label => {
+          const labelEn = label.getAttribute('data-context-label-en');
+          const labelZh = label.getAttribute('data-context-label-zh');
+          if (labelEn && labelZh) {
+            label.textContent = lang === 'zh' ? labelZh : labelEn;
+          }
+        });
+      }
     }
   }
 

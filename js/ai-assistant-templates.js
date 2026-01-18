@@ -108,15 +108,18 @@
 
           <!-- Input -->
           <div class="ai-assistant__input-container">
-            <div
-              id="ai-input"
-              class="ai-assistant__input"
-              contenteditable="true"
-              data-placeholder="${translations.placeholder}"
-              data-i18n-placeholder="ai.placeholder"
-              role="textbox"
-              aria-multiline="true"
-            ></div>
+            <div class="ai-assistant__input-wrapper">
+              <div id="ai-context-tag-display" class="ai-context-tag-display"></div>
+              <div
+                id="ai-input"
+                class="ai-assistant__input"
+                contenteditable="true"
+                data-placeholder="${translations.placeholder}"
+                data-i18n-placeholder="ai.placeholder"
+                role="textbox"
+                aria-multiline="true"
+              ></div>
+            </div>
             <button id="ai-send" class="ai-assistant__send">
               <span data-i18n="ai.send">${translations.send}</span>
             </button>

@@ -146,7 +146,8 @@ const translations_en = {
         send: "Send",
         newSession: "New",
         offline: "I'm offline right now. Please make sure the AI server is running locally on port 8080.",
-        error: "Sorry, I encountered an error. Please try again later."
+        error: "Sorry, I encountered an error. Please try again later.",
+        mentionTitle: "Select to do relevant Retrieval"
     },
 
     // Accessibility labels
