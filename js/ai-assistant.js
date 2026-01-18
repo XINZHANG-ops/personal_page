@@ -96,23 +96,15 @@ class AIAssistant {
   }
 
   getTranslations(lang) {
-    const translations = {
-      en: {
-        title: 'AI Assistant',
-        welcome: "Hi! I'm Xin's AI assistant. Ask me about his work, projects, or research!",
-        placeholder: 'Type your message...',
-        send: 'Send',
-        newSession: 'New'
-      },
-      zh: {
-        title: 'AI 助手',
-        welcome: '你好！我是张信的AI助手。可以问我关于他的工作、项目或研究的问题！',
-        placeholder: '输入您的消息...',
-        send: '发送',
-        newSession: '新对话'
-      }
+    // Always use global i18n system - all translations are in js/i18n/
+    return {
+      title: window.i18n.t('ai.title', lang),
+      welcome: window.i18n.t('ai.welcome', lang),
+      placeholder: window.i18n.t('ai.placeholder', lang),
+      send: window.i18n.t('ai.send', lang),
+      newSession: window.i18n.t('ai.newSession', lang),
+      mentionTitle: window.i18n.t('ai.mentionTitle', lang)
     };
-    return translations[lang] || translations.en;
   }
 
   createChatWidget() {
@@ -193,12 +185,12 @@ class AIAssistant {
       option.className = 'ai-mention-dropdown__option';
       option.dataset.contextId = type.id;
 
-      // Get localized label
-      const label = typeof type.label === 'string' ? type.label : type.label[currentLang] || type.label.en;
+      // Get localized label from i18n
+      const label = window.i18n ? window.i18n.t(type.labelKey, currentLang) : type.id;
 
       option.innerHTML = `
         <span class="ai-mention-dropdown__icon">${type.icon}</span>
-        <span class="ai-mention-dropdown__label" data-context-label-en="${type.label.en}" data-context-label-zh="${type.label.zh}">${label}</span>
+        <span class="ai-mention-dropdown__label" data-i18n="${type.labelKey}">${label}</span>
       `;
       option.addEventListener('click', () => this.selectContextType(type));
       dropdown.appendChild(option);
@@ -228,10 +220,10 @@ class AIAssistant {
 
         if (lastAtIndex !== -1) {
           const textAfterAt = beforeCursor.substring(lastAtIndex + 1);
-          const isValidPosition = lastAtIndex === 0 || /\s/.test(beforeCursor[lastAtIndex - 1]);
-          const shouldShowDropdown = isValidPosition && textAfterAt.trim() === '';
+          // Allow @ anywhere, not just after space or at start
+          const shouldShowDropdown = textAfterAt.trim() === '';
 
-          if (shouldShowDropdown && !this.selectedContextType) {
+          if (shouldShowDropdown) {
             this.showMentionDropdown();
             return;
           }
@@ -367,14 +359,15 @@ class AIAssistant {
     const tagDisplay = document.getElementById('ai-context-tag-display');
     if (!tagDisplay) return;
 
-    // Get localized label
+    // Get localized label from i18n
     const currentLang = window.i18n ? window.i18n.getCurrentLanguage() : 'en';
-    const label = typeof type.label === 'string' ? type.label : type.label[currentLang] || type.label.en;
+    const label = window.i18n ? window.i18n.t(type.labelKey, currentLang) : type.id;
 
     // Create the tag element
     const tag = document.createElement('span');
     tag.className = `ai-context-tag ai-context-tag--${type.id}`;
     tag.dataset.contextId = type.id;
+    tag.dataset.i18n = type.labelKey;
     tag.innerHTML = `${type.icon} ${label}`;
     tag.tabIndex = -1; // Make it focusable but not in tab order
 
@@ -937,12 +930,16 @@ class AIAssistant {
       if (this.elements.mentionDropdown) {
         const labels = this.elements.mentionDropdown.querySelectorAll('.ai-mention-dropdown__label');
         labels.forEach(label => {
-          const labelEn = label.getAttribute('data-context-label-en');
-          const labelZh = label.getAttribute('data-context-label-zh');
-          if (labelEn && labelZh) {
-            label.textContent = lang === 'zh' ? labelZh : labelEn;
+          const i18nKey = label.getAttribute('data-i18n');
+          if (i18nKey) {
+            label.textContent = window.i18n.t(i18nKey, lang);
           }
         });
+      }
+
+      // Update displayed context tag if one is selected
+      if (this.selectedContextType) {
+        this.displayContextTag(this.selectedContextType);
       }
     }
   }

@@ -63,7 +63,14 @@
     static updatePlaceholder(input, translator, lang) {
       const key = input.getAttribute('data-i18n-placeholder');
       if (key) {
-        input.placeholder = translator(key, lang);
+        const translatedText = translator(key, lang);
+        // For contenteditable elements, update data-placeholder attribute
+        if (input.hasAttribute('contenteditable')) {
+          input.setAttribute('data-placeholder', translatedText);
+        } else {
+          // For regular input/textarea elements
+          input.placeholder = translatedText;
+        }
       }
     }
 

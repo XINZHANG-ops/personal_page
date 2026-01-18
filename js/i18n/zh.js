@@ -147,7 +147,9 @@ const translations_zh = {
         newSession: "新对话",
         offline: "我现在离线了。请确保AI服务器在本地8080端口运行。",
         error: "抱歉，我遇到了错误。请稍后再试。",
-        mentionTitle: "选择相关检索类型"
+        mentionTitle: "选择相关检索类型",
+        contextBeer: "啤酒",
+        contextPaper: "论文"
     },
 
     // 无障碍标签

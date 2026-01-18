@@ -98,13 +98,13 @@
   const CONTEXT_TYPES = [
     {
       id: 'beer',
-      label: { en: 'Beer', zh: '啤酒' },
+      labelKey: 'ai.contextBeer',
       icon: '🍺',
       color: '#FFA500'
     },
     {
       id: 'paper',
-      label: { en: 'Paper', zh: '论文' },
+      labelKey: 'ai.contextPaper',
       icon: '📄',
       color: '#4682B4'
     }
