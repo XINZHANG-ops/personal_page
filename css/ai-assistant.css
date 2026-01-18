@@ -236,6 +236,35 @@
   border-bottom-right-radius: 4px;
 }
 
+/* Context badge for user messages - positioned outside message box on the left */
+.ai-message__context-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  order: 10;
+}
+
+/* For messages with context badge: remove gap and add specific margins */
+.ai-message--has-context.ai-message--user {
+  gap: 0;
+}
+
+.ai-message--has-context.ai-message--user .ai-message__avatar {
+  margin-left: var(--space-sm);
+}
+
+.ai-message--has-context.ai-message--user .ai-message__content {
+  margin-left: 2px;
+}
+
 /* Markdown formatting in messages */
 .ai-message__content strong {
   font-weight: 600;

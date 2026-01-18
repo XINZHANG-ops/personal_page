@@ -11,14 +11,22 @@
      * Generate message HTML
      * @param {string} type - Message type ('user' or 'assistant')
      * @param {string} content - Message content (already escaped)
+     * @param {Object} contextType - Optional context type object with icon
      * @returns {string} Message HTML
      */
-    static message(type, content) {
+    static message(type, content, contextType = null) {
       const ICONS = window.ICONS;
       const CSS_CLASSES = window.CSS_CLASSES;
       const avatar = type === 'user' ? ICONS.USER : ICONS.ROBOT;
+
+      // Add context badge for user messages with context type (positioned outside the message box)
+      const contextBadge = (type === 'user' && contextType)
+        ? `<span class="ai-message__context-badge" title="${contextType.id}">${contextType.icon}</span>`
+        : '';
+
       return `
-      <div class="${CSS_CLASSES.MESSAGE} ${CSS_CLASSES[`MESSAGE_${type.toUpperCase()}`]}">
+      <div class="${CSS_CLASSES.MESSAGE} ${CSS_CLASSES[`MESSAGE_${type.toUpperCase()}`]}${contextBadge ? ' ai-message--has-context' : ''}">
+        ${contextBadge}
         <div class="${CSS_CLASSES.MESSAGE_AVATAR}">${avatar}</div>
         <div class="${CSS_CLASSES.MESSAGE_CONTENT}">${content}</div>
       </div>

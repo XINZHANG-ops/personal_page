@@ -511,15 +511,17 @@ class AIAssistant {
     const message = this.elements.input.textContent.trim();
     if (!message || this.isTyping) return;
 
-    // Add user message
-    this.addMessage('user', message);
+    // Save context type before clearing
+    const contextTypeToSend = this.selectedContextType;
+
+    // Add user message with context type badge
+    this.addMessage('user', message, contextTypeToSend);
 
     // Clear input
     this.elements.input.innerHTML = '';
     this.elements.input.style.height = 'auto';
 
     // Clear context type selection and tag display after sending
-    const contextTypeToSend = this.selectedContextType;
     this.removeContextTag();
     delete this.elements.input.dataset.contextType;
 
@@ -593,13 +595,13 @@ class AIAssistant {
     }
   }
 
-  addMessage(type, content) {
+  addMessage(type, content, contextType = null) {
     // Render markdown for assistant messages, escape HTML for user messages
     const formattedContent = type === 'assistant'
       ? this.renderMarkdown(content)
       : DOMUtils.escapeHtml(content);
 
-    const messageHTML = Templates.message(type, formattedContent);
+    const messageHTML = Templates.message(type, formattedContent, contextType);
 
     // Remove typing indicator if exists
     const typingIndicator = this.elements.messages.querySelector(`.${CSS_CLASSES.MESSAGE_TYPING}`);
@@ -610,8 +612,12 @@ class AIAssistant {
     this.elements.messages.insertAdjacentHTML('beforeend', messageHTML);
     this.scrollToBottom();
 
-    // Save to history
-    this.messages.push({ type, content, timestamp: Date.now() });
+    // Save to history (include contextType if present)
+    const messageData = { type, content, timestamp: Date.now() };
+    if (contextType) {
+      messageData.contextType = contextType.id;
+    }
+    this.messages.push(messageData);
     this.saveChatHistory();
 
     // Limit messages
@@ -695,7 +701,12 @@ class AIAssistant {
     const history = StorageManager.get(STORAGE_KEYS.CHAT_HISTORY, []);
     history.forEach(msg => {
       if (msg.type !== 'assistant' || msg.content !== this.elements.messages.firstElementChild?.textContent) {
-        this.addMessage(msg.type, msg.content);
+        // Restore context type if saved
+        let contextType = null;
+        if (msg.contextType) {
+          contextType = CONTEXT_TYPES.find(ct => ct.id === msg.contextType);
+        }
+        this.addMessage(msg.type, msg.content, contextType);
       }
     });
   }
