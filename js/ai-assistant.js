@@ -298,7 +298,14 @@ class AIAssistant {
       highlighted.classList.remove('ai-mention-dropdown__option--highlighted');
     }
 
-    options[newIndex].classList.add('ai-mention-dropdown__option--highlighted');
+    const newHighlighted = options[newIndex];
+    newHighlighted.classList.add('ai-mention-dropdown__option--highlighted');
+
+    // Scroll the highlighted option into view
+    newHighlighted.scrollIntoView({
+      block: 'nearest',
+      behavior: 'smooth'
+    });
   }
 
   selectHighlightedOption() {
