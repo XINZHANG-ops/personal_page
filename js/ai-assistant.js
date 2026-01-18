@@ -85,6 +85,9 @@ class AIAssistant {
     this.setupDraggable();
     this.setupResizable();
     this.setupResizeHandler();
+
+    // Set default context tag based on current page
+    this.setDefaultContextTag();
   }
 
   applyChatDimensions() {
@@ -539,6 +542,9 @@ class AIAssistant {
       this.addMessage('assistant', this.getErrorMessage(error));
     } finally {
       this.setTyping(false);
+
+      // Restore default context tag based on current page after sending
+      this.setDefaultContextTag();
     }
   }
 
@@ -748,6 +754,10 @@ class AIAssistant {
       const translations = this.getTranslations(currentLang);
       this.elements.messages.innerHTML = Templates.welcomeMessage(translations.welcome);
     }
+
+    // Clear any context tag and restore default based on current page
+    this.removeContextTag();
+    this.setDefaultContextTag();
   }
 
   startNewSession() {
@@ -924,6 +934,28 @@ class AIAssistant {
       title: title,
       page_name: pageName
     };
+  }
+
+  setDefaultContextTag() {
+    const pageInfo = this.getCurrentPageInfo();
+    const pageName = pageInfo.page_name;
+
+    // Map page names to context types
+    const pageToContextMap = {
+      'beer-ratings': 'beer',
+      'beer': 'beer'
+      // Add more mappings as needed
+    };
+
+    // Check if current page has a default context type
+    const defaultContextId = pageToContextMap[pageName];
+    if (defaultContextId) {
+      const contextType = CONTEXT_TYPES.find(ct => ct.id === defaultContextId);
+      if (contextType) {
+        this.selectedContextType = contextType;
+        this.displayContextTag(contextType);
+      }
+    }
   }
 
   // Update translations when language changes
