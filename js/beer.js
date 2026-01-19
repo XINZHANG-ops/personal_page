@@ -726,6 +726,24 @@
             "otherAromas": 4,
             "overall": 5
         }
+    },
+    {
+        "id": "carling-ice",
+        "name": "Carling Ice",
+        "style": "Lager",
+        "abv": 5.5,
+        "date": "2026-01-19",
+        "price": 2.49,
+        "imageUrl": "../assets/images/beers/carling-ice.jpg",
+        "notes": "This beer was a pleasant surprise. The first sip has a bit of bitterness—not too much, just enough—and it’s quite crisp. After that, it becomes very aromatic. It’s not purely a malt aroma, but there’s definitely a lot of malt character coming through in the finish.",
+        "scores": {
+            "maltiness": 8,
+            "colorDepth": 8,
+            "clarity": 9.5,
+            "bitterness": 3.5,
+            "otherAromas": 2.5,
+            "overall": 8
+        }
     }
 ];
 
