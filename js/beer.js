@@ -672,6 +672,24 @@
             "otherAromas": 1,
             "overall": 9
         }
+    },
+    {
+        "id": "bud-light",
+        "name": "Bud Light",
+        "style": "Lager",
+        "abv": 4,
+        "date": "2026-01-18",
+        "price": 2.79,
+        "imageUrl": "../assets/images/beers/bud-light.jpg",
+        "notes": "Bud Light has a slight burnt note on the first sip—or maybe what people describe as a bready flavor. Overall it’s very light, but that initial hint of burnt flavor isn’t something I really like. Still, taken as a whole, it’s fairly acceptable.",
+        "scores": {
+            "maltiness": 7.5,
+            "colorDepth": 8.5,
+            "clarity": 9.5,
+            "bitterness": 1.5,
+            "otherAromas": 1,
+            "overall": 7
+        }
     }
 ];
 
