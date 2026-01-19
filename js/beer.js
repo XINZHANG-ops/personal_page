@@ -654,6 +654,24 @@
             "otherAromas": 1.5,
             "overall": 5
         }
+    },
+    {
+        "id": "michelob-ultra-can",
+        "name": "Michelob Ultra Can",
+        "style": "Lager",
+        "abv": 4,
+        "date": "2026-01-18",
+        "price": 2.99,
+        "imageUrl": "../assets/images/beers/michelob-ultra-can.jpg",
+        "notes": "Michelob Ultra (can) is a very light beer but still has some malt aroma. On the first sip, I might have imagined a faint baijiu-like note, but after that it’s mostly just clean, light, and malty. I actually like it quite a bit—though I can see how people who dislike very light beers might really not enjoy it, since it’s genuinely quite mild.",
+        "scores": {
+            "maltiness": 8.5,
+            "colorDepth": 9.5,
+            "clarity": 9.5,
+            "bitterness": 1,
+            "otherAromas": 1,
+            "overall": 9
+        }
     }
 ];
 
