@@ -708,6 +708,24 @@
             "otherAromas": 9,
             "overall": 8.5
         }
+    },
+    {
+        "id": "heineken",
+        "name": "Heineken",
+        "style": "Lager",
+        "abv": 5,
+        "date": "2026-01-18",
+        "price": 3.79,
+        "imageUrl": "../assets/images/beers/heineken.jpg",
+        "notes": "Heineken actually tastes quite bitter to me—though not extremely so. In my impression, it’s a fairly light beer with a pale color, but the bitterness definitely feels more like hop bitterness rather than the roasted malt kind. I’m not sure whether the Heineken sold in China has been adjusted or modified in any way.",
+        "scores": {
+            "maltiness": 1.5,
+            "colorDepth": 7.5,
+            "clarity": 9.5,
+            "bitterness": 6,
+            "otherAromas": 4,
+            "overall": 5
+        }
     }
 ];
 
