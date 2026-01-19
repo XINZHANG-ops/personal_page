@@ -690,6 +690,24 @@
             "otherAromas": 1,
             "overall": 7
         }
+    },
+    {
+        "id": "blue-moon-belgian-white",
+        "name": "BLUE MOON BELGIAN WHITE",
+        "style": "Wheat Beer",
+        "abv": 5.4,
+        "date": "2026-01-18",
+        "price": 3.39,
+        "imageUrl": "../assets/images/beers/blue-moon-belgian-white.jpg",
+        "notes": "This is also an orange-peel Belgian white beer. Although it’s not my favorite malt-forward style, this type of beer generally suits my taste quite well. It goes down smoothly without being harsh, has a touch of sweetness, and still carries a pleasant beer aroma.",
+        "scores": {
+            "maltiness": 1.5,
+            "colorDepth": 6.5,
+            "clarity": 1.5,
+            "bitterness": 1.5,
+            "otherAromas": 9,
+            "overall": 8.5
+        }
     }
 ];
 
