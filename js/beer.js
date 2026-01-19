@@ -744,6 +744,24 @@
             "otherAromas": 2.5,
             "overall": 8
         }
+    },
+    {
+        "id": "dab-original-lager",
+        "name": "DAB ORIGINAL LAGER",
+        "style": "Lager",
+        "abv": 5,
+        "date": "2026-01-19",
+        "price": 2.79,
+        "imageUrl": "../assets/images/beers/dab-original-lager.jpg",
+        "notes": "DAB Original Lager tastes like a beer made with roasted malts. There’s a slight burnt note on the first sip, but it’s not heavy and disappears almost immediately. I feel this kind of beer might actually pair quite well with strongly flavored barbecue.",
+        "scores": {
+            "maltiness": 3,
+            "colorDepth": 6.5,
+            "clarity": 9.5,
+            "bitterness": 5,
+            "otherAromas": 4,
+            "overall": 5
+        }
     }
 ];
 
