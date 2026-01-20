@@ -945,7 +945,6 @@ if (fs.existsSync(TEMPLATE_FILE)) {
             // Create text lines (one per beer)
             const lineHeight = 12;
             const startY = y - 10 - (beerNamesArray.length * lineHeight);
-            const maxTextWidth = Math.max(...beerNamesArray.map(n => n.length)) * 6;
             const padding = 4;
 
             // Determine label position based on x position
@@ -954,27 +953,44 @@ if (fs.existsSync(TEMPLATE_FILE)) {
             const chartCenterX = width / 2;
             const labelOffset = 5; // Distance from point to label
             const isPointOnLeft = x < chartCenterX;
-            const labelOffsetX = isPointOnLeft ? labelOffset : -(maxTextWidth + padding * 2 + labelOffset);
+
+            // First, add labelGroup to SVG so getBBox() can work
+            svg.appendChild(labelGroup);
+
+            // Create text elements and measure actual width
+            const textElements = [];
+            let actualMaxWidth = 0;
 
             beerNamesArray.forEach((name, idx) => {
                 const textLine = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                textLine.setAttribute('x', x + labelOffsetX + padding);
+                textLine.setAttribute('x', 0); // Temporary position
                 textLine.setAttribute('y', startY + (idx * lineHeight) + 10);
                 textLine.setAttribute('font-size', '10');
                 textLine.setAttribute('fill', '#333');
                 textLine.setAttribute('font-weight', 'bold');
                 textLine.textContent = name;
                 labelGroup.appendChild(textLine);
+                textElements.push(textLine);
+
+                // Get actual text width after element is in DOM
+                const bbox = textLine.getBBox();
+                actualMaxWidth = Math.max(actualMaxWidth, bbox.width);
             });
 
-            // Set background rectangle dimensions
+            // Now position elements based on actual measured width
+            const labelOffsetX = isPointOnLeft ? labelOffset : -(actualMaxWidth + padding * 2 + labelOffset);
+
+            // Update text positions
+            textElements.forEach((textLine) => {
+                textLine.setAttribute('x', x + labelOffsetX + padding);
+            });
+
+            // Set background rectangle dimensions with actual width
             bgRect.setAttribute('x', x + labelOffsetX);
             bgRect.setAttribute('y', startY);
-            bgRect.setAttribute('width', maxTextWidth + padding * 2);
+            bgRect.setAttribute('width', actualMaxWidth + padding * 2);
             bgRect.setAttribute('height', beerNamesArray.length * lineHeight + padding);
             labelGroup.insertBefore(bgRect, labelGroup.firstChild);
-
-            svg.appendChild(labelGroup);
 
             // Store circle data for second pass
             circlesData.push({
