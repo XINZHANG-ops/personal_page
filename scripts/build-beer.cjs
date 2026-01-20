@@ -948,9 +948,17 @@ if (fs.existsSync(TEMPLATE_FILE)) {
             const maxTextWidth = Math.max(...beerNamesArray.map(n => n.length)) * 6;
             const padding = 4;
 
+            // Determine label position based on x position
+            // If point is on the left half of chart, show label on right
+            // If point is on the right half, show label on left
+            const chartCenterX = width / 2;
+            const labelOffset = 5; // Distance from point to label
+            const isPointOnLeft = x < chartCenterX;
+            const labelOffsetX = isPointOnLeft ? labelOffset : -(maxTextWidth + padding * 2 + labelOffset);
+
             beerNamesArray.forEach((name, idx) => {
                 const textLine = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                textLine.setAttribute('x', x + 10);
+                textLine.setAttribute('x', x + labelOffsetX + padding);
                 textLine.setAttribute('y', startY + (idx * lineHeight) + 10);
                 textLine.setAttribute('font-size', '10');
                 textLine.setAttribute('fill', '#333');
@@ -960,7 +968,7 @@ if (fs.existsSync(TEMPLATE_FILE)) {
             });
 
             // Set background rectangle dimensions
-            bgRect.setAttribute('x', x + 10 - padding);
+            bgRect.setAttribute('x', x + labelOffsetX);
             bgRect.setAttribute('y', startY);
             bgRect.setAttribute('width', maxTextWidth + padding * 2);
             bgRect.setAttribute('height', beerNamesArray.length * lineHeight + padding);
