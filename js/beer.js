@@ -762,6 +762,24 @@
             "otherAromas": 4,
             "overall": 5
         }
+    },
+    {
+        "id": "sleeman-clear-20",
+        "name": "SLEEMAN CLEAR 2.0",
+        "style": "Lager",
+        "abv": 4,
+        "date": "2026-01-19",
+        "price": 2.67,
+        "imageUrl": "../assets/images/beers/sleeman-clear-20.jpg",
+        "notes": "Sleeman Clear 2.0 actually tastes a bit like domestic Chinese beers. The first sip is extremely light—just clean and crisp with almost no flavor—followed by a malty note in the finish. Although the malt aroma itself isn’t very strong, it stands out clearly because of how light and refreshing the beer is overall.",
+        "scores": {
+            "maltiness": 8.5,
+            "colorDepth": 8.5,
+            "clarity": 9.5,
+            "bitterness": 1,
+            "otherAromas": 1,
+            "overall": 9.5
+        }
     }
 ];
 
