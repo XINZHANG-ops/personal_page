@@ -780,6 +780,24 @@
             "otherAromas": 1,
             "overall": 9.5
         }
+    },
+    {
+        "id": "asahi-super-dry",
+        "name": "Asahi Super Dry",
+        "style": "Lager",
+        "abv": 5,
+        "date": "2026-01-20",
+        "price": 3.39,
+        "imageUrl": "../assets/images/beers/asahi-super-dry.jpg",
+        "notes": "Interesting. It’s said to be a Japanese dry lager. On the first sip, there’s a hint of that beer flavor I don’t really like—an extremely faint burnt note, maybe? But I don’t actually find it “spicy” despite the name Karakuchi. After that, there’s a surprisingly strong malty aftertaste, which is quite nice overall.",
+        "scores": {
+            "maltiness": 8,
+            "colorDepth": 7,
+            "clarity": 9.5,
+            "bitterness": 4,
+            "otherAromas": 1.5,
+            "overall": 7.5
+        }
     }
 ];
 
