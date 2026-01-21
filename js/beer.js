@@ -798,6 +798,24 @@
             "otherAromas": 1.5,
             "overall": 7.5
         }
+    },
+    {
+        "id": "sapporo",
+        "name": "SAPPORO",
+        "style": "Lager",
+        "abv": 5,
+        "date": "2026-01-20",
+        "price": 3.39,
+        "imageUrl": "../assets/images/beers/sapporo.jpg",
+        "notes": "With Sapporo, my first sip was actually foam that was about to overflow, so I instinctively took a sip of it. It had a very rich malty aroma. Because of that, my impressions afterward might be a bit biased. That said, when actually drinking it, I didn’t enjoy it as much as the Karakuchi dry version. It feels like it has more of an ale-like character—possibly from the hops—and the malty aftertaste doesn’t come through as strongly as I expected.",
+        "scores": {
+            "maltiness": 6,
+            "colorDepth": 7,
+            "clarity": 9.5,
+            "bitterness": 3.5,
+            "otherAromas": 2,
+            "overall": 6.5
+        }
     }
 ];
 
