@@ -852,6 +852,24 @@
             "otherAromas": 1,
             "overall": 6.5
         }
+    },
+    {
+        "id": "laker-ice",
+        "name": "Laker Ice",
+        "style": "Lager",
+        "abv": 5.5,
+        "date": "2026-01-22",
+        "price": 2.49,
+        "imageUrl": "../assets/images/beers/laker-ice.jpg",
+        "notes": "Laker beers used to be around two dollars a bottle as well, but prices have really gone up over the past year or two. I drink the blue-label Laker quite often; the black-label Ice version, not as much. On the first sip, there’s a very faint, whiskey-like aroma in the nose, and the finish has a similar note. Even though the alcohol content isn’t high (compared to spirits), it still gives off the impression of a higher-proof drink.",
+        "scores": {
+            "maltiness": 3.5,
+            "colorDepth": 6,
+            "clarity": 9.5,
+            "bitterness": 3,
+            "otherAromas": 1.5,
+            "overall": 5
+        }
     }
 ];
 
