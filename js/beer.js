@@ -816,6 +816,24 @@
             "otherAromas": 2,
             "overall": 6.5
         }
+    },
+    {
+        "id": "old-style-pilsner",
+        "name": "OLD STYLE PILSNER",
+        "style": "Pilsner",
+        "abv": 5,
+        "date": "2026-01-22",
+        "price": 2.49,
+        "imageUrl": "../assets/images/beers/old-style-pilsner.jpg",
+        "notes": "This beer has always been one of my go-to choices, and a big reason for that was the price. It was CAD 1.90 at The Beer Store last year, and only CAD 2.10 at Sobeys, but today Sobeys raised the price directly to CAD 2.49. At that price, it’s no longer as attractive as before. In terms of flavor, compared with other pilsners it isn’t very bitter, and there’s still some malt character. The first sip does have bitterness and a dry finish, though.",
+        "scores": {
+            "maltiness": 7,
+            "colorDepth": 8,
+            "clarity": 9.5,
+            "bitterness": 4,
+            "otherAromas": 1,
+            "overall": 7
+        }
     }
 ];
 
