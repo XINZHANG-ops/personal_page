@@ -834,6 +834,24 @@
             "otherAromas": 1,
             "overall": 7
         }
+    },
+    {
+        "id": "pabst-blue-ribbon",
+        "name": "Pabst Blue Ribbon",
+        "style": "Lager",
+        "abv": 4.9,
+        "date": "2026-01-22",
+        "price": 2.49,
+        "imageUrl": "../assets/images/beers/pabst-blue-ribbon.jpg",
+        "notes": "Pabst Blue Ribbon is similar to Old Style Pilsner—they’re both styles I used to drink quite often. A big reason was the price: last year it was CAD 1.90 at The Beer Store, and only CAD 2.10 at Sobeys, but today Sobeys has raised it straight to CAD 2.49.\nIn terms of taste, it has a fairly noticeable alcohol presence, and the finish also feels somewhat alcohol-driven. There’s a hint of malt, but it’s not very strong. On the first sip, it doesn’t really come across as particularly dry.",
+        "scores": {
+            "maltiness": 5.5,
+            "colorDepth": 6.5,
+            "clarity": 9.5,
+            "bitterness": 1,
+            "otherAromas": 1,
+            "overall": 6.5
+        }
     }
 ];
 
