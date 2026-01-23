@@ -870,6 +870,24 @@
             "otherAromas": 1.5,
             "overall": 5
         }
+    },
+    {
+        "id": "cracked-canoe",
+        "name": "Cracked Canoe",
+        "style": "Lager",
+        "abv": 3.5,
+        "date": "2026-01-22",
+        "price": 2.7,
+        "imageUrl": "../assets/images/beers/cracked-canoe.jpg",
+        "notes": "Cracked Canoe is the lowest-ABV beer I’ve had so far. I’m not sure if low alcohol and low calories are now major selling points for beer, but I personally do prefer lower-calorie options. This one is labeled at 130 calories—while most beers are usually around 150 to 200 calories, so it’s not dramatically lower. Still, it does taste quite light. The first sip is very refreshing with a bready note, followed by a clean, light profile and then some malt character. It’s not very intense, but relative to how light the beer is, the malt flavor actually comes through quite nicely.",
+        "scores": {
+            "maltiness": 8.5,
+            "colorDepth": 8,
+            "clarity": 9.5,
+            "bitterness": 1,
+            "otherAromas": 1,
+            "overall": 8
+        }
     }
 ];
 
