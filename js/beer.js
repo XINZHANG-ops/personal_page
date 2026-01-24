@@ -888,6 +888,24 @@
             "otherAromas": 1,
             "overall": 8
         }
+    },
+    {
+        "id": "rickards-red",
+        "name": "RICKARDS RED",
+        "style": "Amber Ale",
+        "abv": 5.2,
+        "date": "2026-01-23",
+        "price": 3.39,
+        "imageUrl": "../assets/images/beers/rickards-red.jpg",
+        "notes": "This is my first amber ale, and it was surprisingly quite good. There wasn’t as much bitterness as I expected—the bitterness level is only about the same as an average pilsner. What really stands out instead is the strong malty aroma in the later stages. There’s no noticeable hop flavor at all, and none of the burnt notes that I usually dislike. I was honestly surprised that a beer with such a dark color could taste like this.",
+        "scores": {
+            "maltiness": 7.5,
+            "colorDepth": 2,
+            "clarity": 9.5,
+            "bitterness": 2,
+            "otherAromas": 2,
+            "overall": 7.5
+        }
     }
 ];
 
