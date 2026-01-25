@@ -906,6 +906,24 @@
             "otherAromas": 2,
             "overall": 7.5
         }
+    },
+    {
+        "id": "collective-arts-lager",
+        "name": "Collective Arts Lager",
+        "style": "Lager",
+        "abv": 4.9,
+        "date": "2026-01-24",
+        "price": 3.25,
+        "imageUrl": "../assets/images/beers/collective-arts-lager.jpg",
+        "notes": "This beer has a very pale color, but the first sip is quite intense, with a strong hop character. Overall, the hop flavor is very pronounced. As the foam bursts, it releases some bitterness, and the overall impression is fairly crisp and dry.",
+        "scores": {
+            "maltiness": 4,
+            "colorDepth": 9,
+            "clarity": 9.5,
+            "bitterness": 5,
+            "otherAromas": 4,
+            "overall": 5.5
+        }
     }
 ];
 
