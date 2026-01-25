@@ -924,6 +924,24 @@
             "otherAromas": 4,
             "overall": 5.5
         }
+    },
+    {
+        "id": "waterloo-pineapple-radler",
+        "name": "WATERLOO PINEAPPLE RADLER",
+        "style": "Lager",
+        "abv": 2.5,
+        "date": "2026-01-25",
+        "price": 3.4,
+        "imageUrl": "../assets/images/beers/waterloo-pineapple-radler.jpg",
+        "notes": "Just like the name suggests, this is a pineapple-flavored beer. It has very little alcohol and is quite sweet—drinking it feels more like having a slightly alcoholic soda. It’s fine for times when you don’t really want to drink alcohol, but the sugar content is pretty high.",
+        "scores": {
+            "maltiness": 3,
+            "colorDepth": 7,
+            "clarity": 9.5,
+            "bitterness": 1,
+            "otherAromas": 8.5,
+            "overall": 7
+        }
     }
 ];
 
