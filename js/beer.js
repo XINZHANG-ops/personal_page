@@ -978,6 +978,24 @@
             "otherAromas": 1,
             "overall": 8
         }
+    },
+    {
+        "id": "storyteller-lager",
+        "name": "STORYTELLER LAGER",
+        "style": "Lager",
+        "abv": 5,
+        "date": "2026-01-25",
+        "price": 3.1,
+        "imageUrl": "../assets/images/beers/storyteller-lager.jpg",
+        "notes": "It has a very distinctive flavor. On the first sip, there’s a hint of hop character, followed by a light malty aftertaste. If you pay close attention, there also seems to be a faint floral note, though that could just be my imagination at the time.",
+        "scores": {
+            "maltiness": 5.5,
+            "colorDepth": 9.5,
+            "clarity": 9.5,
+            "bitterness": 2.5,
+            "otherAromas": 4.5,
+            "overall": 7.5
+        }
     }
 ];
 
