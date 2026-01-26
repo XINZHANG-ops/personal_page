@@ -996,6 +996,24 @@
             "otherAromas": 4.5,
             "overall": 7.5
         }
+    },
+    {
+        "id": "indie-alehouse-marco-polo-italian-style-pilsner",
+        "name": "Indie AleHouse Marco Polo Italian Style Pilsner",
+        "style": "Pilsner",
+        "abv": 5,
+        "date": "2026-01-26",
+        "price": 3.9,
+        "imageUrl": "../assets/images/beers/indie-alehouse-marco-polo-italian-style-pilsner.jpg",
+        "notes": "This is an Italian pilsner with a strong hop character on the first sip. What surprised me is that the finish also has a nice malty flavor. The initial aroma is likely what people often describe as “bready,” and together with the slightly hazy appearance of the beer, it really does give a subtle bread-like impression.",
+        "scores": {
+            "maltiness": 7,
+            "colorDepth": 9,
+            "clarity": 5,
+            "bitterness": 4.5,
+            "otherAromas": 4.5,
+            "overall": 7
+        }
     }
 ];
 
