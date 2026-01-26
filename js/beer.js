@@ -942,6 +942,24 @@
             "otherAromas": 8.5,
             "overall": 7
         }
+    },
+    {
+        "id": "old-milwaukee-ice",
+        "name": "OLD MILWAUKEE ICE",
+        "style": "Lager",
+        "abv": 5.5,
+        "date": "2026-01-25",
+        "price": 2.55,
+        "imageUrl": "../assets/images/beers/old-milwaukee-ice.jpg",
+        "notes": "There’s a faint bitterness on the first sip, followed by a very crisp, clean sensation, and then not much else in terms of flavor. The malt isn’t strong, but it is present. Overall, it feels decent enough.",
+        "scores": {
+            "maltiness": 5,
+            "colorDepth": 8,
+            "clarity": 9.5,
+            "bitterness": 2.5,
+            "otherAromas": 1,
+            "overall": 7.5
+        }
     }
 ];
 
