@@ -960,6 +960,24 @@
             "otherAromas": 1,
             "overall": 7.5
         }
+    },
+    {
+        "id": "farm-league-brewing-hauler-lager",
+        "name": "FARM LEAGUE BREWING HAULER LAGER",
+        "style": "Lager",
+        "abv": 4.8,
+        "date": "2026-01-25",
+        "price": 3.35,
+        "imageUrl": "../assets/images/beers/farm-league-brewing-hauler-lager.jpg",
+        "notes": "This might be the lightest beer I’ve ever had. There’s almost no distinctive flavor at all—just a clean, light, and refreshing sip. There’s no noticeable bitterness, hop character, or malt aroma, and oddly enough, that actually makes it quite enjoyable for me.",
+        "scores": {
+            "maltiness": 4,
+            "colorDepth": 9,
+            "clarity": 9.5,
+            "bitterness": 1.5,
+            "otherAromas": 1,
+            "overall": 8
+        }
     }
 ];
 
