@@ -1014,6 +1014,24 @@
             "otherAromas": 4.5,
             "overall": 7
         }
+    },
+    {
+        "id": "labatt-blue",
+        "name": "LABATT BLUE",
+        "style": "Lager",
+        "abv": 5,
+        "date": "2026-01-27",
+        "price": 2.5,
+        "imageUrl": "../assets/images/beers/labatt-blue.jpg",
+        "notes": "After being tortured late into the night by Python dependencies for background removal, I opened this beer. The first sip is very refreshing, starting with a slightly sharp, prickly bite and finishing with a light malty note. The mouthfeel is smooth overall. Maybe it’s because the code wore me out, but it honestly tastes really good—I can’t really find anything to fault.",
+        "scores": {
+            "maltiness": 7,
+            "colorDepth": 8,
+            "clarity": 9.5,
+            "bitterness": 2,
+            "otherAromas": 2.5,
+            "overall": 8
+        }
     }
 ];
 
