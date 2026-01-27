@@ -1032,6 +1032,24 @@
             "otherAromas": 2.5,
             "overall": 8
         }
+    },
+    {
+        "id": "laker-red",
+        "name": "LAKER RED",
+        "style": "Lager",
+        "abv": 5.5,
+        "date": "2026-01-27",
+        "price": 2.4,
+        "imageUrl": "../assets/images/beers/laker-red.jpg",
+        "notes": "On the first sip, there’s an herbal note, followed by a malty flavor. The transition between the two feels both natural and slightly odd at the same time, which is quite interesting. I remember another lager that tasted similar, but I can’t recall exactly which one it was. I wouldn’t recommend drinking this with chicken wings—this subtle herbal note might pair better with some other kind of food.",
+        "scores": {
+            "maltiness": 7,
+            "colorDepth": 2.5,
+            "clarity": 9.5,
+            "bitterness": 1.5,
+            "otherAromas": 7.5,
+            "overall": 6
+        }
     }
 ];
 
