@@ -30,6 +30,7 @@ class AIAssistant {
     this.shouldAutoFocus = true; // Track if input should auto-focus
     this.selectedContextType = null; // Track @mentioned context type
     this.showingMentionDropdown = false; // Track if @ dropdown is visible
+    this.selectedImage = null; // Track selected image for upload (base64 data)
 
     // Track position as percentage for zoom consistency
     this.positionPercentage = null; // { x: %, y: % }
@@ -82,6 +83,7 @@ class AIAssistant {
     // Add event listeners
     this.setupEventListeners();
     this.setupMentionListener();
+    this.setupImageUpload(); // Setup image upload for beer page
     this.setupDraggable();
     this.setupResizable();
     this.setupResizeHandler();
@@ -398,6 +400,141 @@ class AIAssistant {
     }
   }
 
+  setupImageUpload() {
+    // Only show image upload on beer page
+    const currentPage = this.getCurrentPageInfo();
+    if (!currentPage.page_name || !currentPage.page_name.includes('beer')) {
+      return; // Not on beer page, skip
+    }
+
+    // Create hidden file input
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/jpeg,image/png,image/webp';
+    fileInput.style.display = 'none';
+    fileInput.id = 'ai-image-upload';
+    document.body.appendChild(fileInput);
+
+    // Create upload button (camera icon)
+    const uploadBtn = document.createElement('button');
+    uploadBtn.type = 'button';
+    uploadBtn.className = 'ai-assistant__upload-btn';
+    uploadBtn.setAttribute('aria-label', 'Upload beer image');
+    uploadBtn.innerHTML = '📷'; // Camera emoji
+    uploadBtn.title = 'Upload beer image';
+
+    // Insert button at the start of input wrapper (before context tag display)
+    const inputWrapper = this.elements.input.closest('.ai-assistant__input-wrapper');
+    if (inputWrapper) {
+      inputWrapper.insertBefore(uploadBtn, inputWrapper.firstChild);
+    }
+
+    // Store references
+    this.elements.imageUploadBtn = uploadBtn;
+    this.elements.imageFileInput = fileInput;
+
+    // Handle upload button click
+    uploadBtn.addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    // Handle file selection
+    fileInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      // Validate file size (max 5MB)
+      const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+      if (file.size > MAX_SIZE) {
+        alert('Image file is too large. Maximum size is 5MB.');
+        fileInput.value = '';
+        return;
+      }
+
+      // Validate file type
+      if (!file.type.match(/^image\/(jpeg|png|webp)$/)) {
+        alert('Please select a valid image file (JPEG, PNG, or WebP).');
+        fileInput.value = '';
+        return;
+      }
+
+      try {
+        // Compress and encode image
+        const compressedBase64 = await this.compressAndEncodeImage(file);
+        this.selectedImage = compressedBase64;
+
+        // Debug: log compressed image info
+        console.log('Image compressed successfully!');
+        console.log('Compressed size:', compressedBase64.length, 'characters');
+        console.log('Format:', compressedBase64.substring(0, 30));
+
+        // Visual feedback: change button appearance
+        uploadBtn.classList.add('ai-assistant__upload-btn--selected');
+        uploadBtn.innerHTML = '✓'; // Checkmark
+      } catch (error) {
+        console.error('Error processing image:', error);
+        alert('Failed to process image. Please try again.');
+        fileInput.value = '';
+      }
+    });
+  }
+
+  async compressAndEncodeImage(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        const img = new Image();
+
+        img.onload = () => {
+          // Compression settings
+          const MAX_WIDTH = 800;
+          const MAX_HEIGHT = 800;
+          const QUALITY = 0.7; // JPEG quality (0-1)
+
+          let width = img.width;
+          let height = img.height;
+
+          // Calculate new dimensions (maintain aspect ratio)
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+
+          // Create canvas and draw compressed image
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Convert to base64 JPEG
+          const base64 = canvas.toDataURL('image/jpeg', QUALITY);
+          resolve(base64);
+        };
+
+        img.onerror = () => {
+          reject(new Error('Failed to load image'));
+        };
+
+        img.src = e.target.result;
+      };
+
+      reader.onerror = () => {
+        reject(new Error('Failed to read file'));
+      };
+
+      reader.readAsDataURL(file);
+    });
+  }
+
   toggleChat() {
     this.isOpen = !this.isOpen;
     this.saveChatState(this.isOpen);
@@ -514,11 +651,18 @@ class AIAssistant {
     const message = this.elements.input.textContent.trim();
     if (!message || this.isTyping) return;
 
-    // Save context type before clearing
+    // Save context type and image before clearing
     const contextTypeToSend = this.selectedContextType;
+    const imageToSend = this.selectedImage;
 
-    // Add user message with context type badge
-    this.addMessage('user', message, contextTypeToSend);
+    // Debug: log what we're about to send
+    console.log('Sending message with image:', imageToSend ? 'YES' : 'NO');
+    if (imageToSend) {
+      console.log('Image to send length:', imageToSend.length);
+    }
+
+    // Add user message with context type badge and image
+    this.addMessage('user', message, contextTypeToSend, imageToSend);
 
     // Clear input
     this.elements.input.innerHTML = '';
@@ -528,15 +672,23 @@ class AIAssistant {
     this.removeContextTag();
     delete this.elements.input.dataset.contextType;
 
+    // Clear selected image and reset upload button
+    this.clearSelectedImage();
+
     // Disable input while processing
     this.setTyping(true);
 
     try {
-      // Send to server with the saved context type
-      const response = await this.sendToServer(message, contextTypeToSend);
+      // Send to server with the saved context type and image
+      const response = await this.sendToServer(message, contextTypeToSend, imageToSend);
 
       // Add AI response
-      this.addMessage('assistant', response);
+      this.addMessage('assistant', response.text);
+
+      // Handle beer recognition results if present
+      if (response.beerIds && response.beerIds.length > 0) {
+        this.handleBeerRecognition(response.beerIds);
+      }
     } catch (error) {
       console.error('Error sending message:', error);
       this.addMessage('assistant', this.getErrorMessage(error));
@@ -548,7 +700,32 @@ class AIAssistant {
     }
   }
 
-  async sendToServer(message, contextType = null) {
+  clearSelectedImage() {
+    this.selectedImage = null;
+
+    // Reset upload button if exists
+    if (this.elements.imageUploadBtn) {
+      this.elements.imageUploadBtn.classList.remove('ai-assistant__upload-btn--selected');
+      this.elements.imageUploadBtn.innerHTML = '📷';
+    }
+
+    // Clear file input
+    if (this.elements.imageFileInput) {
+      this.elements.imageFileInput.value = '';
+    }
+  }
+
+  handleBeerRecognition(beerIds) {
+    // Check if we're on beer page and if filterBeersByPrediction function exists
+    if (typeof window.filterBeersByPrediction === 'function') {
+      // Call the global function to filter beers by predicted IDs
+      window.filterBeersByPrediction(beerIds);
+    } else {
+      console.warn('Beer filtering function not available. Make sure you are on the beer page.');
+    }
+  }
+
+  async sendToServer(message, contextType = null, imageData = null) {
     // Get current page information
     const currentPage = this.getCurrentPageInfo();
 
@@ -566,6 +743,11 @@ class AIAssistant {
     // Add context_type if user selected one via @ mention
     if (contextType) {
       requestData.context_type = contextType.id;
+    }
+
+    // Add image if user uploaded one
+    if (imageData) {
+      requestData.image = imageData;
     }
 
     try {
@@ -589,7 +771,11 @@ class AIAssistant {
         this.saveSessionId(data.session_id);
       }
 
-      return data.response || data.message || MESSAGES.ERROR_PROCESSING;
+      // Return object with text response and optional beer IDs
+      return {
+        text: data.response || data.message || MESSAGES.ERROR_PROCESSING,
+        beerIds: data.beer_ids_pred || null
+      };
     } catch (error) {
       // Check if server is not running
       if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
@@ -601,13 +787,20 @@ class AIAssistant {
     }
   }
 
-  addMessage(type, content, contextType = null) {
+  addMessage(type, content, contextType = null, imageData = null) {
+    // Debug: log image data
+    if (imageData) {
+      console.log('Adding message with image, data length:', imageData.length);
+      console.log('Image data prefix:', imageData.substring(0, 50));
+    }
+
     // Render markdown for assistant messages, escape HTML for user messages
     const formattedContent = type === 'assistant'
       ? this.renderMarkdown(content)
       : DOMUtils.escapeHtml(content);
 
-    const messageHTML = Templates.message(type, formattedContent, contextType);
+    // Don't pass imageData to template (we'll add it via DOM)
+    const messageHTML = Templates.message(type, formattedContent, contextType, null);
 
     // Remove typing indicator if exists
     const typingIndicator = this.elements.messages.querySelector(`.${CSS_CLASSES.MESSAGE_TYPING}`);
@@ -616,12 +809,71 @@ class AIAssistant {
     }
 
     this.elements.messages.insertAdjacentHTML('beforeend', messageHTML);
+
+    // If there's an image, add it via DOM manipulation (safer for Base64 data)
+    if (imageData && type === 'user') {
+      const lastMessage = this.elements.messages.lastElementChild;
+      const messageContent = lastMessage.querySelector('.ai-message__content');
+
+      if (messageContent) {
+        // Create image element
+        const img = document.createElement('img');
+        img.className = 'ai-message__image';
+        img.alt = 'Uploaded beer image';
+        img.loading = 'lazy';
+
+        // Force opacity to 1 to fix display issue
+        img.style.opacity = '1';
+        img.style.display = 'block';
+
+        // Set src directly (bypasses HTML escaping issues)
+        img.src = imageData;
+
+        img.onload = () => {
+          // Force opacity again after load
+          img.style.opacity = '1';
+          img.style.display = 'block';
+
+          console.log('Image loaded successfully via DOM');
+          console.log('Image natural dimensions:', img.naturalWidth, 'x', img.naturalHeight);
+          console.log('Image display size:', img.width, 'x', img.height);
+          console.log('Image offsetWidth/Height:', img.offsetWidth, 'x', img.offsetHeight);
+
+          const computedStyle = window.getComputedStyle(img);
+          console.log('Image computed display:', computedStyle.display);
+          console.log('Image computed visibility:', computedStyle.visibility);
+          console.log('Image computed opacity:', computedStyle.opacity);
+          console.log('Image computed width:', computedStyle.width);
+          console.log('Image computed height:', computedStyle.height);
+          console.log('Image computed maxWidth:', computedStyle.maxWidth);
+          console.log('Image computed maxHeight:', computedStyle.maxHeight);
+        };
+        img.onerror = (e) => {
+          console.error('Failed to load image via DOM', e);
+          console.error('Image src length:', img.src.length);
+          console.error('Image src prefix:', img.src.substring(0, 100));
+        };
+
+        // Insert image at the beginning of message content
+        messageContent.insertBefore(img, messageContent.firstChild);
+
+        console.log('Image element added to DOM');
+        console.log('Image classList:', img.className);
+        console.log('Parent element:', messageContent.className);
+      } else {
+        console.error('Could not find message content element');
+      }
+    }
+
     this.scrollToBottom();
 
-    // Save to history (include contextType if present)
+    // Save to history (include contextType and imageData if present)
     const messageData = { type, content, timestamp: Date.now() };
     if (contextType) {
       messageData.contextType = contextType.id;
+    }
+    if (imageData) {
+      messageData.imageData = imageData;
     }
     this.messages.push(messageData);
     this.saveChatHistory();
@@ -712,7 +964,9 @@ class AIAssistant {
         if (msg.contextType) {
           contextType = CONTEXT_TYPES.find(ct => ct.id === msg.contextType);
         }
-        this.addMessage(msg.type, msg.content, contextType);
+        // Restore image data if saved
+        const imageData = msg.imageData || null;
+        this.addMessage(msg.type, msg.content, contextType, imageData);
       }
     });
   }

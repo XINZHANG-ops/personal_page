@@ -12,9 +12,10 @@
      * @param {string} type - Message type ('user' or 'assistant')
      * @param {string} content - Message content (already escaped)
      * @param {Object} contextType - Optional context type object with icon
+     * @param {string} imageData - Not used (kept for compatibility, images added via DOM)
      * @returns {string} Message HTML
      */
-    static message(type, content, contextType = null) {
+    static message(type, content, contextType = null, imageData = null) {
       const ICONS = window.ICONS;
       const CSS_CLASSES = window.CSS_CLASSES;
       const avatar = type === 'user' ? ICONS.USER : ICONS.ROBOT;
@@ -24,11 +25,16 @@
         ? `<span class="ai-message__context-badge" title="${contextType.id}">${contextType.icon}</span>`
         : '';
 
+      // Note: Images are added via DOM manipulation in addMessage() for better Base64 handling
+      // Don't include imageData in template to avoid HTML escaping issues
+
       return `
       <div class="${CSS_CLASSES.MESSAGE} ${CSS_CLASSES[`MESSAGE_${type.toUpperCase()}`]}${contextBadge ? ' ai-message--has-context' : ''}">
         ${contextBadge}
         <div class="${CSS_CLASSES.MESSAGE_AVATAR}">${avatar}</div>
-        <div class="${CSS_CLASSES.MESSAGE_CONTENT}">${content}</div>
+        <div class="${CSS_CLASSES.MESSAGE_CONTENT}">
+          ${content}
+        </div>
       </div>
     `;
     }

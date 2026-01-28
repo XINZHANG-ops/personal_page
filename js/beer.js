@@ -1165,6 +1165,19 @@
             );
         }
 
+        if (activeFilter.type === 'prediction') {
+            // Filter by predicted beer IDs (array of IDs)
+            const idSet = new Set(activeFilter.value);
+            const filtered = beerList.filter(beer => idSet.has(beer.id));
+
+            // Sort by prediction order (first predicted beer appears first)
+            return filtered.sort((a, b) => {
+                const indexA = activeFilter.value.indexOf(a.id);
+                const indexB = activeFilter.value.indexOf(b.id);
+                return indexA - indexB;
+            });
+        }
+
         return beerList;
     }
 
@@ -2565,5 +2578,16 @@
             }
         });
     }
+
+    // Expose global function for AI assistant to filter beers by prediction
+    window.filterBeersByPrediction = function(beerIds) {
+        if (!beerIds || !Array.isArray(beerIds) || beerIds.length === 0) {
+            console.warn('Invalid beer IDs for prediction filtering');
+            return;
+        }
+
+        // Set filter to prediction type with beer IDs
+        setFilter('prediction', beerIds);
+    };
 
 })();

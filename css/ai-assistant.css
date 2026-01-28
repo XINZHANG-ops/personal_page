@@ -267,6 +267,35 @@
   margin-left: 2px;
 }
 
+/* Image in user messages */
+.ai-message__image {
+  width: auto;
+  min-width: 100px;
+  max-width: 100%;
+  height: auto;
+  max-height: 200px;
+  border-radius: var(--border-radius);
+  margin-bottom: var(--space-xs);
+  display: block !important;
+  opacity: 1 !important; /* Fix for opacity issue */
+  visibility: visible !important;
+  object-fit: contain;
+  cursor: pointer;
+  transition: transform var(--transition);
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.ai-message__image:hover {
+  transform: scale(1.02);
+}
+
+/* Fallback if image fails to load */
+.ai-message__image[src=""],
+.ai-message__image:not([src]) {
+  display: none;
+}
+
 /* Markdown formatting in messages */
 .ai-message__content strong {
   font-weight: 600;
@@ -385,6 +414,44 @@
   display: flex;
   align-items: center;
   flex-shrink: 0;
+}
+
+/* Image upload button (only visible on beer page) */
+.ai-assistant__upload-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: var(--border-radius);
+  transition: all var(--transition);
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.ai-assistant__upload-btn:hover {
+  background: var(--color-gray-light);
+  color: var(--color-accent);
+}
+
+.ai-assistant__upload-btn:active {
+  transform: scale(0.95);
+}
+
+.ai-assistant__upload-btn--selected {
+  background: var(--color-accent);
+  color: var(--color-white);
+}
+
+.ai-assistant__upload-btn--selected:hover {
+  background: var(--color-accent);
+  color: var(--color-white);
+  opacity: 0.9;
 }
 
 .ai-assistant__input {
