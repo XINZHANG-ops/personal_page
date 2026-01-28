@@ -1204,6 +1204,11 @@
              (type === 'maltScore' && activeFilter.value.maltiness === value.maltiness && activeFilter.value.overall === value.overall))) {
             activeFilter = { type: null, value: null };
         } else {
+            // Auto-clear prediction filter when clicking any other filter
+            // This makes prediction filter temporary and clears it with user interaction
+            if (activeFilter.type === 'prediction' && type !== 'prediction') {
+                console.log('Auto-clearing AI prediction filter');
+            }
             activeFilter = { type, value };
         }
 
@@ -2588,6 +2593,37 @@
 
         // Set filter to prediction type with beer IDs
         setFilter('prediction', beerIds);
+
+        // Provide visual feedback
+        console.log('AI prediction filter applied: showing ' + beerIds.length + ' beer(s)');
+
+        // Flash the beer count to indicate filter is active
+        const countElement = document.querySelector('.beer-gallery__count');
+        if (countElement) {
+            countElement.style.transition = 'background-color 0.3s ease';
+            countElement.style.backgroundColor = '#48A999';
+            countElement.style.color = 'white';
+            countElement.style.padding = '2px 8px';
+            countElement.style.borderRadius = '4px';
+
+            // Reset style after animation
+            setTimeout(() => {
+                countElement.style.backgroundColor = '';
+                countElement.style.color = '';
+                countElement.style.padding = '';
+                countElement.style.borderRadius = '';
+            }, 2000);
+        }
+    };
+
+    // Clear filter helper (can be called programmatically)
+    window.clearBeerFilter = function() {
+        if (activeFilter.type) {
+            console.log('Clearing ' + activeFilter.type + ' filter');
+            activeFilter = { type: null, value: null };
+            renderStatisticsCharts();
+            updateDisplay();
+        }
     };
 
 })();
