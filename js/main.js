@@ -39,7 +39,18 @@
             imageUrl: "assets/images/projects/cs-go-computer-vision.png",
             featured: false,
             size: "medium"
-        }
+        },
+        {
+            id: "beer-recognization",
+            title: "Beer Recognization",
+            description: "A project that make my own life easier to find the beers I rated before while I walk around in LCBO.",
+            technologies: ["Python", "Embedding Remapping", "YOLOv8", "CLIP"],
+            liveUrl: "https://xinzhang-ops.github.io/personal_page/pages/beer.html",
+            githubUrl: "https://github.com/XINZHANG-ops/personal_page",
+            imageUrl: "assets/images/projects/beer-recognization.jpg",
+            featured: true,
+            size: "medium"
+        },
     ];
 
     // Writing data structure for easy content management
