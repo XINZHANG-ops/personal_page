@@ -1068,6 +1068,24 @@
             "otherAromas": 4.5,
             "overall": 7
         }
+    },
+    {
+        "id": "stella-artois",
+        "name": "STELLA ARTOIS",
+        "style": "Lager",
+        "abv": 5,
+        "date": "2026-01-31",
+        "price": 3.69,
+        "imageUrl": "../assets/images/beers/stella-artois.jpg",
+        "notes": "Stella Artois tastes like it has only a very faint hop note with a slight bitterness—extremely, extremely light. I’m not sure if it’s because I was eating spicy chicken wings at the same time, but it really feels very mild. Other than that, there isn’t much flavor to speak of. Still, this kind of profile is something I’m tasting for the first time.",
+        "scores": {
+            "maltiness": 2,
+            "colorDepth": 6.5,
+            "clarity": 9.5,
+            "bitterness": 1.5,
+            "otherAromas": 1.5,
+            "overall": 8
+        }
     }
 ];
 
