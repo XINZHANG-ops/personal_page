@@ -11,7 +11,7 @@
             id: "mississauga-k1-speed-simulator",
             title: "Mississauga K1 Speed Simulator",
             description: "A project innovated by my team building events at Mississauga K1 Speed. Using NEAT (Genetic Algorithms on Network) to produce the best route.",
-            technologies: ["Python", "Genetic Algorithms"],
+            technologies: ["Python", "Genetic Algorithms", "Physics simulation"],
             liveUrl: "https://drive.google.com/file/d/1EkHdORD-FTKhcM3DJhXJ7CHwJ0nIlEl6/view?usp=drive_link",
             githubUrl: "https://github.com/XINZHANG-ops/car-racing-simulator",
             imageUrl: "assets/images/projects/mississauga-k1-speed-simulator.png",
