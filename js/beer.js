@@ -1122,6 +1122,24 @@
             "otherAromas": 1,
             "overall": 9.5
         }
+    },
+    {
+        "id": "canuck-pale-ale",
+        "name": "CANUCK PALE ALE",
+        "style": "Pale Ale",
+        "abv": 5.2,
+        "date": "2026-01-31",
+        "price": 2.88,
+        "imageUrl": "../assets/images/beers/canuck-pale-ale.jpg",
+        "notes": "It has a very classic ale profile, with a strong hop character. There’s also a faint floral note, which makes it quite pleasant. Honestly, it tastes pretty good, especially since it isn’t very bitter.",
+        "scores": {
+            "maltiness": 2.5,
+            "colorDepth": 6.5,
+            "clarity": 2,
+            "bitterness": 3.5,
+            "otherAromas": 5.5,
+            "overall": 8.5
+        }
     }
 ];
 
