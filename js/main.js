@@ -33,7 +33,7 @@
             id: "cs-go-computer-vision",
             title: "CS GO Computer Vision Aim Bot",
             description: "An aim bot for local cs go gaming, not for online cheating.",
-            technologies: ["Python", "YOLO"],
+            technologies: ["Python", "YOLOv5"],
             liveUrl: "https://drive.google.com/file/d/1weg24oAqh_Xd066v-6Tz2GzQmDK1IgLQ/view?usp=drive_link", // put null will not show
             githubUrl: "https://github.com/XINZHANG-ops/cs-aim-bot",
             imageUrl: "assets/images/projects/cs-go-computer-vision.png",
