@@ -43,7 +43,7 @@
         {
             id: "beer-recognization",
             title: "Beer Recognization",
-            description: "A project that make my own life easier to find the beers I rated before while I walk around in LCBO.",
+            description: "A project that makes my life easier by helping me find the beers I’ve rated before while walking around in LCBO.",
             technologies: ["Python", "Embedding Remapping", "YOLOv8", "CLIP"],
             liveUrl: "https://xinzhang-ops.github.io/personal_page/pages/beer.html",
             githubUrl: "https://github.com/XINZHANG-ops/personal_page",
