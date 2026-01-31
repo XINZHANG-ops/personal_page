@@ -1104,6 +1104,24 @@
             "otherAromas": 4.5,
             "overall": 7.5
         }
+    },
+    {
+        "id": "corona",
+        "name": "CORONA",
+        "style": "Lager",
+        "abv": 4.6,
+        "date": "2026-01-31",
+        "price": 3.39,
+        "imageUrl": "../assets/images/beers/corona.jpg",
+        "notes": "Corona really gives me the feeling of a Chinese domestic beer. It has a very pronounced malty aroma, paired with a bit of crispness on the first sip, and almost none of the flavors I usually dislike.",
+        "scores": {
+            "maltiness": 9,
+            "colorDepth": 8,
+            "clarity": 9.5,
+            "bitterness": 1,
+            "otherAromas": 1,
+            "overall": 9.5
+        }
     }
 ];
 
