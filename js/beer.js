@@ -1050,6 +1050,24 @@
             "otherAromas": 7.5,
             "overall": 6
         }
+    },
+    {
+        "id": "beaus-lug-tread-lagered-ale",
+        "name": "BEAUS LUG TREAD LAGERED ALE",
+        "style": "Lagered Ale",
+        "abv": 5.2,
+        "date": "2026-01-31",
+        "price": 3.69,
+        "imageUrl": "../assets/images/beers/beaus-lug-tread-lagered-ale.jpg",
+        "notes": "The first sip is fairly bitter, with a slight alcoholic note. It really does feel like many of the typical ale flavors have been stripped away, leaving mostly bitterness. Perhaps because of that, a bit of malt character comes through more clearly. To be honest, there is indeed a slight bready note to it.",
+        "scores": {
+            "maltiness": 7.5,
+            "colorDepth": 8.5,
+            "clarity": 9.5,
+            "bitterness": 5,
+            "otherAromas": 4.5,
+            "overall": 7
+        }
     }
 ];
 

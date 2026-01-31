@@ -34,6 +34,7 @@ BEER_STYLES = [
     "Pilsner",
     "Wheat Beer",
     "Porter",
+    "Lagered Ale",
     "Sour Ale",
     "Amber Ale",
     "Pale Ale",
@@ -324,4 +325,4 @@ if __name__ == "__main__":
     print("🍺 Starting Beer Rating System...")
     print("📁 Data file:", JSONL_FILE)
     print("🖼️  Images folder:", IMAGES_DIR)
-    app.launch(share=False, server_name="127.0.0.1", server_port=7860)
+    app.launch(share=False, server_name="127.0.0.1", server_port=8005)
