@@ -313,7 +313,7 @@ with gr.Blocks(title="🍺 Beer Rating System", theme=gr.themes.Soft()) as app:
     ### 💡 Quick Guide
     1. **Add Beer Info**: Enter the beer name, select style, and set ABV
     2. **Write Notes**: Describe what you tasted (use the style guide for ideas!)
-    3. **Upload Photo**: Drag & drop or click to upload (will be resized to 400x400)
+    3. **Upload Photo**: Drag & drop or click to upload (will be resized to 1200x1200)
     4. **Rate**: Score each aspect from 1-10 (use 0.5 increments)
     5. **Save**: Click save to add to your collection
     6. **Build**: Run `npm run build-beer` to update your website

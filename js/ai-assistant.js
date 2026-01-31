@@ -649,7 +649,8 @@ class AIAssistant {
 
   async sendMessage() {
     const message = this.elements.input.textContent.trim();
-    if (!message || this.isTyping) return;
+    // Allow sending if either message or image exists
+    if ((!message && !this.selectedImage) || this.isTyping) return;
 
     // Save context type and image before clearing
     const contextTypeToSend = this.selectedContextType;
