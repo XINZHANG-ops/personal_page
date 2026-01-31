@@ -1086,6 +1086,24 @@
             "otherAromas": 1.5,
             "overall": 8
         }
+    },
+    {
+        "id": "peroni-nastro-azzurro",
+        "name": "PERONI NASTRO AZZURRO",
+        "style": "Lager",
+        "abv": 5,
+        "date": "2026-01-31",
+        "price": 3.79,
+        "imageUrl": "../assets/images/beers/peroni-nastro-azzurro.jpg",
+        "notes": "The first sip that left the strongest impression on me was actually the foam—it carried so many flavors at once: bitterness, malt aroma, a bready note, and that floury, fermented character. The bread-like flavor in particular stood out. I know Italian pasta well, but I hadn’t really thought about Italian bread before. This combination of bitterness, slight sweetness, and fermented aroma is gradually becoming a new preference for me. Even when I breathe out, there’s still a floury, dough-like scent lingering.",
+        "scores": {
+            "maltiness": 5.5,
+            "colorDepth": 8,
+            "clarity": 9.5,
+            "bitterness": 4.5,
+            "otherAromas": 4.5,
+            "overall": 7.5
+        }
     }
 ];
 
