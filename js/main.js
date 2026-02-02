@@ -66,6 +66,16 @@
             url: "https://medium.com/@1528371521zx",
             tags: ["AI", "AI Characters"]
         },
+        {
+            id: "writing-demos",
+            title: "Visualization Demos For Writings",
+            type: "blog-post",
+            venue: "Medium",
+            date: "2026-01-01",
+            summary: "Visualization for a couple blog articles.",
+            url: "https://xinzhang-ops.github.io/demos/",
+            tags: ["AI", "Visualization"]
+        },
         // {
         //     id: "show-case-blog",
         //     title: "Kaiming He",
@@ -86,16 +96,6 @@
             url: "https://xinzhang-ops.github.io/daily_paper/index.html",
             tags: ["ML", "AI"]
         }
-        // {
-        //     id: "show-case-reading",
-        //     title: "mHC: Manifold-Constrained Hyper-Connections",
-        //     type: "paper-reading",
-        //     venue: "ArXiv",
-        //     date: "2026-01-02",
-        //     summary: "My take away for paper mHC: Manifold-Constrained Hyper-Connections.",
-        //     url: "https://xinzhang-ops.github.io/daily_paper/dailies/pages/2026-01-02.html",
-        //     tags: ["ResNet", "Manifold-Constrained Hyper-Connections (mHC)", "Transformer"]
-        // }
     ];
 
     // Wait for DOM to be ready
