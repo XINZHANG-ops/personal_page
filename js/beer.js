@@ -1158,6 +1158,24 @@
             "otherAromas": 8.5,
             "overall": 6
         }
+    },
+    {
+        "id": "sons-of-kent-brewing-8-track-xpa",
+        "name": "Sons of Kent Brewing 8 Track XPA",
+        "style": "Pale Ale",
+        "abv": 5.7,
+        "date": "2026-02-01",
+        "price": 3.49,
+        "imageUrl": "../assets/images/beers/sons-of-kent-brewing-8-track-xpa.jpg",
+        "notes": "Maybe it’s because I haven’t had many IPAs, but honestly, I feel like most of them don’t differ much beyond the hop character. This one, if you taste it carefully, has a faint herbal note in the aftertaste—though that could just be my imagination. Overall, it actually drinks quite OK.",
+        "scores": {
+            "maltiness": 1.5,
+            "colorDepth": 8.5,
+            "clarity": 7.5,
+            "bitterness": 3.5,
+            "otherAromas": 4.5,
+            "overall": 6.5
+        }
     }
 ];
 
