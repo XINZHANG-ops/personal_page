@@ -1140,6 +1140,24 @@
             "otherAromas": 5.5,
             "overall": 8.5
         }
+    },
+    {
+        "id": "flying-monkeys-velvet-bubble-lord-blueberry-sour",
+        "name": "Flying Monkeys Velvet Bubble Lord Blueberry Sour",
+        "style": "Other",
+        "abv": 6,
+        "date": "2026-02-01",
+        "price": 3.49,
+        "imageUrl": "../assets/images/beers/flying-monkeys-velvet-bubble-lord-blueberry-sour.jpg",
+        "notes": "This beer is exactly what its name suggests—just one word: sour. Tooth-achingly sour. It definitely has a blueberry flavor, and the mouthfeel is like a sparkling champagne soda, but it’s really very sour.",
+        "scores": {
+            "maltiness": 6.5,
+            "colorDepth": 1.5,
+            "clarity": 4,
+            "bitterness": 1,
+            "otherAromas": 8.5,
+            "overall": 6
+        }
     }
 ];
 
