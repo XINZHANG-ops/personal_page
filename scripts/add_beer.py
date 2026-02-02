@@ -325,4 +325,4 @@ if __name__ == "__main__":
     print("🍺 Starting Beer Rating System...")
     print("📁 Data file:", JSONL_FILE)
     print("🖼️  Images folder:", IMAGES_DIR)
-    app.launch(share=False, server_name="127.0.0.1", server_port=8005)
+    app.launch(share=False, server_name="127.0.0.1", server_port=8005, inbrowser=True)
