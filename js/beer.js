@@ -562,7 +562,7 @@
             "clarity": 9.5,
             "bitterness": 1,
             "otherAromas": 1,
-            "overall": 7
+            "overall": 9
         }
     },
     {
@@ -670,7 +670,7 @@
             "clarity": 9.5,
             "bitterness": 1,
             "otherAromas": 1,
-            "overall": 9
+            "overall": 7.5
         }
     },
     {
