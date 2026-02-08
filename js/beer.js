@@ -557,7 +557,7 @@
         "imageUrl": "../assets/images/beers/busch-light.jpg",
         "notes": "It tastes almost flavorless—there’s no real bitterness, sweetness, or aroma, just a very faint, basic taste. Perhaps it’s only in this overall light, muted profile that a slight hint of malt can be perceived.",
         "scores": {
-            "maltiness": 6,
+            "maltiness": 8,
             "colorDepth": 7.5,
             "clarity": 9.5,
             "bitterness": 1,
