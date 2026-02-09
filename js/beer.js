@@ -1176,6 +1176,24 @@
             "otherAromas": 4.5,
             "overall": 6.5
         }
+    },
+    {
+        "id": "nickel-brook-wicked-awesome-ipa",
+        "name": "NICKEL BROOK WICKED AWESOME IPA",
+        "style": "IPA (India Pale Ale)",
+        "abv": 6.5,
+        "date": "2026-02-08",
+        "price": 2.75,
+        "imageUrl": "../assets/images/beers/nickel-brook-wicked-awesome-ipa.jpg",
+        "notes": "I’ve noticed that my taste has shifted a bit recently. Maybe it’s because I’ve been drinking too much light beer, but I’m starting to find IPAs quite enjoyable as well. This one actually tastes pretty good to me—the first sip is bitter, with a strong hop character, but the finish has a nice malty note. In the middle, there also seems to be a faint fruity aroma. The ingredient list mentions barley, wheat, and oats, so maybe that mix of grains contributes to the flavor. Overall, it’s quite good.",
+        "scores": {
+            "maltiness": 5.5,
+            "colorDepth": 9.5,
+            "clarity": 2,
+            "bitterness": 6,
+            "otherAromas": 6,
+            "overall": 8.5
+        }
     }
 ];
 
