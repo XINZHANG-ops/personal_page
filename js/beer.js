@@ -1194,6 +1194,24 @@
             "otherAromas": 6,
             "overall": 8.5
         }
+    },
+    {
+        "id": "laker-light",
+        "name": "LAKER LIGHT",
+        "style": "Lager",
+        "abv": 4,
+        "date": "2026-02-09",
+        "price": 2.4,
+        "imageUrl": "../assets/images/beers/laker-light.jpg",
+        "notes": "This was my first time trying Laker Light. On the first sip, there’s a slightly oily mouthfeel at first, followed by a burst of crispness from the carbonation. There’s also a faint malty finish. Beers like this often let you pick up grainy notes from barley or wheat, and since I generally like light beers, this kind of beer is unlikely to disappoint me.",
+        "scores": {
+            "maltiness": 8,
+            "colorDepth": 8,
+            "clarity": 9.5,
+            "bitterness": 1,
+            "otherAromas": 2,
+            "overall": 8.5
+        }
     }
 ];
 
