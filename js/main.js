@@ -54,7 +54,7 @@
         {
             id: "personal-toolbox",
             title: "Personal Toolbox",
-            description: "Commonly used tools by myself",
+            description: "Commonly used tools by myself, image basic processing, many more coming soon...",
             technologies: ["Vibe Coding", "Claude Code"],
             liveUrl: "https://xinzhang-ops.github.io/xin_utilities/",
             githubUrl: "https://github.com/XINZHANG-ops/xin_utilities",
