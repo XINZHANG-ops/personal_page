@@ -51,6 +51,17 @@
             featured: true,
             size: "medium"
         },
+        {
+            id: "personal-toolbox",
+            title: "Personal Toolbox",
+            description: "Commonly used tools by myself",
+            technologies: ["Vibe Coding", "Claude Code"],
+            liveUrl: "https://xinzhang-ops.github.io/xin_utilities/",
+            githubUrl: "https://github.com/XINZHANG-ops/xin_utilities",
+            imageUrl: "assets/images/projects/personal-toolbox.png",
+            featured: true,
+            size: "medium"
+        },
     ];
 
     // Writing data structure for easy content management
