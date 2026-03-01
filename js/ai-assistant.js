@@ -927,8 +927,10 @@ class AIAssistant {
 
     this.updateConnectionStatus();
 
-    // Retry connection periodically
-    setTimeout(() => this.checkConnection(), this.config.reconnectInterval);
+    // Only retry when disconnected to save requests
+    if (!this.isConnected) {
+      setTimeout(() => this.checkConnection(), this.config.reconnectInterval);
+    }
   }
 
   updateConnectionStatus() {
