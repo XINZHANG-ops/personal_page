@@ -23,7 +23,7 @@
             title: "Office AI Avatar",
             description: "A project that build my own collegues as AI agents in office.",
             technologies: ["Python", "Langgraph", "Ollama", "TextToSpeech"],
-            liveUrl: "https://xinzhang-ops.github.io/PetRoomPage/",
+            liveUrl: "https://xinzhang-ops.github.io/OfficePage/",
             githubUrl: "https://github.com/XINZHANG-ops/virtual_room",
             imageUrl: "assets/images/projects/office-ai-avatar.png",
             featured: true,
