@@ -70,8 +70,10 @@ const translations_en = {
         filterAll: "All",
         filterBlogPosts: "Blog Posts",
         filterPapers: "Papers Readings",
+        filterDailyAI: "Daily AI Readings",
         typePaperReading: "Paper Reading",
         typeBlogPost: "Blog Post",
+        typeDailyAI: "Daily AI Reading",
         readMoreBtn: "Read More"
     },
 

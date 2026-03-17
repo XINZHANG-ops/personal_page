@@ -70,8 +70,10 @@ const translations_zh = {
         filterAll: "全部",
         filterBlogPosts: "博客文章",
         filterPapers: "论文阅读",
+        filterDailyAI: "每日AI阅读",
         typePaperReading: "论文阅读",
         typeBlogPost: "博客文章",
+        typeDailyAI: "每日AI阅读",
         readMoreBtn: "阅读更多"
     },
 

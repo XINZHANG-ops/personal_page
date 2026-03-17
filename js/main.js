@@ -106,6 +106,16 @@
             summary: "My Daily Paper Reading and take aways.",
             url: "https://xinzhang-ops.github.io/daily_paper/index.html",
             tags: ["ML", "AI"]
+        },
+        {
+            id: "daily-ai-readings",
+            title: "Daily AI Readings",
+            type: "daily-ai-reading",
+            venue: "AI News",
+            date: "2026-03-16",
+            summary: "Daily curated AI news and readings from across the industry.",
+            url: "https://xinzhang-ops.github.io/Daily-AI-News/",
+            tags: ["AI", "News", "Industry"]
         }
     ];
 
@@ -492,7 +502,8 @@
         const filters = [
             { key: 'all', labelKey: 'writing.filterAll', label: 'All' },
             { key: 'blog-post', labelKey: 'writing.filterBlogPosts', label: 'Blog Posts' },
-            { key: 'paper-reading', labelKey: 'writing.filterPapers', label: 'Papers Readings' }
+            { key: 'paper-reading', labelKey: 'writing.filterPapers', label: 'Papers Readings' },
+            { key: 'daily-ai-reading', labelKey: 'writing.filterDailyAI', label: 'Daily AI Readings' }
         ];
 
         filters.forEach(filter => {
@@ -634,6 +645,9 @@
         } else if (writing.type === 'blog-post') {
             typeBadge.setAttribute('data-i18n', 'writing.typeBlogPost');
             typeBadge.textContent = 'Blog Post';
+        } else if (writing.type === 'daily-ai-reading') {
+            typeBadge.setAttribute('data-i18n', 'writing.typeDailyAI');
+            typeBadge.textContent = 'Daily AI Reading';
         } else {
             typeBadge.textContent = writing.type.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
         }
