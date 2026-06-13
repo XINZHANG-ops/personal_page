@@ -1,0 +1,43 @@
+name: Rebuild beer.js on data change
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/beer.jsonl'
+      - 'scripts/build-beer.cjs'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-beer
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Use a PAT-friendly token so the auto-commit triggers Pages redeploy
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Rebuild js/beer.js from beer.jsonl
+        run: node scripts/build-beer.cjs
+
+      - name: Commit regenerated beer.js (if changed)
+        run: |
+          git config user.name "beer-bot"
+          git config user.email "beer-bot@users.noreply.github.com"
+          if git diff --quiet js/beer.js; then
+            echo "No changes to js/beer.js"
+          else
+            git add js/beer.js
+            git commit -m "auto: rebuild beer.js [skip ci]"
+            git push
+          fi
