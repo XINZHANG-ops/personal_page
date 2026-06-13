@@ -2,10 +2,12 @@
  * Beer Admin Mode — overlay script for pages/beer.html
  *
  * Activates only when URL contains ?admin (e.g. beer.html?admin).
- * Adds: login gate, top toolbar with "Add beer" button, edit/delete buttons
- * on every card, modal form for create/edit.
+ * Adds: login gate, top toolbar, edit/delete buttons on every card,
+ * modal form for create/edit.
  *
- * Talks to a Cloudflare Worker that writes to GitHub. Set WORKER_URL below.
+ * Changes are queued locally (localStorage). One Sync click sends the
+ * entire queue to the Cloudflare Worker, which commits all changes
+ * (jsonl + every image) in a SINGLE git commit.
  */
 (function () {
   'use strict';
@@ -13,9 +15,9 @@
   // === CONFIG ===
   const WORKER_URL = 'https://beer-upload.1528371521zx.workers.dev';
   const PW_KEY = 'beer_admin_pw';
+  const PENDING_KEY = 'beer_admin_pending_v1';
   // ==============
 
-  // Activate only when ?admin (or #admin) is present
   const isAdmin = /[?&]admin\b/.test(location.search) || location.hash === '#admin';
   if (!isAdmin) return;
 
@@ -48,10 +50,102 @@
 
   function enterAdmin() {
     injectToolbar();
-    // Preload jsonl so card buttons have data ready
-    ensureBeers().catch(() => {});
-    // beer.js renders cards async on DOMContentLoaded; observe the grid
+    ensureBeers().then(() => {
+      replayPendingToUI();
+    }).catch(() => {});
     observeGrid();
+    refreshToolbar();
+  }
+
+  // ---------- Pending queue (localStorage) ----------
+  // Stored as an array of operations preserving insertion order:
+  //   { action: 'create'|'update'|'delete', beer, imageDataUrl? }
+  // We dedupe per-id so the queue stays minimal — see queueOp.
+  function loadPending() {
+    try {
+      const raw = localStorage.getItem(PENDING_KEY);
+      if (!raw) return [];
+      const arr = JSON.parse(raw);
+      return Array.isArray(arr) ? arr : [];
+    } catch { return []; }
+  }
+  function savePending(ops) {
+    try {
+      localStorage.setItem(PENDING_KEY, JSON.stringify(ops));
+    } catch (e) {
+      alert('LocalStorage is full — please Sync now or Discard. ' + (e.message || ''));
+    }
+  }
+  function clearPending() { localStorage.removeItem(PENDING_KEY); }
+
+  // Merge a new op into the queue, collapsing per-id so we never carry
+  // redundant work. Rules:
+  //   existing create + new update  -> create (with merged beer)
+  //   existing create + new delete  -> remove from queue (cancels out)
+  //   existing update + new update  -> update (last wins)
+  //   existing update + new delete  -> delete
+  //   no existing                   -> append
+  function queueOp(op) {
+    const ops = loadPending();
+    const idx = ops.findIndex((o) => o.beer.id === op.beer.id);
+
+    if (idx < 0) {
+      ops.push(op);
+    } else {
+      const prev = ops[idx];
+      if (prev.action === 'create' && op.action === 'delete') {
+        // Cancel: never created on the server, just drop it
+        ops.splice(idx, 1);
+      } else if (prev.action === 'create') {
+        // Stay as create, but update fields (and image if new one provided)
+        ops[idx] = {
+          action: 'create',
+          beer: op.beer,
+          imageDataUrl: op.imageDataUrl || prev.imageDataUrl,
+        };
+      } else if (op.action === 'delete') {
+        ops[idx] = { action: 'delete', beer: { id: op.beer.id, name: op.beer.name } };
+      } else {
+        // update + update — last wins
+        ops[idx] = {
+          action: 'update',
+          beer: op.beer,
+          imageDataUrl: op.imageDataUrl || prev.imageDataUrl,
+        };
+      }
+    }
+    savePending(ops);
+    return ops;
+  }
+
+  function pendingForId(id) {
+    return loadPending().find((o) => o.beer.id === id) || null;
+  }
+
+  // Apply all pending ops to the in-memory beersCache + the live gallery.
+  // Called once after page load so the user sees their unsaved changes.
+  function replayPendingToUI() {
+    const ops = loadPending();
+    for (const op of ops) applyOpToUI(op);
+    decorateAllPendingCards();
+    refreshToolbar();
+  }
+
+  function applyOpToUI(op) {
+    if (op.action === 'delete') {
+      beersCache = beersCache.filter((b) => b.id !== op.beer.id);
+      if (window.__beerAPI) window.__beerAPI.remove(op.beer.id);
+      return;
+    }
+    // create or update
+    const idx = beersCache.findIndex((b) => b.id === op.beer.id);
+    if (idx >= 0) beersCache[idx] = op.beer; else beersCache.push(op.beer);
+    if (window.__beerAPI) {
+      const displayBeer = op.imageDataUrl
+        ? Object.assign({}, op.beer, { imageUrl: op.imageDataUrl })
+        : op.beer;
+      window.__beerAPI.upsert(displayBeer);
+    }
   }
 
   // ---------- Styles ----------
@@ -65,32 +159,49 @@
         --badm-text: #2a2a2a;
         --badm-muted: #7a7a7a;
         --badm-border: #e3ddd2;
+        --badm-warn: #e0a82e;
       }
       .badm-toolbar {
         position: fixed; top: 14px; right: 14px; z-index: 9999;
-        background: rgba(26, 26, 26, 0.92);
+        background: rgba(26, 26, 26, 0.94);
         backdrop-filter: blur(8px);
-        color: #fff; padding: 8px 12px 8px 14px;
-        display: flex; gap: 10px; align-items: center;
+        color: #fff; padding: 8px 10px 8px 14px;
+        display: flex; gap: 8px; align-items: center;
         border-radius: 999px;
         box-shadow: 0 6px 20px rgba(0,0,0,0.25); font-size: 0.85rem;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+        flex-wrap: wrap;
+        max-width: calc(100vw - 28px);
       }
       body.badm-modal-open { overflow: hidden; }
       .badm-toolbar .badm-tag {
         background: var(--badm-accent); padding: 2px 9px; border-radius: 999px;
         font-weight: 700; letter-spacing: 0.06em; font-size: 0.72rem;
       }
-      .badm-toolbar .badm-exit {
+      .badm-toolbar .badm-count {
+        background: var(--badm-warn); color: #2a1f00;
+        padding: 2px 9px; border-radius: 999px;
+        font-weight: 700; font-size: 0.75rem;
+        display: none;
+      }
+      .badm-toolbar.has-pending .badm-count { display: inline-block; }
+      .badm-toolbar .badm-pill {
         background: transparent; border: 1px solid rgba(255,255,255,0.25);
         color: #fff; padding: 5px 12px; border-radius: 999px;
         font-size: 0.8rem; font-weight: 600; cursor: pointer;
-        transition: background 0.15s;
+        transition: background 0.15s, opacity 0.15s;
         font-family: inherit;
       }
-      .badm-toolbar .badm-exit:hover { background: rgba(255,255,255,0.12); }
+      .badm-toolbar .badm-pill:hover:not(:disabled) { background: rgba(255,255,255,0.12); }
+      .badm-toolbar .badm-pill:disabled { opacity: 0.4; cursor: not-allowed; }
+      .badm-toolbar .badm-pill.primary {
+        background: var(--badm-accent); border-color: var(--badm-accent);
+      }
+      .badm-toolbar .badm-pill.primary:hover:not(:disabled) { background: var(--badm-accent-dark); }
+      .badm-toolbar .badm-pill.danger { color: #ffb3b3; border-color: rgba(255, 100, 100, 0.4); }
+      .badm-toolbar .badm-pill.danger:hover:not(:disabled) { background: rgba(255, 80, 80, 0.15); }
 
-      /* + Add beer card injected at top of #beer-grid */
+      /* + Add beer card */
       .badm-add-card {
         display: flex; flex-direction: column;
         align-items: center; justify-content: center;
@@ -145,7 +256,6 @@
         display: flex; gap: 6px;
         opacity: 1;
       }
-      /* On desktop with hover capability, fade in on hover for cleaner look */
       @media (hover: hover) and (pointer: fine) {
         .badm-card-actions { opacity: 0; transition: opacity 0.15s; }
         .beer-card:hover .badm-card-actions,
@@ -162,7 +272,32 @@
       .badm-icon-btn:hover { background: rgba(0,0,0,0.9); transform: scale(1.05); }
       .badm-icon-btn.delete:hover { background: var(--badm-danger); }
 
-      /* Modal — overlay + scroll lock */
+      /* Pending change badge on a card */
+      .beer-card.badm-pending::before {
+        content: ''; position: absolute; top: 8px; left: 8px;
+        width: 12px; height: 12px; border-radius: 50%;
+        background: var(--badm-warn); z-index: 5;
+        box-shadow: 0 0 0 3px rgba(255,255,255,0.85), 0 2px 6px rgba(0,0,0,0.25);
+        animation: badm-pulse 1.8s ease-in-out infinite;
+      }
+      @keyframes badm-pulse {
+        0%,100% { transform: scale(1); }
+        50% { transform: scale(1.18); }
+      }
+      .beer-card.badm-pending.badm-pending-new::after {
+        content: 'NEW'; position: absolute; top: 6px; left: 26px;
+        background: #2f8a4a; color: #fff; padding: 1px 6px;
+        font-size: 0.65rem; font-weight: 800; letter-spacing: 0.08em;
+        border-radius: 999px; z-index: 5;
+      }
+      .beer-card.badm-pending.badm-pending-edit::after {
+        content: 'EDITED'; position: absolute; top: 6px; left: 26px;
+        background: var(--badm-warn); color: #2a1f00; padding: 1px 6px;
+        font-size: 0.65rem; font-weight: 800; letter-spacing: 0.08em;
+        border-radius: 999px; z-index: 5;
+      }
+
+      /* Modal */
       .badm-modal-overlay {
         position: fixed; inset: 0; background: rgba(20, 18, 14, 0.55);
         backdrop-filter: blur(3px);
@@ -245,10 +380,8 @@
         border-radius: 10px; display: block; margin: 10px 0 4px;
         background: #f0ece5; border: 1px solid var(--badm-border);
       }
-      .badm-file-group { display: flex; gap: 8px; margin-top: 4px; }
-      /* Higher specificity than ".badm-modal label" which sets display:block */
       .badm-modal .badm-file {
-        flex: 1; display: flex; align-items: center; justify-content: center;
+        display: flex; align-items: center; justify-content: center;
         gap: 10px;
         margin: 0;
         padding: 14px 10px; border: 2px dashed var(--badm-border);
@@ -283,8 +416,29 @@
       .badm-status.info { background: #eef2f7; color: #345; border: 1px solid #d6dde6; }
       .badm-status.ok { background: #e7f5ec; color: #2f8a4a; border: 1px solid #c5e6cf; }
 
+      /* Pending list inside Sync/Discard confirm modal */
+      .badm-pending-list {
+        list-style: none; padding: 0; margin: 6px 0 0;
+        max-height: 240px; overflow-y: auto;
+        border: 1px solid var(--badm-border); border-radius: 8px;
+        background: #faf7f2;
+      }
+      .badm-pending-list li {
+        padding: 8px 12px; border-bottom: 1px solid #ede7d8;
+        font-size: 0.9rem; display: flex; gap: 8px; align-items: baseline;
+      }
+      .badm-pending-list li:last-child { border-bottom: none; }
+      .badm-pending-list .tag {
+        font-size: 0.7rem; font-weight: 800; letter-spacing: 0.08em;
+        padding: 1px 7px; border-radius: 999px; flex-shrink: 0;
+      }
+      .badm-pending-list .tag.create { background: #d6f0df; color: #2f8a4a; }
+      .badm-pending-list .tag.update { background: #fbecc4; color: #8a6500; }
+      .badm-pending-list .tag.delete { background: #f9d6d6; color: var(--badm-danger); }
+
       @media (max-width: 600px) {
-        .badm-toolbar { top: 10px; right: 10px; padding: 6px 10px 6px 12px; font-size: 0.8rem; }
+        .badm-toolbar { top: 10px; right: 10px; padding: 6px 8px 6px 12px; font-size: 0.8rem; gap: 6px; }
+        .badm-toolbar .badm-pill { padding: 5px 10px; font-size: 0.78rem; }
         .badm-modal-overlay { padding: 0; align-items: stretch; }
         .badm-modal { max-height: 100vh; border-radius: 0; }
         .badm-add-card { min-height: 180px; }
@@ -320,11 +474,9 @@
       secondaryLabel: 'Cancel',
       onSecondary: (close) => {
         close();
-        // Strip ?admin from URL
         history.replaceState(null, '', location.pathname + location.hash);
       },
     });
-    // Wire eye toggle
     const eye = document.getElementById('badm-pw-eye');
     const pwInput = document.getElementById('badm-pw');
     if (eye && pwInput) {
@@ -345,24 +497,46 @@
     if (document.querySelector('.badm-toolbar')) return;
     const bar = document.createElement('div');
     bar.className = 'badm-toolbar';
+    bar.id = 'badm-toolbar';
     bar.innerHTML = `
       <span class="badm-tag">ADMIN</span>
-      <button class="badm-exit" id="badm-logout" title="Leave admin mode (does not affect your saved changes)">Exit admin</button>
+      <span class="badm-count" id="badm-pending-count">0</span>
+      <button class="badm-pill primary" id="badm-sync" disabled
+              title="Push every pending change to GitHub in a single commit">Sync</button>
+      <button class="badm-pill danger" id="badm-discard" disabled
+              title="Throw away every pending change">Discard</button>
+      <button class="badm-pill" id="badm-logout"
+              title="Leave admin mode (pending changes stay until next visit)">Exit</button>
     `;
     document.body.appendChild(bar);
     document.getElementById('badm-logout').addEventListener('click', () => {
       localStorage.removeItem(PW_KEY);
       password = '';
-      location.search = ''; // reload without ?admin
+      location.search = '';
     });
+    document.getElementById('badm-sync').addEventListener('click', confirmSync);
+    document.getElementById('badm-discard').addEventListener('click', confirmDiscard);
   }
 
-  // ---------- "+ Add beer" card injected at the top of the grid ----------
+  function refreshToolbar() {
+    const bar = document.getElementById('badm-toolbar');
+    if (!bar) return;
+    const ops = loadPending();
+    const n = ops.length;
+    bar.classList.toggle('has-pending', n > 0);
+    const countEl = document.getElementById('badm-pending-count');
+    if (countEl) countEl.textContent = `${n} pending`;
+    const sync = document.getElementById('badm-sync');
+    const discard = document.getElementById('badm-discard');
+    if (sync) sync.disabled = n === 0;
+    if (discard) discard.disabled = n === 0;
+  }
+
+  // ---------- "+ Add beer" card ----------
   function ensureAddCard() {
     const grid = document.getElementById('beer-grid');
     if (!grid) return;
     if (grid.querySelector('.badm-add-card')) {
-      // Keep it as the first child even after re-renders
       const card = grid.querySelector('.badm-add-card');
       if (grid.firstChild !== card) grid.insertBefore(card, grid.firstChild);
       return;
@@ -374,7 +548,7 @@
     card.innerHTML = `
       <span class="plus">+</span>
       <span class="label">Add beer</span>
-      <span class="sub">New entry → GitHub</span>
+      <span class="sub">Queued locally — Sync to push</span>
     `;
     const open = () => openForm(null);
     card.addEventListener('click', open);
@@ -384,25 +558,24 @@
     grid.insertBefore(card, grid.firstChild);
   }
 
-  // ---------- Inject card actions ----------
+  // ---------- Card decoration ----------
   function observeGrid() {
     let lastCount = 0;
     const tryDecorate = () => {
       ensureAddCard();
       const cards = document.querySelectorAll('.beer-card');
       cards.forEach(decorateCard);
+      decorateAllPendingCards();
       if (cards.length !== lastCount) {
         lastCount = cards.length;
         console.log(`[beer-admin] decorated ${cards.length} cards`);
       }
     };
     tryDecorate();
-    // Re-decorate when the gallery re-renders (sort/filter)
     const grid = document.getElementById('beer-grid');
     if (grid) {
       new MutationObserver(tryDecorate).observe(grid, { childList: true, subtree: true });
     }
-    // Safety net: re-run a few times in case cards render after our observer attaches
     let retries = 0;
     const poll = setInterval(() => {
       tryDecorate();
@@ -415,7 +588,6 @@
     const id = card.getAttribute('data-beer-id');
     if (!id) return;
 
-    // Force position:relative inline as a safety net so absolute children anchor here
     if (getComputedStyle(card).position === 'static') {
       card.style.position = 'relative';
     }
@@ -438,9 +610,24 @@
       e.preventDefault();
       const beer = await resolveBeer(id);
       if (!beer) return alert('Could not load beer data for ' + id);
-      confirmDelete(beer);
+      queueDelete(beer);
     });
     card.appendChild(actions);
+  }
+
+  function decorateAllPendingCards() {
+    const ops = loadPending();
+    const byId = new Map(ops.map((o) => [o.beer.id, o.action]));
+    document.querySelectorAll('.beer-card').forEach((card) => {
+      const id = card.getAttribute('data-beer-id');
+      if (!id) return;
+      card.classList.remove('badm-pending', 'badm-pending-new', 'badm-pending-edit');
+      const action = byId.get(id);
+      if (!action) return;
+      card.classList.add('badm-pending');
+      if (action === 'create') card.classList.add('badm-pending-new');
+      else if (action === 'update') card.classList.add('badm-pending-edit');
+    });
   }
 
   async function resolveBeer(id) {
@@ -448,7 +635,6 @@
     return beersCache.find((b) => b.id === id) || null;
   }
 
-  // Cache populated by fetchJsonl()
   let beersCache = [];
   let jsonlLoading = null;
   function ensureBeers() {
@@ -464,7 +650,7 @@
     return jsonlLoading;
   }
 
-  // ---------- Form modal (create / edit) ----------
+  // ---------- Form modal ----------
   function openForm(beer) {
     renderForm(beer);
   }
@@ -486,8 +672,7 @@
 
     showModal({
       title: isEdit ? `Edit: ${beer.name}` : 'Add new beer',
-      sub: isEdit ? `id: ${beer.id}` : 'Will commit to data/beer.jsonl',
-      width: 'wide',
+      sub: isEdit ? `id: ${beer.id} — queued locally until you Sync` : 'Queued locally — click Sync to push to GitHub',
       bodyHtml: `
         <label for="badm-name">Name *</label>
         <input type="text" id="badm-name" value="${escapeAttr(beer?.name ?? '')}" ${isEdit ? 'readonly' : ''} required>
@@ -521,19 +706,17 @@
         <h3>Scores (1-10)</h3>
         ${scoreSliders}
       `,
-      primaryLabel: isEdit ? 'Save changes' : 'Create beer',
+      primaryLabel: isEdit ? 'Save changes' : 'Add to queue',
       onPrimary: (close, btn) => submitForm(beer, close, btn),
       secondaryLabel: 'Cancel',
     });
 
-    // Wire sliders
     SCORE_FIELDS.forEach((s) => {
       const inp = document.getElementById(`badm-${s.id}`);
       const val = document.getElementById(`badm-${s.id}-val`);
       inp.addEventListener('input', () => { val.textContent = inp.value; });
     });
 
-    // Photo preview + resize (two inputs: camera + gallery)
     let resizedDataUrl = null;
     const preview = document.getElementById('badm-preview');
     const fileLabel = document.getElementById('badm-file-label');
@@ -551,13 +734,12 @@
       }
     };
     document.getElementById('badm-photo-gallery').addEventListener('change', onPhotoChange);
-    // Expose to submit
     formContext = { beer, getImage: () => resizedDataUrl };
   }
 
   let formContext = null;
 
-  async function submitForm(existingBeer, close, btn) {
+  function submitForm(existingBeer, close, btn) {
     const isEdit = !!existingBeer;
     const name = document.getElementById('badm-name').value.trim();
     const notes = document.getElementById('badm-notes').value.trim();
@@ -572,6 +754,13 @@
     if (!isEdit && !newImage) return setModalStatus('Please upload a photo', 'err');
 
     const id = isEdit ? existingBeer.id : sanitize(name);
+    // Block create for an id that already exists (either committed or pending)
+    if (!isEdit) {
+      if (beersCache.find((b) => b.id === id) || pendingForId(id)) {
+        return setModalStatus(`A beer with id "${id}" already exists`, 'err');
+      }
+    }
+
     const beer = {
       id,
       name,
@@ -584,84 +773,106 @@
       scores,
     };
 
-    btn.disabled = true; btn.textContent = isEdit ? 'Saving...' : 'Creating...';
-    setModalStatus('Talking to GitHub...', 'info');
+    // Determine queue action — if this id was queued as 'create', stay 'create'.
+    const existingPending = pendingForId(id);
+    const queueAction = !isEdit
+      ? 'create'
+      : (existingPending?.action === 'create' ? 'create' : 'update');
 
     try {
-      const res = await callWorker({
-        action: isEdit ? 'update' : 'create',
+      queueOp({
+        action: queueAction,
         beer,
         imageDataUrl: newImage || null,
       });
-      setModalStatus(`✅ Saved! Showing now; site rebuild in ~1-2 min.\nCommit: ${res.commit?.slice(0, 7) || 'ok'}`, 'ok');
-      // Refresh local cache
-      if (isEdit) {
-        const idx = beersCache.findIndex((b) => b.id === id);
-        if (idx >= 0) beersCache[idx] = beer;
-      } else {
-        beersCache.push(beer);
-      }
-      // Hot-update the gallery via beer.js's exposed API
-      if (window.__beerAPI) {
-        // For edits with a new image, use the freshly-resized data URL so it
-        // shows immediately (the GitHub-served image takes ~1-2 min to deploy)
-        const displayBeer = newImage
-          ? { ...beer, imageUrl: newImage }
-          : beer;
-        window.__beerAPI.upsert(displayBeer);
-      }
-      setTimeout(close, 1200);
     } catch (err) {
-      setModalStatus(`❌ ${err.message}`, 'err');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = isEdit ? 'Save changes' : 'Create beer';
+      return setModalStatus(`❌ Could not queue: ${err.message}`, 'err');
     }
+
+    // Apply to UI immediately
+    applyOpToUI({ action: queueAction, beer, imageDataUrl: newImage });
+    decorateAllPendingCards();
+    refreshToolbar();
+
+    setModalStatus('✓ Queued. Click Sync in the toolbar when ready.', 'ok');
+    setTimeout(close, 700);
   }
 
-  function confirmDelete(beer) {
+  function queueDelete(beer) {
     showModal({
       title: `Delete "${beer.name}"?`,
-      sub: 'Removes the line from data/beer.jsonl. Image file is kept.',
+      sub: 'This queues the deletion. It will not be committed until you click Sync.',
       bodyHtml: '',
-      primaryLabel: 'Delete',
+      primaryLabel: 'Queue delete',
       primaryClass: 'danger',
+      onPrimary: (close) => {
+        queueOp({ action: 'delete', beer: { id: beer.id, name: beer.name } });
+        applyOpToUI({ action: 'delete', beer });
+        decorateAllPendingCards();
+        refreshToolbar();
+        close();
+      },
+      secondaryLabel: 'Cancel',
+    });
+  }
+
+  // ---------- Sync ----------
+  function confirmSync() {
+    const ops = loadPending();
+    if (!ops.length) return;
+    const list = ops.map((o) => `
+      <li>
+        <span class="tag ${o.action}">${o.action.toUpperCase()}</span>
+        <span>${escapeHtml(o.beer.name || o.beer.id)}</span>
+      </li>
+    `).join('');
+
+    showModal({
+      title: `Sync ${ops.length} change${ops.length === 1 ? '' : 's'} to GitHub`,
+      sub: 'Everything below will be committed in a single git commit.',
+      bodyHtml: `<ul class="badm-pending-list">${list}</ul>`,
+      primaryLabel: 'Sync now',
       onPrimary: async (close, btn) => {
-        btn.disabled = true; btn.textContent = 'Deleting...';
+        btn.disabled = true; btn.textContent = 'Syncing...';
         setModalStatus('Talking to GitHub...', 'info');
         try {
-          const res = await callWorker({ action: 'delete', beer: { id: beer.id } });
-          setModalStatus(`✅ Deleted. Commit: ${res.commit?.slice(0, 7) || 'ok'}`, 'ok');
-          beersCache = beersCache.filter((b) => b.id !== beer.id);
-          if (window.__beerAPI) {
-            window.__beerAPI.remove(beer.id);
-          } else {
-            removeCardFromDom(beer.id);
-          }
-          setTimeout(close, 800);
+          const res = await callWorker({ action: 'batch', operations: ops });
+          clearPending();
+          refreshToolbar();
+          decorateAllPendingCards();
+          const s = res.summary || {};
+          const summary = [
+            s.created ? `${s.created} added` : null,
+            s.updated ? `${s.updated} updated` : null,
+            s.deleted ? `${s.deleted} deleted` : null,
+          ].filter(Boolean).join(', ');
+          setModalStatus(`✅ Committed ${res.commit?.slice(0, 7) || ''} — ${summary || 'no-op'}.\nSite redeploy in ~1-2 min.`, 'ok');
+          setTimeout(close, 1600);
         } catch (err) {
           setModalStatus(`❌ ${err.message}`, 'err');
-        } finally {
-          btn.disabled = false; btn.textContent = 'Delete';
+          btn.disabled = false; btn.textContent = 'Retry sync';
         }
       },
       secondaryLabel: 'Cancel',
     });
   }
 
-  function removeCardFromDom(id) {
-    const card = document.querySelector(`.beer-card[data-beer-id="${cssEscape(id)}"]`);
-    if (!card) return;
-    card.style.transition = 'opacity 0.25s, transform 0.25s';
-    card.style.opacity = '0';
-    card.style.transform = 'scale(0.92)';
-    setTimeout(() => card.remove(), 260);
-  }
-
-  // Safe selector escape (id may contain hyphens but to be safe)
-  function cssEscape(s) {
-    if (window.CSS && CSS.escape) return CSS.escape(s);
-    return String(s).replace(/["\\]/g, '\\$&');
+  function confirmDiscard() {
+    const ops = loadPending();
+    if (!ops.length) return;
+    showModal({
+      title: `Discard ${ops.length} pending change${ops.length === 1 ? '' : 's'}?`,
+      sub: 'Nothing on GitHub will change. Page will reload.',
+      bodyHtml: '',
+      primaryLabel: 'Discard',
+      primaryClass: 'danger',
+      onPrimary: (close) => {
+        clearPending();
+        close();
+        location.reload();
+      },
+      secondaryLabel: 'Keep',
+    });
   }
 
   // ---------- Worker call ----------
@@ -707,11 +918,9 @@
         </div>
       </div>
     `;
-    // Only close on overlay-background click (not on modal content)
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay) closeModal();
     });
-    // Prevent body scroll while modal is open
     document.body.classList.add('badm-modal-open');
     document.body.appendChild(overlay);
 
@@ -720,7 +929,6 @@
     const secBtn = overlay.querySelector('[data-act="secondary"]');
     if (secBtn) secBtn.addEventListener('click', () => (onSecondary || (() => closeModal()))(closeModal));
 
-    // ESC to close
     modalEscHandler = (e) => { if (e.key === 'Escape') closeModal(); };
     document.addEventListener('keydown', modalEscHandler);
   }
@@ -752,13 +960,10 @@
   }
 
   async function resizeImage(file, size) {
-    // Honor EXIF orientation (iPhone/Android portrait photos store raw pixels
-    // sideways + a rotate flag; canvas ignores the flag without this option).
     let bitmap;
     try {
       bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
     } catch {
-      // Fallback for very old browsers — at least let <img> handle EXIF on load
       bitmap = await new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => {
@@ -773,7 +978,6 @@
     }
     const srcW = bitmap.width;
     const srcH = bitmap.height;
-    // Center-crop to a square (no grey padding regardless of orientation).
     const cropSide = Math.min(srcW, srcH);
     const sx = Math.round((srcW - cropSide) / 2);
     const sy = Math.round((srcH - cropSide) / 2);
@@ -782,7 +986,7 @@
     const ctx = canvas.getContext('2d');
     ctx.drawImage(bitmap, sx, sy, cropSide, cropSide, 0, 0, size, size);
     if (bitmap.close) bitmap.close();
-    return canvas.toDataURL('image/jpeg', 0.92);
+    return canvas.toDataURL('image/jpeg', 0.85);
   }
 
   function escapeHtml(s) {
