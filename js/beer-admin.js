@@ -637,29 +637,39 @@
       .replace(/^-|-$/g, '');
   }
 
-  function resizeImage(file, size) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const img = new Image();
-        img.onload = () => {
-          const ratio = Math.min(size / img.width, size / img.height, 1);
-          const w = Math.round(img.width * ratio);
-          const h = Math.round(img.height * ratio);
-          const canvas = document.createElement('canvas');
-          canvas.width = size; canvas.height = size;
-          const ctx = canvas.getContext('2d');
-          ctx.fillStyle = '#f0f0f0';
-          ctx.fillRect(0, 0, size, size);
-          ctx.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
-          resolve(canvas.toDataURL('image/jpeg', 0.92));
+  async function resizeImage(file, size) {
+    // Honor EXIF orientation (iPhone/Android portrait photos store raw pixels
+    // sideways + a rotate flag; canvas ignores the flag without this option).
+    let bitmap;
+    try {
+      bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
+    } catch {
+      // Fallback for very old browsers — at least let <img> handle EXIF on load
+      bitmap = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = reject;
+          img.src = reader.result;
         };
-        img.onerror = reject;
-        img.src = reader.result;
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+    const srcW = bitmap.width;
+    const srcH = bitmap.height;
+    const ratio = Math.min(size / srcW, size / srcH, 1);
+    const w = Math.round(srcW * ratio);
+    const h = Math.round(srcH * ratio);
+    const canvas = document.createElement('canvas');
+    canvas.width = size; canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#f0f0f0';
+    ctx.fillRect(0, 0, size, size);
+    ctx.drawImage(bitmap, (size - w) / 2, (size - h) / 2, w, h);
+    if (bitmap.close) bitmap.close();
+    return canvas.toDataURL('image/jpeg', 0.92);
   }
 
   function escapeHtml(s) {
