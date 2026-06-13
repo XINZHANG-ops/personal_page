@@ -1,3 +1,10 @@
 name = "beer-upload"
 main = "beer-upload.js"
 compatibility_date = "2024-09-01"
+
+# Non-secret config — safe to check into git.
+# Secrets (GITHUB_TOKEN, ADMIN_PASSWORD) must stay in the dashboard.
+[vars]
+GITHUB_REPO = "XINZHANG-OPS/personal_page"
+GITHUB_BRANCH = "main"
+ALLOWED_ORIGIN = "https://personal-page-8db.pages.dev"
