@@ -1212,24 +1212,6 @@
             "otherAromas": 2,
             "overall": 8.5
         }
-    },
-    {
-        "id": "xin",
-        "name": "Xin",
-        "style": "IPA (India Pale Ale)",
-        "abv": 5,
-        "date": "2026-06-13",
-        "price": 10,
-        "imageUrl": "../assets/images/beers/xin.jpg",
-        "notes": "Good",
-        "scores": {
-            "maltiness": 7.5,
-            "colorDepth": 5,
-            "clarity": 9,
-            "bitterness": 3.5,
-            "otherAromas": 9,
-            "overall": 3.5
-        }
     }
 ];
 
