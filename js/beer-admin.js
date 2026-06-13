@@ -246,26 +246,29 @@
         background: #f0ece5; border: 1px solid var(--badm-border);
       }
       .badm-file-group { display: flex; gap: 8px; margin-top: 4px; }
-      .badm-file {
+      /* Higher specificity than ".badm-modal label" which sets display:block */
+      .badm-modal .badm-file {
         flex: 1; display: flex; align-items: center; justify-content: center;
-        gap: 8px;
+        gap: 10px;
+        margin: 0;
         padding: 14px 10px; border: 2px dashed var(--badm-border);
-        border-radius: 10px; color: var(--badm-text);
+        border-radius: 10px; color: var(--badm-text); text-align: center;
         cursor: pointer; background: #faf7f2; font-size: 0.9rem;
         font-weight: 600;
         transition: border-color 0.15s, background 0.15s;
         -webkit-tap-highlight-color: transparent;
         min-height: 48px; box-sizing: border-box;
       }
-      .badm-file:hover, .badm-file:active {
+      .badm-modal .badm-file:hover,
+      .badm-modal .badm-file:active {
         border-color: var(--badm-accent); background: #fff;
       }
-      .badm-file input { display: none; }
-      .badm-file .icon {
+      .badm-modal .badm-file input { display: none; }
+      .badm-modal .badm-file .icon {
         display: inline-flex; align-items: center; justify-content: center;
         width: 22px; height: 22px; font-size: 18px; flex-shrink: 0;
       }
-      .badm-file .text { white-space: nowrap; }
+      .badm-modal .badm-file .text { white-space: nowrap; }
       .badm-file-status {
         margin-top: 8px; padding: 8px 12px; font-size: 0.85rem;
         color: var(--badm-muted); text-align: center;
