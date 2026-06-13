@@ -248,17 +248,24 @@
       .badm-file-group { display: flex; gap: 8px; margin-top: 4px; }
       .badm-file {
         flex: 1; display: flex; align-items: center; justify-content: center;
+        gap: 8px;
         padding: 14px 10px; border: 2px dashed var(--badm-border);
-        border-radius: 10px; text-align: center; color: var(--badm-text);
+        border-radius: 10px; color: var(--badm-text);
         cursor: pointer; background: #faf7f2; font-size: 0.9rem;
         font-weight: 600;
         transition: border-color 0.15s, background 0.15s;
         -webkit-tap-highlight-color: transparent;
+        min-height: 48px; box-sizing: border-box;
       }
       .badm-file:hover, .badm-file:active {
         border-color: var(--badm-accent); background: #fff;
       }
       .badm-file input { display: none; }
+      .badm-file .icon {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 22px; height: 22px; font-size: 18px; flex-shrink: 0;
+      }
+      .badm-file .text { white-space: nowrap; }
       .badm-file-status {
         margin-top: 8px; padding: 8px 12px; font-size: 0.85rem;
         color: var(--badm-muted); text-align: center;
@@ -504,11 +511,11 @@
         <div class="badm-file-group">
           <label class="badm-file">
             <input type="file" id="badm-photo-camera" accept="image/*" capture="environment">
-            📷 Take photo
+            <span class="icon">📷</span><span class="text">Take photo</span>
           </label>
           <label class="badm-file">
             <input type="file" id="badm-photo-gallery" accept="image/*">
-            🖼️ From library
+            <span class="icon">🖼️</span><span class="text">From library</span>
           </label>
         </div>
         <div class="badm-file-status" id="badm-file-label">No photo selected</div>
