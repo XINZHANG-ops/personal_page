@@ -48,6 +48,8 @@
 
   function enterAdmin() {
     injectToolbar();
+    // Preload jsonl so card buttons have data ready
+    ensureBeers().catch(() => {});
     // beer.js renders cards async on DOMContentLoaded; observe the grid
     observeGrid();
   }
@@ -55,72 +57,174 @@
   // ---------- Styles ----------
   function injectStyles() {
     const css = `
+      :root {
+        --badm-bg: #1a1a1a;
+        --badm-accent: #c87f2c;
+        --badm-accent-dark: #a86919;
+        --badm-danger: #b53e3e;
+        --badm-text: #2a2a2a;
+        --badm-muted: #7a7a7a;
+        --badm-border: #e3ddd2;
+      }
       .badm-toolbar {
         position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
-        background: #1a1a1a; color: #fff;
-        padding: 10px 16px; display: flex; gap: 8px; align-items: center;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.25); font-size: 0.9rem;
+        background: linear-gradient(180deg, #1a1a1a 0%, #242220 100%);
+        color: #fff; padding: 10px 18px;
+        display: flex; gap: 10px; align-items: center;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.25); font-size: 0.9rem;
         flex-wrap: wrap;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
       }
       body.badm-active { padding-top: 56px; }
-      .badm-toolbar .badm-tag { background: #c87f2c; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+      body.badm-modal-open { overflow: hidden; }
+      .badm-toolbar .badm-tag {
+        background: var(--badm-accent); padding: 3px 10px; border-radius: 4px;
+        font-weight: 700; letter-spacing: 0.04em; font-size: 0.8rem;
+      }
+      .badm-toolbar .badm-tagline { color: #cfcfcf; font-size: 0.85rem; }
       .badm-toolbar .badm-spacer { flex: 1; }
       .badm-btn {
-        background: #c87f2c; color: #fff; border: none;
-        padding: 8px 14px; border-radius: 6px; cursor: pointer;
+        background: var(--badm-accent); color: #fff; border: none;
+        padding: 8px 16px; border-radius: 8px; cursor: pointer;
         font-size: 0.9rem; font-weight: 600;
+        transition: background 0.15s, transform 0.05s;
+        font-family: inherit;
       }
+      .badm-btn:hover { background: var(--badm-accent-dark); }
+      .badm-btn:active { transform: translateY(1px); }
       .badm-btn.secondary { background: transparent; border: 1px solid #555; color: #ddd; }
-      .badm-btn.danger { background: #b53e3e; }
-      .badm-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+      .badm-btn.secondary:hover { background: rgba(255,255,255,0.08); }
+      .badm-btn.danger { background: var(--badm-danger); }
+      .badm-btn.danger:hover { background: #962f2f; }
+      .badm-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
       .beer-card { position: relative; }
       .badm-card-actions {
-        position: absolute; top: 8px; right: 8px; z-index: 5;
-        display: flex; gap: 4px;
+        position: absolute; top: 10px; right: 10px; z-index: 5;
+        display: flex; gap: 6px;
+        opacity: 0; transition: opacity 0.15s;
       }
+      .beer-card:hover .badm-card-actions,
+      .beer-card:focus-within .badm-card-actions { opacity: 1; }
+      @media (hover: none) { .badm-card-actions { opacity: 1; } }
       .badm-icon-btn {
-        background: rgba(0,0,0,0.7); color: #fff; border: none;
-        width: 32px; height: 32px; border-radius: 50%;
-        font-size: 14px; cursor: pointer;
+        background: rgba(0,0,0,0.72); color: #fff; border: none;
+        width: 36px; height: 36px; border-radius: 50%;
+        font-size: 15px; cursor: pointer;
         display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        backdrop-filter: blur(4px);
       }
-      .badm-icon-btn:hover { background: rgba(0,0,0,0.9); }
-      .badm-icon-btn.delete:hover { background: #b53e3e; }
+      .badm-icon-btn:hover { background: rgba(0,0,0,0.9); transform: scale(1.05); }
+      .badm-icon-btn.delete:hover { background: var(--badm-danger); }
 
+      /* Modal — overlay + scroll lock */
       .badm-modal-overlay {
-        position: fixed; inset: 0; background: rgba(0,0,0,0.6);
-        z-index: 1000; display: flex; align-items: flex-start; justify-content: center;
-        padding: 20px; overflow-y: auto;
+        position: fixed; inset: 0; background: rgba(20, 18, 14, 0.55);
+        backdrop-filter: blur(3px);
+        z-index: 10000; display: flex; align-items: center; justify-content: center;
+        padding: 16px;
+        animation: badm-fade 0.15s ease-out;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
       }
+      @keyframes badm-fade { from { opacity: 0; } to { opacity: 1; } }
       .badm-modal {
-        background: #fff; border-radius: 12px; max-width: 560px; width: 100%;
-        padding: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        background: #fff; border-radius: 16px;
+        max-width: 540px; width: 100%; max-height: 92vh;
+        display: flex; flex-direction: column;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+        overflow: hidden;
+        animation: badm-pop 0.18s ease-out;
       }
-      .badm-modal h2 { margin: 0 0 4px; font-size: 1.25rem; }
-      .badm-modal .badm-sub { color: #777; font-size: 0.85rem; margin-bottom: 16px; }
-      .badm-modal label { display: block; font-weight: 600; margin: 12px 0 6px; font-size: 0.9rem; }
+      @keyframes badm-pop {
+        from { opacity: 0; transform: scale(0.96) translateY(8px); }
+        to { opacity: 1; transform: scale(1) translateY(0); }
+      }
+      .badm-modal-header {
+        padding: 18px 22px 14px;
+        border-bottom: 1px solid var(--badm-border);
+        background: #faf7f2;
+      }
+      .badm-modal-header h2 {
+        margin: 0; font-size: 1.2rem; color: var(--badm-text); font-weight: 700;
+      }
+      .badm-modal-header .badm-sub {
+        color: var(--badm-muted); font-size: 0.85rem; margin-top: 4px;
+      }
+      .badm-modal-body {
+        padding: 18px 22px; overflow-y: auto; flex: 1;
+        -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+        color: var(--badm-text);
+      }
+      .badm-modal-footer {
+        padding: 14px 22px; border-top: 1px solid var(--badm-border);
+        background: #fafafa;
+      }
+      .badm-modal label {
+        display: block; font-weight: 600; margin: 14px 0 6px;
+        font-size: 0.88rem; color: var(--badm-text);
+      }
+      .badm-modal label:first-child { margin-top: 0; }
       .badm-modal input[type=text], .badm-modal input[type=number],
       .badm-modal input[type=password], .badm-modal select, .badm-modal textarea {
-        width: 100%; padding: 10px; font-size: 16px;
-        border: 1px solid #ddd; border-radius: 6px; font-family: inherit;
-        box-sizing: border-box;
+        width: 100%; padding: 11px 12px; font-size: 16px;
+        border: 1px solid var(--badm-border); border-radius: 8px;
+        font-family: inherit; box-sizing: border-box;
+        background: #fff; color: var(--badm-text);
+        transition: border-color 0.15s, box-shadow 0.15s;
       }
-      .badm-modal textarea { min-height: 80px; resize: vertical; }
+      .badm-modal input:focus, .badm-modal select:focus, .badm-modal textarea:focus {
+        outline: none; border-color: var(--badm-accent);
+        box-shadow: 0 0 0 3px rgba(200, 127, 44, 0.12);
+      }
+      .badm-modal input[readonly] { background: #f5f2ec; color: #6a6a6a; }
+      .badm-modal textarea { min-height: 88px; resize: vertical; line-height: 1.5; }
       .badm-modal .badm-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-      .badm-slider { display: flex; align-items: center; gap: 10px; }
-      .badm-slider input[type=range] { flex: 1; }
-      .badm-slider .val { min-width: 36px; text-align: right; font-weight: 600; color: #a86919; }
-      .badm-preview {
-        max-width: 200px; aspect-ratio: 1/1; object-fit: cover;
-        border-radius: 6px; display: block; margin: 8px 0; background: #f0ece5;
+      .badm-modal h3 {
+        margin: 22px 0 6px; font-size: 0.95rem;
+        color: var(--badm-muted); text-transform: uppercase;
+        letter-spacing: 0.08em; font-weight: 700;
+        border-top: 1px solid var(--badm-border); padding-top: 16px;
       }
-      .badm-actions { display: flex; gap: 8px; margin-top: 20px; }
-      .badm-actions button { flex: 1; padding: 12px; font-size: 1rem; }
-      .badm-status { padding: 10px; border-radius: 6px; margin-top: 12px; font-size: 0.9rem; white-space: pre-wrap; }
-      .badm-status.err { background: #fdeaea; color: #b53e3e; }
-      .badm-status.info { background: #eef2f7; color: #345; }
-      .badm-status.ok { background: #e7f5ec; color: #2f8a4a; }
+      .badm-slider { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+      .badm-slider input[type=range] {
+        flex: 1; accent-color: var(--badm-accent);
+        height: 4px;
+      }
+      .badm-slider .val {
+        min-width: 40px; text-align: right; font-weight: 700;
+        color: var(--badm-accent-dark); font-variant-numeric: tabular-nums;
+        font-size: 0.95rem;
+      }
+      .badm-preview {
+        max-width: 180px; aspect-ratio: 1/1; object-fit: cover;
+        border-radius: 10px; display: block; margin: 10px 0 4px;
+        background: #f0ece5; border: 1px solid var(--badm-border);
+      }
+      .badm-file {
+        display: block; padding: 12px; border: 2px dashed var(--badm-border);
+        border-radius: 8px; text-align: center; color: var(--badm-muted);
+        cursor: pointer; background: #faf7f2; font-size: 0.9rem;
+        transition: border-color 0.15s, background 0.15s;
+      }
+      .badm-file:hover { border-color: var(--badm-accent); background: #fff; }
+      .badm-file input { display: none; }
+      .badm-actions { display: flex; gap: 10px; }
+      .badm-actions button { flex: 1; padding: 12px; font-size: 0.95rem; }
+      .badm-status {
+        padding: 10px 12px; border-radius: 8px; margin-top: 14px;
+        font-size: 0.88rem; white-space: pre-wrap; line-height: 1.45;
+      }
+      .badm-status.err { background: #fdeaea; color: var(--badm-danger); border: 1px solid #f3c9c9; }
+      .badm-status.info { background: #eef2f7; color: #345; border: 1px solid #d6dde6; }
+      .badm-status.ok { background: #e7f5ec; color: #2f8a4a; border: 1px solid #c5e6cf; }
+
+      @media (max-width: 600px) {
+        .badm-toolbar { padding: 8px 12px; font-size: 0.85rem; }
+        .badm-toolbar .badm-tagline { display: none; }
+        .badm-modal-overlay { padding: 0; align-items: stretch; }
+        .badm-modal { max-height: 100vh; border-radius: 0; }
+      }
     `;
     const style = document.createElement('style');
     style.textContent = css;
@@ -161,7 +265,7 @@
     bar.className = 'badm-toolbar';
     bar.innerHTML = `
       <span class="badm-tag">ADMIN</span>
-      <span>Editing live data — changes commit to GitHub</span>
+      <span class="badm-tagline">Live edits commit to GitHub</span>
       <span class="badm-spacer"></span>
       <button class="badm-btn" id="badm-add">+ Add beer</button>
       <button class="badm-btn secondary" id="badm-logout">Lock</button>
@@ -193,30 +297,31 @@
   function decorateCard(card) {
     if (card.querySelector('.badm-card-actions')) return;
     const id = card.getAttribute('data-beer-id');
-    const beer = findBeer(id);
-    if (!beer) return;
+    if (!id) return;
 
     const actions = document.createElement('div');
     actions.className = 'badm-card-actions';
     actions.innerHTML = `
-      <button class="badm-icon-btn edit" title="Edit">✏️</button>
-      <button class="badm-icon-btn delete" title="Delete">🗑️</button>
+      <button class="badm-icon-btn edit" title="Edit" aria-label="Edit beer">✏️</button>
+      <button class="badm-icon-btn delete" title="Delete" aria-label="Delete beer">🗑️</button>
     `;
-    actions.querySelector('.edit').addEventListener('click', (e) => {
+    actions.querySelector('.edit').addEventListener('click', async (e) => {
       e.stopPropagation();
+      const beer = await resolveBeer(id);
+      if (!beer) return alert('Could not load beer data');
       openForm(beer);
     });
-    actions.querySelector('.delete').addEventListener('click', (e) => {
+    actions.querySelector('.delete').addEventListener('click', async (e) => {
       e.stopPropagation();
+      const beer = await resolveBeer(id);
+      if (!beer) return alert('Could not load beer data');
       confirmDelete(beer);
     });
     card.appendChild(actions);
   }
 
-  function findBeer(id) {
-    // beer.js exposes the data through internal scope; we can't access it directly.
-    // Read the rendered card to reconstruct a minimal beer object for editing seeding.
-    // For full fidelity we hit the Worker to fetch beer.jsonl. Use a small cache.
+  async function resolveBeer(id) {
+    await ensureBeers();
     return beersCache.find((b) => b.id === id) || null;
   }
 
@@ -238,11 +343,7 @@
 
   // ---------- Form modal (create / edit) ----------
   function openForm(beer) {
-    ensureBeers().then(() => {
-      // Re-find if we just loaded
-      if (beer) beer = beersCache.find((b) => b.id === beer.id) || beer;
-      renderForm(beer);
-    });
+    renderForm(beer);
   }
 
   function renderForm(beer) {
@@ -286,11 +387,14 @@
         <label for="badm-notes">Notes *</label>
         <textarea id="badm-notes" required>${escapeHtml(beer?.notes ?? '')}</textarea>
 
-        <label for="badm-photo">Photo ${isEdit ? '(leave empty to keep existing)' : '*'}</label>
-        <input type="file" id="badm-photo" accept="image/*" capture="environment">
+        <label>Photo ${isEdit ? '(leave empty to keep existing)' : '*'}</label>
+        <label class="badm-file">
+          <input type="file" id="badm-photo" accept="image/*">
+          <span id="badm-file-label">📷 Tap to take photo or choose from library</span>
+        </label>
         <img class="badm-preview" id="badm-preview" style="display:none">
 
-        <h3 style="margin-top:16px">Scores (1-10)</h3>
+        <h3>Scores (1-10)</h3>
         ${scoreSliders}
       `,
       primaryLabel: isEdit ? 'Save changes' : 'Create beer',
@@ -309,12 +413,20 @@
     let resizedDataUrl = null;
     const photoInput = document.getElementById('badm-photo');
     const preview = document.getElementById('badm-preview');
+    const fileLabel = document.getElementById('badm-file-label');
     photoInput.addEventListener('change', async (e) => {
       const file = e.target.files[0];
-      if (!file) { resizedDataUrl = null; preview.style.display = 'none'; return; }
+      if (!file) {
+        resizedDataUrl = null;
+        preview.style.display = 'none';
+        fileLabel.textContent = '📷 Tap to take photo or choose from library';
+        return;
+      }
+      fileLabel.textContent = `Processing ${file.name}...`;
       resizedDataUrl = await resizeImage(file, 1200);
       preview.src = resizedDataUrl;
       preview.style.display = 'block';
+      fileLabel.textContent = `✓ ${file.name} (tap to change)`;
     });
     // Expose to submit
     formContext = { beer, getImage: () => resizedDataUrl };
@@ -418,6 +530,8 @@
   }
 
   // ---------- Modal infra ----------
+  let modalEscHandler = null;
+
   function showModal({ title, sub, bodyHtml, primaryLabel, onPrimary,
                        secondaryLabel, onSecondary, primaryClass = '' }) {
     closeModal();
@@ -425,29 +539,47 @@
     overlay.className = 'badm-modal-overlay';
     overlay.innerHTML = `
       <div class="badm-modal" role="dialog" aria-modal="true">
-        <h2>${escapeHtml(title)}</h2>
-        ${sub ? `<div class="badm-sub">${escapeHtml(sub)}</div>` : ''}
-        <div class="badm-body">${bodyHtml}</div>
-        <div class="badm-status" style="display:none" id="badm-status"></div>
-        <div class="badm-actions">
-          ${secondaryLabel ? `<button class="badm-btn secondary" data-act="secondary">${escapeHtml(secondaryLabel)}</button>` : ''}
-          <button class="badm-btn ${primaryClass}" data-act="primary">${escapeHtml(primaryLabel)}</button>
+        <div class="badm-modal-header">
+          <h2>${escapeHtml(title)}</h2>
+          ${sub ? `<div class="badm-sub">${escapeHtml(sub)}</div>` : ''}
+        </div>
+        <div class="badm-modal-body">
+          ${bodyHtml}
+          <div class="badm-status" style="display:none" id="badm-status"></div>
+        </div>
+        <div class="badm-modal-footer">
+          <div class="badm-actions">
+            ${secondaryLabel ? `<button class="badm-btn secondary" data-act="secondary">${escapeHtml(secondaryLabel)}</button>` : ''}
+            <button class="badm-btn ${primaryClass}" data-act="primary">${escapeHtml(primaryLabel)}</button>
+          </div>
         </div>
       </div>
     `;
+    // Only close on overlay-background click (not on modal content)
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay) closeModal();
     });
+    // Prevent body scroll while modal is open
+    document.body.classList.add('badm-modal-open');
     document.body.appendChild(overlay);
 
     const primaryBtn = overlay.querySelector('[data-act="primary"]');
     primaryBtn.addEventListener('click', () => onPrimary?.(closeModal, primaryBtn));
     const secBtn = overlay.querySelector('[data-act="secondary"]');
-    if (secBtn) secBtn.addEventListener('click', () => (onSecondary || (() => {}))(closeModal));
+    if (secBtn) secBtn.addEventListener('click', () => (onSecondary || (() => closeModal()))(closeModal));
+
+    // ESC to close
+    modalEscHandler = (e) => { if (e.key === 'Escape') closeModal(); };
+    document.addEventListener('keydown', modalEscHandler);
   }
 
   function closeModal() {
     document.querySelectorAll('.badm-modal-overlay').forEach((el) => el.remove());
+    document.body.classList.remove('badm-modal-open');
+    if (modalEscHandler) {
+      document.removeEventListener('keydown', modalEscHandler);
+      modalEscHandler = null;
+    }
   }
 
   function setModalStatus(msg, type) {
