@@ -770,15 +770,14 @@
     }
     const srcW = bitmap.width;
     const srcH = bitmap.height;
-    const ratio = Math.min(size / srcW, size / srcH, 1);
-    const w = Math.round(srcW * ratio);
-    const h = Math.round(srcH * ratio);
+    // Center-crop to a square (no grey padding regardless of orientation).
+    const cropSide = Math.min(srcW, srcH);
+    const sx = Math.round((srcW - cropSide) / 2);
+    const sy = Math.round((srcH - cropSide) / 2);
     const canvas = document.createElement('canvas');
     canvas.width = size; canvas.height = size;
     const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#f0f0f0';
-    ctx.fillRect(0, 0, size, size);
-    ctx.drawImage(bitmap, (size - w) / 2, (size - h) / 2, w, h);
+    ctx.drawImage(bitmap, sx, sy, cropSide, cropSide, 0, 0, size, size);
     if (bitmap.close) bitmap.close();
     return canvas.toDataURL('image/jpeg', 0.92);
   }
