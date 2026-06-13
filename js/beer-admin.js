@@ -102,18 +102,21 @@
       .badm-card-actions {
         position: absolute; top: 10px; right: 10px; z-index: 5;
         display: flex; gap: 6px;
-        opacity: 0; transition: opacity 0.15s;
+        opacity: 1;
       }
-      .beer-card:hover .badm-card-actions,
-      .beer-card:focus-within .badm-card-actions { opacity: 1; }
-      @media (hover: none) { .badm-card-actions { opacity: 1; } }
+      /* On desktop with hover capability, fade in on hover for cleaner look */
+      @media (hover: hover) and (pointer: fine) {
+        .badm-card-actions { opacity: 0; transition: opacity 0.15s; }
+        .beer-card:hover .badm-card-actions,
+        .beer-card:focus-within .badm-card-actions { opacity: 1; }
+      }
       .badm-icon-btn {
-        background: rgba(0,0,0,0.72); color: #fff; border: none;
-        width: 36px; height: 36px; border-radius: 50%;
-        font-size: 15px; cursor: pointer;
+        background: rgba(0,0,0,0.82); color: #fff; border: none;
+        width: 40px; height: 40px; border-radius: 50%;
+        font-size: 17px; cursor: pointer; padding: 0;
         display: flex; align-items: center; justify-content: center;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-        backdrop-filter: blur(4px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        -webkit-tap-highlight-color: transparent;
       }
       .badm-icon-btn:hover { background: rgba(0,0,0,0.9); transform: scale(1.05); }
       .badm-icon-btn.delete:hover { background: var(--badm-danger); }
@@ -201,14 +204,24 @@
         border-radius: 10px; display: block; margin: 10px 0 4px;
         background: #f0ece5; border: 1px solid var(--badm-border);
       }
+      .badm-file-group { display: flex; gap: 8px; margin-top: 4px; }
       .badm-file {
-        display: block; padding: 12px; border: 2px dashed var(--badm-border);
-        border-radius: 8px; text-align: center; color: var(--badm-muted);
+        flex: 1; display: flex; align-items: center; justify-content: center;
+        padding: 14px 10px; border: 2px dashed var(--badm-border);
+        border-radius: 10px; text-align: center; color: var(--badm-text);
         cursor: pointer; background: #faf7f2; font-size: 0.9rem;
+        font-weight: 600;
         transition: border-color 0.15s, background 0.15s;
+        -webkit-tap-highlight-color: transparent;
       }
-      .badm-file:hover { border-color: var(--badm-accent); background: #fff; }
+      .badm-file:hover, .badm-file:active {
+        border-color: var(--badm-accent); background: #fff;
+      }
       .badm-file input { display: none; }
+      .badm-file-status {
+        margin-top: 8px; padding: 8px 12px; font-size: 0.85rem;
+        color: var(--badm-muted); text-align: center;
+      }
       .badm-actions { display: flex; gap: 10px; }
       .badm-actions button { flex: 1; padding: 12px; font-size: 0.95rem; }
       .badm-status {
@@ -282,22 +295,38 @@
 
   // ---------- Inject card actions ----------
   function observeGrid() {
+    let lastCount = 0;
     const tryDecorate = () => {
       const cards = document.querySelectorAll('.beer-card');
       cards.forEach(decorateCard);
+      if (cards.length !== lastCount) {
+        lastCount = cards.length;
+        console.log(`[beer-admin] decorated ${cards.length} cards`);
+      }
     };
     tryDecorate();
     // Re-decorate when the gallery re-renders (sort/filter)
     const grid = document.getElementById('beer-grid');
     if (grid) {
-      new MutationObserver(tryDecorate).observe(grid, { childList: true });
+      new MutationObserver(tryDecorate).observe(grid, { childList: true, subtree: true });
     }
+    // Safety net: re-run a few times in case cards render after our observer attaches
+    let retries = 0;
+    const poll = setInterval(() => {
+      tryDecorate();
+      if (++retries >= 10) clearInterval(poll);
+    }, 500);
   }
 
   function decorateCard(card) {
     if (card.querySelector('.badm-card-actions')) return;
     const id = card.getAttribute('data-beer-id');
     if (!id) return;
+
+    // Force position:relative inline as a safety net so absolute children anchor here
+    if (getComputedStyle(card).position === 'static') {
+      card.style.position = 'relative';
+    }
 
     const actions = document.createElement('div');
     actions.className = 'badm-card-actions';
@@ -307,14 +336,16 @@
     `;
     actions.querySelector('.edit').addEventListener('click', async (e) => {
       e.stopPropagation();
+      e.preventDefault();
       const beer = await resolveBeer(id);
-      if (!beer) return alert('Could not load beer data');
+      if (!beer) return alert('Could not load beer data for ' + id);
       openForm(beer);
     });
     actions.querySelector('.delete').addEventListener('click', async (e) => {
       e.stopPropagation();
+      e.preventDefault();
       const beer = await resolveBeer(id);
-      if (!beer) return alert('Could not load beer data');
+      if (!beer) return alert('Could not load beer data for ' + id);
       confirmDelete(beer);
     });
     card.appendChild(actions);
@@ -388,10 +419,17 @@
         <textarea id="badm-notes" required>${escapeHtml(beer?.notes ?? '')}</textarea>
 
         <label>Photo ${isEdit ? '(leave empty to keep existing)' : '*'}</label>
-        <label class="badm-file">
-          <input type="file" id="badm-photo" accept="image/*">
-          <span id="badm-file-label">📷 Tap to take photo or choose from library</span>
-        </label>
+        <div class="badm-file-group">
+          <label class="badm-file">
+            <input type="file" id="badm-photo-camera" accept="image/*" capture="environment">
+            📷 Take photo
+          </label>
+          <label class="badm-file">
+            <input type="file" id="badm-photo-gallery" accept="image/*">
+            🖼️ From library
+          </label>
+        </div>
+        <div class="badm-file-status" id="badm-file-label">No photo selected</div>
         <img class="badm-preview" id="badm-preview" style="display:none">
 
         <h3>Scores (1-10)</h3>
@@ -409,25 +447,25 @@
       inp.addEventListener('input', () => { val.textContent = inp.value; });
     });
 
-    // Photo preview + resize
+    // Photo preview + resize (two inputs: camera + gallery)
     let resizedDataUrl = null;
-    const photoInput = document.getElementById('badm-photo');
     const preview = document.getElementById('badm-preview');
     const fileLabel = document.getElementById('badm-file-label');
-    photoInput.addEventListener('change', async (e) => {
+    const onPhotoChange = async (e) => {
       const file = e.target.files[0];
-      if (!file) {
-        resizedDataUrl = null;
-        preview.style.display = 'none';
-        fileLabel.textContent = '📷 Tap to take photo or choose from library';
-        return;
-      }
+      if (!file) return;
       fileLabel.textContent = `Processing ${file.name}...`;
-      resizedDataUrl = await resizeImage(file, 1200);
-      preview.src = resizedDataUrl;
-      preview.style.display = 'block';
-      fileLabel.textContent = `✓ ${file.name} (tap to change)`;
-    });
+      try {
+        resizedDataUrl = await resizeImage(file, 1200);
+        preview.src = resizedDataUrl;
+        preview.style.display = 'block';
+        fileLabel.textContent = `✓ ${file.name}`;
+      } catch (err) {
+        fileLabel.textContent = `❌ Failed to load image: ${err.message || 'unknown error'}`;
+      }
+    };
+    document.getElementById('badm-photo-camera').addEventListener('change', onPhotoChange);
+    document.getElementById('badm-photo-gallery').addEventListener('change', onPhotoChange);
     // Expose to submit
     formContext = { beer, getImage: () => resizedDataUrl };
   }
