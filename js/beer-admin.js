@@ -56,11 +56,13 @@
   function injectStyles() {
     const css = `
       .badm-toolbar {
-        position: sticky; top: 0; z-index: 50;
+        position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
         background: #1a1a1a; color: #fff;
         padding: 10px 16px; display: flex; gap: 8px; align-items: center;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.15); font-size: 0.9rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.25); font-size: 0.9rem;
+        flex-wrap: wrap;
       }
+      body.badm-active { padding-top: 56px; }
       .badm-toolbar .badm-tag { background: #c87f2c; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
       .badm-toolbar .badm-spacer { flex: 1; }
       .badm-btn {
@@ -165,6 +167,7 @@
       <button class="badm-btn secondary" id="badm-logout">Lock</button>
     `;
     document.body.insertBefore(bar, document.body.firstChild);
+    document.body.classList.add('badm-active');
     document.getElementById('badm-add').addEventListener('click', () => openForm(null));
     document.getElementById('badm-logout').addEventListener('click', () => {
       localStorage.removeItem(PW_KEY);
