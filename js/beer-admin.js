@@ -511,16 +511,10 @@
         <textarea id="badm-notes" required>${escapeHtml(beer?.notes ?? '')}</textarea>
 
         <label>Photo ${isEdit ? '(leave empty to keep existing)' : '*'}</label>
-        <div class="badm-file-group">
-          <label class="badm-file">
-            <input type="file" id="badm-photo-camera" accept="image/*" capture="environment">
-            <span class="icon">📷</span><span class="text">Take photo</span>
-          </label>
-          <label class="badm-file">
-            <input type="file" id="badm-photo-gallery" accept="image/*">
-            <span class="icon">🖼️</span><span class="text">From library</span>
-          </label>
-        </div>
+        <label class="badm-file">
+          <input type="file" id="badm-photo-gallery" accept="image/*">
+          <span class="icon">🖼️</span><span class="text">Choose photo</span>
+        </label>
         <div class="badm-file-status" id="badm-file-label">No photo selected</div>
         <img class="badm-preview" id="badm-preview" style="display:none">
 
@@ -556,7 +550,6 @@
         fileLabel.textContent = `❌ Failed to load image: ${err.message || 'unknown error'}`;
       }
     };
-    document.getElementById('badm-photo-camera').addEventListener('change', onPhotoChange);
     document.getElementById('badm-photo-gallery').addEventListener('change', onPhotoChange);
     // Expose to submit
     formContext = { beer, getImage: () => resizedDataUrl };
