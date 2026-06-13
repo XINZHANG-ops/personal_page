@@ -67,22 +67,63 @@
         --badm-border: #e3ddd2;
       }
       .badm-toolbar {
-        position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
-        background: linear-gradient(180deg, #1a1a1a 0%, #242220 100%);
-        color: #fff; padding: 10px 18px;
+        position: fixed; top: 14px; right: 14px; z-index: 9999;
+        background: rgba(26, 26, 26, 0.92);
+        backdrop-filter: blur(8px);
+        color: #fff; padding: 8px 12px 8px 14px;
         display: flex; gap: 10px; align-items: center;
-        box-shadow: 0 4px 14px rgba(0,0,0,0.25); font-size: 0.9rem;
-        flex-wrap: wrap;
+        border-radius: 999px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.25); font-size: 0.85rem;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
       }
-      body.badm-active { padding-top: 56px; }
       body.badm-modal-open { overflow: hidden; }
       .badm-toolbar .badm-tag {
-        background: var(--badm-accent); padding: 3px 10px; border-radius: 4px;
-        font-weight: 700; letter-spacing: 0.04em; font-size: 0.8rem;
+        background: var(--badm-accent); padding: 2px 9px; border-radius: 999px;
+        font-weight: 700; letter-spacing: 0.06em; font-size: 0.72rem;
       }
-      .badm-toolbar .badm-tagline { color: #cfcfcf; font-size: 0.85rem; }
-      .badm-toolbar .badm-spacer { flex: 1; }
+      .badm-toolbar .badm-exit {
+        background: transparent; border: 1px solid rgba(255,255,255,0.25);
+        color: #fff; padding: 5px 12px; border-radius: 999px;
+        font-size: 0.8rem; font-weight: 600; cursor: pointer;
+        transition: background 0.15s;
+        font-family: inherit;
+      }
+      .badm-toolbar .badm-exit:hover { background: rgba(255,255,255,0.12); }
+
+      /* + Add beer card injected at top of #beer-grid */
+      .badm-add-card {
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        min-height: 220px;
+        background: #fafaf6;
+        border: 2px dashed #cfc6b4;
+        border-radius: var(--border-radius, 12px);
+        color: #8a7a55;
+        cursor: pointer;
+        transition: border-color 0.15s, background 0.15s, transform 0.05s;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .badm-add-card:hover {
+        border-color: var(--badm-accent);
+        background: #fff;
+        color: var(--badm-accent-dark);
+      }
+      .badm-add-card:active { transform: scale(0.99); }
+      .badm-add-card .plus { font-size: 3rem; line-height: 1; margin-bottom: 6px; }
+      .badm-add-card .label { font-weight: 700; font-size: 1rem; letter-spacing: 0.02em; }
+      .badm-add-card .sub { font-size: 0.8rem; color: #a89868; margin-top: 4px; }
+
+      /* Password eye toggle */
+      .badm-pw-wrap { position: relative; }
+      .badm-pw-wrap input { padding-right: 42px !important; }
+      .badm-pw-eye {
+        position: absolute; top: 50%; right: 8px; transform: translateY(-50%);
+        background: transparent; border: none; cursor: pointer;
+        font-size: 18px; padding: 6px 8px; border-radius: 6px;
+        color: var(--badm-muted); line-height: 1;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .badm-pw-eye:hover { background: rgba(0,0,0,0.05); color: var(--badm-text); }
       .badm-btn {
         background: var(--badm-accent); color: #fff; border: none;
         padding: 8px 16px; border-radius: 8px; cursor: pointer;
@@ -233,10 +274,10 @@
       .badm-status.ok { background: #e7f5ec; color: #2f8a4a; border: 1px solid #c5e6cf; }
 
       @media (max-width: 600px) {
-        .badm-toolbar { padding: 8px 12px; font-size: 0.85rem; }
-        .badm-toolbar .badm-tagline { display: none; }
+        .badm-toolbar { top: 10px; right: 10px; padding: 6px 10px 6px 12px; font-size: 0.8rem; }
         .badm-modal-overlay { padding: 0; align-items: stretch; }
         .badm-modal { max-height: 100vh; border-radius: 0; }
+        .badm-add-card { min-height: 180px; }
       }
     `;
     const style = document.createElement('style');
@@ -251,7 +292,11 @@
       sub: 'Enter the admin password set in the Worker.',
       bodyHtml: `
         <label for="badm-pw">Password</label>
-        <input type="password" id="badm-pw" autocomplete="current-password">
+        <div class="badm-pw-wrap">
+          <input type="password" id="badm-pw" autocomplete="current-password">
+          <button type="button" class="badm-pw-eye" id="badm-pw-eye"
+                  aria-label="Show password" title="Show password">👁️</button>
+        </div>
       `,
       primaryLabel: 'Unlock',
       onPrimary: (close) => {
@@ -269,6 +314,20 @@
         history.replaceState(null, '', location.pathname + location.hash);
       },
     });
+    // Wire eye toggle
+    const eye = document.getElementById('badm-pw-eye');
+    const pwInput = document.getElementById('badm-pw');
+    if (eye && pwInput) {
+      eye.addEventListener('click', () => {
+        const showing = pwInput.type === 'text';
+        pwInput.type = showing ? 'password' : 'text';
+        eye.textContent = showing ? '👁️' : '🙈';
+        eye.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+        eye.setAttribute('title', showing ? 'Show password' : 'Hide password');
+        pwInput.focus();
+      });
+      pwInput.focus();
+    }
   }
 
   // ---------- Toolbar ----------
@@ -278,14 +337,9 @@
     bar.className = 'badm-toolbar';
     bar.innerHTML = `
       <span class="badm-tag">ADMIN</span>
-      <span class="badm-tagline">Live edits commit to GitHub</span>
-      <span class="badm-spacer"></span>
-      <button class="badm-btn" id="badm-add">+ Add beer</button>
-      <button class="badm-btn secondary" id="badm-logout">Lock</button>
+      <button class="badm-exit" id="badm-logout" title="Leave admin mode (does not affect your saved changes)">Exit admin</button>
     `;
-    document.body.insertBefore(bar, document.body.firstChild);
-    document.body.classList.add('badm-active');
-    document.getElementById('badm-add').addEventListener('click', () => openForm(null));
+    document.body.appendChild(bar);
     document.getElementById('badm-logout').addEventListener('click', () => {
       localStorage.removeItem(PW_KEY);
       password = '';
@@ -293,10 +347,38 @@
     });
   }
 
+  // ---------- "+ Add beer" card injected at the top of the grid ----------
+  function ensureAddCard() {
+    const grid = document.getElementById('beer-grid');
+    if (!grid) return;
+    if (grid.querySelector('.badm-add-card')) {
+      // Keep it as the first child even after re-renders
+      const card = grid.querySelector('.badm-add-card');
+      if (grid.firstChild !== card) grid.insertBefore(card, grid.firstChild);
+      return;
+    }
+    const card = document.createElement('div');
+    card.className = 'badm-add-card';
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
+    card.innerHTML = `
+      <span class="plus">+</span>
+      <span class="label">Add beer</span>
+      <span class="sub">New entry → GitHub</span>
+    `;
+    const open = () => openForm(null);
+    card.addEventListener('click', open);
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+    });
+    grid.insertBefore(card, grid.firstChild);
+  }
+
   // ---------- Inject card actions ----------
   function observeGrid() {
     let lastCount = 0;
     const tryDecorate = () => {
+      ensureAddCard();
       const cards = document.querySelectorAll('.beer-card');
       cards.forEach(decorateCard);
       if (cards.length !== lastCount) {
