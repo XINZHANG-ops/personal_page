@@ -1,0 +1,21 @@
+# HTML — never cache, always revalidate so updates show immediately
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Auto-generated beer.js — must update immediately when data changes
+/js/beer.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Other JS/CSS — short cache, can revalidate
+/js/*
+  Cache-Control: public, max-age=300, must-revalidate
+
+/css/*
+  Cache-Control: public, max-age=300, must-revalidate
+
+# Images — long cache (filename-based versioning)
+/assets/*
+  Cache-Control: public, max-age=86400

@@ -45,7 +45,7 @@
             title: "Beer Recognization",
             description: "A project that makes my life easier by helping me find the beers I’ve rated before while walking around in LCBO.",
             technologies: ["Python", "Embedding Remapping", "YOLOv8", "CLIP"],
-            liveUrl: "https://xinzhang-ops.github.io/personal_page/pages/beer.html",
+            liveUrl: "pages/beer.html",
             githubUrl: "https://github.com/XINZHANG-ops/personal_page",
             imageUrl: "assets/images/projects/beer-recognization.jpg",
             featured: true,

@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://yourusername.gitlab.io/personal-portfolio-site/</loc>
-    <lastmod>2024-01-02</lastmod>
+    <loc>https://personal-page-8db.pages.dev/</loc>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://yourusername.gitlab.io/personal-portfolio-site/#about</loc>
-    <lastmod>2024-01-02</lastmod>
+    <loc>https://personal-page-8db.pages.dev/#about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://yourusername.gitlab.io/personal-portfolio-site/#projects</loc>
-    <lastmod>2024-01-02</lastmod>
+    <loc>https://personal-page-8db.pages.dev/#projects</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://yourusername.gitlab.io/personal-portfolio-site/#writing</loc>
-    <lastmod>2024-01-02</lastmod>
+    <loc>https://personal-page-8db.pages.dev/#writing</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://yourusername.gitlab.io/personal-portfolio-site/#contact</loc>
-    <lastmod>2024-01-02</lastmod>
+    <loc>https://personal-page-8db.pages.dev/#contact</loc>
     <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://personal-page-8db.pages.dev/pages/beer.html</loc>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 </urlset>
