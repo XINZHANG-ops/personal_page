@@ -539,7 +539,8 @@
           const res = await callWorker({ action: 'delete', beer: { id: beer.id } });
           setModalStatus(`✅ Deleted. Commit: ${res.commit?.slice(0, 7) || 'ok'}`, 'ok');
           beersCache = beersCache.filter((b) => b.id !== beer.id);
-          setTimeout(close, 1200);
+          removeCardFromDom(beer.id);
+          setTimeout(close, 800);
         } catch (err) {
           setModalStatus(`❌ ${err.message}`, 'err');
         } finally {
@@ -548,6 +549,21 @@
       },
       secondaryLabel: 'Cancel',
     });
+  }
+
+  function removeCardFromDom(id) {
+    const card = document.querySelector(`.beer-card[data-beer-id="${cssEscape(id)}"]`);
+    if (!card) return;
+    card.style.transition = 'opacity 0.25s, transform 0.25s';
+    card.style.opacity = '0';
+    card.style.transform = 'scale(0.92)';
+    setTimeout(() => card.remove(), 260);
+  }
+
+  // Safe selector escape (id may contain hyphens but to be safe)
+  function cssEscape(s) {
+    if (window.CSS && CSS.escape) return CSS.escape(s);
+    return String(s).replace(/["\\]/g, '\\$&');
   }
 
   // ---------- Worker call ----------
