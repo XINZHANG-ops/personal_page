@@ -1633,6 +1633,35 @@ if (fs.existsSync(TEMPLATE_FILE)) {
         }
     };
 
+    // Admin hook: lets js/beer-admin.js mutate the data and trigger a full
+    // re-render (gallery + statistics) after add/edit/delete without a page reload.
+    window.__beerAPI = {
+        getBeers: function () { return beers; },
+        upsert: function (beer) {
+            // Normalize imageUrl to the page-relative form beer.js expects
+            if (beer.imageUrl && !beer.imageUrl.startsWith('../') && !/^https?:/.test(beer.imageUrl)) {
+                beer = Object.assign({}, beer, { imageUrl: '../' + beer.imageUrl });
+            }
+            // Cache-bust the image so the new file is fetched (GitHub raw + Pages CDN)
+            if (beer.imageUrl) {
+                beer = Object.assign({}, beer, { imageUrl: beer.imageUrl + '?t=' + Date.now() });
+            }
+            const idx = beers.findIndex(function (b) { return b.id === beer.id; });
+            if (idx >= 0) beers[idx] = beer;
+            else beers.push(beer);
+            renderStatisticsCharts();
+            updateDisplay();
+        },
+        remove: function (id) {
+            const idx = beers.findIndex(function (b) { return b.id === id; });
+            if (idx < 0) return false;
+            beers.splice(idx, 1);
+            renderStatisticsCharts();
+            updateDisplay();
+            return true;
+        },
+    };
+
 })();
 `;
 }

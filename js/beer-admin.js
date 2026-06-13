@@ -508,7 +508,7 @@
         beer,
         imageDataUrl: newImage || null,
       });
-      setModalStatus(`✅ Saved! Page rebuilds in ~1-2 min.\nCommit: ${res.commit?.slice(0, 7) || 'ok'}`, 'ok');
+      setModalStatus(`✅ Saved! Showing now; site rebuild in ~1-2 min.\nCommit: ${res.commit?.slice(0, 7) || 'ok'}`, 'ok');
       // Refresh local cache
       if (isEdit) {
         const idx = beersCache.findIndex((b) => b.id === id);
@@ -516,7 +516,16 @@
       } else {
         beersCache.push(beer);
       }
-      setTimeout(close, 1500);
+      // Hot-update the gallery via beer.js's exposed API
+      if (window.__beerAPI) {
+        // For edits with a new image, use the freshly-resized data URL so it
+        // shows immediately (the GitHub-served image takes ~1-2 min to deploy)
+        const displayBeer = newImage
+          ? { ...beer, imageUrl: newImage }
+          : beer;
+        window.__beerAPI.upsert(displayBeer);
+      }
+      setTimeout(close, 1200);
     } catch (err) {
       setModalStatus(`❌ ${err.message}`, 'err');
     } finally {
@@ -539,7 +548,11 @@
           const res = await callWorker({ action: 'delete', beer: { id: beer.id } });
           setModalStatus(`✅ Deleted. Commit: ${res.commit?.slice(0, 7) || 'ok'}`, 'ok');
           beersCache = beersCache.filter((b) => b.id !== beer.id);
-          removeCardFromDom(beer.id);
+          if (window.__beerAPI) {
+            window.__beerAPI.remove(beer.id);
+          } else {
+            removeCardFromDom(beer.id);
+          }
           setTimeout(close, 800);
         } catch (err) {
           setModalStatus(`❌ ${err.message}`, 'err');
