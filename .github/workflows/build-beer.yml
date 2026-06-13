@@ -30,14 +30,22 @@ jobs:
       - name: Rebuild js/beer.js from beer.jsonl
         run: node scripts/build-beer.cjs
 
-      - name: Commit regenerated beer.js (if changed)
+      - name: Cache-bust beer.js reference in pages/beer.html
+        run: |
+          # Use the short SHA of the commit that triggered this build as version
+          VER=$(git rev-parse --short HEAD)
+          # Replace any existing ?v=... on beer.js (or add one if missing)
+          sed -i -E "s#(../js/beer\.js)(\?v=[^\"]*)?#\1?v=${VER}#g" pages/beer.html
+          echo "Bumped beer.js version to ${VER}"
+
+      - name: Commit regenerated files (if changed)
         run: |
           git config user.name "beer-bot"
           git config user.email "beer-bot@users.noreply.github.com"
-          if git diff --quiet js/beer.js; then
-            echo "No changes to js/beer.js"
+          if git diff --quiet js/beer.js pages/beer.html; then
+            echo "No changes to commit"
           else
-            git add js/beer.js
-            git commit -m "auto: rebuild beer.js [skip ci]"
+            git add js/beer.js pages/beer.html
+            git commit -m "auto: rebuild beer.js + bump cache version [skip ci]"
             git push
           fi

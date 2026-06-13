@@ -25,6 +25,19 @@ const beers = [];
 const fileContent = fs.readFileSync(JSONL_FILE, 'utf8');
 const lines = fileContent.trim().split('\n');
 
+// Single build-time version for cache-busting images.
+// Uses the current commit's short SHA when available (CI), else falls back to
+// the JSONL file's mtime. Either way, the value only changes when the data
+// actually changes, so the browser keeps the cached image until then.
+let BUILD_VERSION;
+try {
+    BUILD_VERSION = require('child_process')
+        .execSync('git rev-parse --short HEAD', { stdio: ['ignore', 'pipe', 'ignore'] })
+        .toString().trim();
+} catch {
+    BUILD_VERSION = String(Math.floor(fs.statSync(JSONL_FILE).mtimeMs));
+}
+
 for (const line of lines) {
     if (line.trim()) {
         try {
@@ -32,6 +45,10 @@ for (const line of lines) {
             // Update image URL to work from pages/ directory
             if (beer.imageUrl && !beer.imageUrl.startsWith('../')) {
                 beer.imageUrl = '../' + beer.imageUrl;
+            }
+            // Cache-bust the image so regular refresh picks up new uploads
+            if (beer.imageUrl && !beer.imageUrl.includes('?')) {
+                beer.imageUrl = `${beer.imageUrl}?v=${BUILD_VERSION}`;
             }
             beers.push(beer);
         } catch (e) {
