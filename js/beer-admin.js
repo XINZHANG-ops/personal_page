@@ -463,9 +463,34 @@
         </div>
       `,
       primaryLabel: 'Unlock',
-      onPrimary: (close) => {
+      onPrimary: async (close, btn) => {
         const pw = document.getElementById('badm-pw').value.trim();
-        if (!pw) return;
+        if (!pw) return setModalStatus('Please enter the password', 'err');
+        btn.disabled = true; btn.textContent = 'Checking...';
+        setModalStatus('Verifying with server...', 'info');
+        // Verify against the worker BEFORE saving / entering admin
+        try {
+          const res = await fetch(WORKER_URL, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ password: pw, action: 'verify' }),
+          });
+          if (res.status === 401) {
+            setModalStatus('❌ Wrong password', 'err');
+            btn.disabled = false; btn.textContent = 'Unlock';
+            return;
+          }
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            setModalStatus(`❌ Server error: ${data.error || res.status}`, 'err');
+            btn.disabled = false; btn.textContent = 'Unlock';
+            return;
+          }
+        } catch (err) {
+          setModalStatus(`❌ Could not reach server: ${err.message}`, 'err');
+          btn.disabled = false; btn.textContent = 'Unlock';
+          return;
+        }
         password = pw;
         localStorage.setItem(PW_KEY, pw);
         close();

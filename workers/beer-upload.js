@@ -47,6 +47,12 @@ export default {
     const gh = new Github(repo, branch, token);
 
     try {
+      // Verify-only: a cheap call the frontend uses to check the password
+      // before letting the user into admin mode.
+      if (action === 'verify') {
+        return json({ ok: true }, 200, cors);
+      }
+
       let operations;
       if (action === 'batch') {
         operations = Array.isArray(body.operations) ? body.operations : null;
